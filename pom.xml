@@ -28,15 +28,25 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <baixun.version>1.0.0</baixun.version>
+        <mybatis-plus.version>3.5.1</mybatis-plus.version>
     </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.aibaixun</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-            <version>${baixun.version}</version>
-        </dependency>
-    </dependencies>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.aibaixun</groupId>
+                <artifactId>spring-boot-starter-web</artifactId>
+                <version>${baixun.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+
 
 
     <developers>

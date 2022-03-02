@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: IOTdmApplication
+  profiles:
+    active: dev
+
+IOTdm:
+  label: IOTdmApplication
+  version: 1.0.0

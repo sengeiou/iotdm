@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "IOTdm",
+      "type": "java.lang.String",
+      "description": "Description for IOTdm."
+  }
+] }
