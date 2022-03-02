@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <modules>
+        <module>iotdm-application</module>
+        <module>iotdm-transport</module>
+        <module>iotdm-common</module>
+        <module>iotdm-rule</module>
+    </modules>
+
+    <parent>
+        <groupId>com.aibaixun</groupId>
+        <artifactId>parent</artifactId>
+        <version>1.0.0</version>
+        <relativePath/>
+    </parent>
+
+    <artifactId>iotdm</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0.0</version>
+    <name>IOTdm</name>
+    <description>IOTdm:百讯物联网设备接入平台</description>
+
+
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <baixun.version>1.0.0</baixun.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.aibaixun</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>${baixun.version}</version>
+        </dependency>
+    </dependencies>
+
+
+    <developers>
+        <developer>
+            <name>WangXiao</name>
+            <email>wangxiao@aibaixun.com</email>
+        </developer>
+    </developers>
+</project>
