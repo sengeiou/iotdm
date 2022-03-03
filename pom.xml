@@ -29,20 +29,60 @@
         <maven.compiler.target>11</maven.compiler.target>
         <baixun.version>1.0.0</baixun.version>
         <mybatis-plus.version>3.5.1</mybatis-plus.version>
+        <mysql.version>8.0.25</mysql.version>
+        <iotdm.version>1.0.0</iotdm.version>
     </properties>
+
+
 
     <dependencyManagement>
         <dependencies>
+            <!--BaiXun parent start-->
             <dependency>
                 <groupId>com.aibaixun</groupId>
                 <artifactId>spring-boot-starter-web</artifactId>
                 <version>${baixun.version}</version>
             </dependency>
             <dependency>
+                <groupId>com.aibaixun</groupId>
+                <artifactId>spring-boot-starter-redis</artifactId>
+                <version>${baixun.version}</version>
+            </dependency>
+            <!--BaiXun parent start-->
+            <!--mybatis and mysql start-->
+            <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-boot-starter</artifactId>
                 <version>${mybatis-plus.version}</version>
             </dependency>
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql.version}</version>
+            </dependency>
+            <!--mybatis and mysql end-->
+            <!--IOTdm  start-->
+            <dependency>
+                <groupId>com.aibaixun.iotdm</groupId>
+                <artifactId>transport</artifactId>
+                <version>${iotdm.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.aibaixun.iotdm</groupId>
+                <artifactId>common</artifactId>
+                <version>${iotdm.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.aibaixun.iotdm</groupId>
+                <artifactId>rule</artifactId>
+                <version>${iotdm.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.aibaixun.iotdm</groupId>
+                <artifactId>application</artifactId>
+                <version>${iotdm.version}</version>
+            </dependency>
+            <!--IOTdm  start-->
         </dependencies>
     </dependencyManagement>
 

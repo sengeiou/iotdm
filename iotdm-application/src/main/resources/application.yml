@@ -7,3 +7,15 @@ spring:
 IOTdm:
   label: IOTdmApplication
   version: 1.0.0
+
+
+## mybatis-plus
+mybatis-plus:
+  global-config:
+    banner: false
+    db-config:
+      id-type: assign_uuid
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+  typeEnumsPackage: com.aibaixun.iotdm.enums

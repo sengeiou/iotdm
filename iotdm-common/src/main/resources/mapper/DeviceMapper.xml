@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aibaixun.iotdm.mapper.DeviceMapper">
+
+    <select id="countDevice" resultType="com.aibaixun.iotdm.support.KvData">
+        SELECT
+            d.device_status as key,
+            COUNT( d.device_status ) as value;
+        FROM
+            t_device d
+        WHERE
+            d.deleted = 0
+            <if test="tenantId != 'NULL'">
+               AND d.tenant_id = #{tenantId}
+            </if>
+            <if test="productId != null">
+                AND d.product_id = #{productId}
+            </if>
+
+        GROUP BY
+            d.device_status
+    </select>
+
+
+    <select id="selectPageDeviceInfo" resultType="com.aibaixun.iotdm.support.DeviceInfo">
+        SELECT
+            d.id,
+            d.device_label,
+            d.device_code,
+            d.product_id,
+            d.node_type,
+            d.device_status
+        FROM
+            t_device d
+        WHERE
+            d.tenant_id = #{tenantId}
+        <if test="deviceStatus != null">
+            AND d.device_status = #{device_status}
+        </if>
+        <if test="searchKey != null and searchKey != '' and searchValue != null and searchValue != ''">
+            AND ${searchKey} like  CONCAT('%',#{searchValue})
+        </if>
+    </select>
+</mapper>

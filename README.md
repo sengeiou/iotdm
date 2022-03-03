@@ -24,3 +24,5 @@ iotdm
 └── iotdm-transport      设备接入与数据传输
   
 ```
+## 说明 
+- 未使用百讯模版中db与redis，需要一些定制化开发

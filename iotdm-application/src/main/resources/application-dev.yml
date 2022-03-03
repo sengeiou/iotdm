@@ -1,0 +1,23 @@
+## spring 配置
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${DATASOURCE_HOST:172.16.9.1}:${DATASOURCE_PORT:3306}/iotdm
+    username: ${DATASOURCE_USERNAME:root}
+    password: ${DATASOURCE_PASSWORD:bxzh123456!}
+
+  redis:
+    timeout: 6000
+    lettuce:
+      pool:
+        max-active: 1000
+        max-wait: -1
+        max-idle: 200
+        min-idle: 100
+      shutdown-timeout: 100
+    cluster:
+      nodes:
+        - 172.16.8.2:6379
+        - 172.16.8.3:6379
+        - 172.16.8.4:6379
+      max-redirects: 3

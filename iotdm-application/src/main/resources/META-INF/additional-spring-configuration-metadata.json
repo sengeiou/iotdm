@@ -4,5 +4,15 @@
       "name": "IOTdm",
       "type": "java.lang.String",
       "description": "Description for IOTdm."
-  }
-] }
+    },
+    {
+      "name": "IOTdm.label",
+      "type": "java.lang.String",
+      "description": "Description for IOTdm.label."
+    },
+    {
+      "name": "IOTdm.version",
+      "type": "java.lang.String",
+      "description": "Description for IOTdm.version."
+    }
+  ] }
