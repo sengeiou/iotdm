@@ -73,4 +73,17 @@ public interface IDeviceService extends IService<Device> {
      */
     Page<DeviceInfo> pageQuerySubDeviceInfos(Integer page, Integer pageSize, String gateWayId);
 
+
+    /**
+     * 分组查询设备信息
+     * @param page 页码
+     * @param pageSize 页容
+     * @param groupId 分组id
+     * @param productId 产品id
+     * @param deviceCode 设备标识码
+     * @param deviceLabel 设备名称
+     * @return 设备信息
+     */
+    Page<DeviceInfo> pageQueryDeviceByGroup(Integer page,Integer pageSize,String groupId,String productId,String deviceCode,String deviceLabel);
+
 }

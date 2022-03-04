@@ -79,4 +79,11 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
     public Page<DeviceInfo> pageQuerySubDeviceInfos(Integer page, Integer pageSize, String gateWayId) {
         return baseMapper.selectPageSubDeviceInfo(Page.of(page,pageSize),gateWayId);
     }
+
+
+    @Override
+    public Page<DeviceInfo> pageQueryDeviceByGroup(Integer page, Integer pageSize, String groupId, String productId,String deviceCode, String deviceLabel) {
+        String tenantId = UserInfoUtil.getTenantIdOfNull();
+        return baseMapper.selectPageDeviceInfoByGroup(Page.of(page,pageSize),tenantId,productId,groupId,deviceCode,deviceLabel);
+    }
 }

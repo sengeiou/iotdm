@@ -2,6 +2,8 @@ package com.aibaixun.iotdm.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import javax.validation.constraints.NotBlank;
+
 
 /**
  * <p>
@@ -18,6 +20,7 @@ public class DeviceGroup extends BaseEntity {
     /**
      * 分组名称
      */
+    @NotBlank(message = "群组名称不能为空")
     private String groupLabel;
 
     /**

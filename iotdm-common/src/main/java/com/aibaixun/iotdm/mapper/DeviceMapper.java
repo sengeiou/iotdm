@@ -51,4 +51,17 @@ public interface DeviceMapper extends BaseMapper<Device> {
     Page<DeviceInfo> selectPageSubDeviceInfo(Page<DeviceInfo> page, String gateWayId);
 
 
+    /**
+     * 查询群组设备
+     * @param page 分页
+     * @param tenantId 租户id
+     * @param productId 产品id
+     * @param groupId 分组信息
+     * @param deviceCode 设备标识码
+     * @param deviceLabel 设备名称
+     * @return 设备信息
+     */
+    Page<DeviceInfo> selectPageDeviceInfoByGroup(Page<DeviceInfo> page, String tenantId,String productId,String groupId,String deviceCode,String deviceLabel);
+
+
 }
