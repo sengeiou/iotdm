@@ -62,7 +62,7 @@ public class DeviceController extends BaseController{
 
 
     @GetMapping("/list")
-    public JsonResult<List<Device>> listQueryDevice(@RequestParam(required = false) String productId){
+    public JsonResult<List<Device>> listQueryDevice(@RequestParam(required = false) String productId,@RequestParam Integer limit){
         List<Device> devices = deviceService.queryDevice(productId);
         return JsonResult.success(devices);
     }

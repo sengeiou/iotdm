@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>
@@ -43,18 +44,21 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
         return baseMapper.countDevice(productId, tenantId);
     }
 
+
     @Override
-    public List<Device> queryDevice(String productId) {
+    public List<Device> queryDevice(String productId, Integer limit) {
         LambdaQueryWrapper<Device> queryWrapper = Wrappers.lambdaQuery();
-        queryWrapper.select(Device::getId,Device::getDeviceLabel,Device::getDeviceCode,Device::getVirtual);
+        queryWrapper.select(Device::getId,Device::getDeviceLabel,Device::getDeviceCode,Device::getDeviceStatus,Device::getVirtual);
         if (StringUtils.isNotBlank(productId)){
             queryWrapper.eq(Device::getProductId,productId);
         }
+        if (Objects.isNull(limit)){
+            limit = 50;
+        }
+        queryWrapper.orderByDesc(Device::getCreateTime);
+        queryWrapper.apply(" LIMIT {0}",limit );
         return list(queryWrapper);
     }
-
-
-
 
     @Override
     public Page<DeviceInfo> pageQueryDeviceInfos(Integer page, Integer pageSize, DeviceStatus deviceStatus, String searchKey, String searchValue) {

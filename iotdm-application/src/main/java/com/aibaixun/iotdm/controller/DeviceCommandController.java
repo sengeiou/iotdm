@@ -32,4 +32,7 @@ public class DeviceCommandController {
     public void setDeviceCommandSendService(IDeviceCommandSendService deviceCommandSendService) {
         this.deviceCommandSendService = deviceCommandSendService;
     }
+
+
+
 }

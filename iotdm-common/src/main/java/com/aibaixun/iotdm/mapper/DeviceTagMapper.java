@@ -1,6 +1,5 @@
 package com.aibaixun.iotdm.mapper;
 
-import com.aibaixun.iotdm.entity.DeviceTag;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
