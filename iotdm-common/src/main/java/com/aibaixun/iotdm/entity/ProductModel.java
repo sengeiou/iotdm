@@ -30,11 +30,20 @@ public class ProductModel extends BaseEntity {
     private String modelLabel;
 
     /**
+     * 模型类型
+     */
+    private String modelType;
+
+    /**
      * 描述
      */
     @Length(max = 128,message = "模型描述不能超过128字符")
     private String description;
 
+    /**
+     * 是否删除
+     */
+    private Boolean deleted;
 
     public String getProductId() {
         return productId;
@@ -52,6 +61,14 @@ public class ProductModel extends BaseEntity {
         this.modelLabel = modelLabel;
     }
 
+    public String getModelType() {
+        return modelType;
+    }
+
+    public void setModelType(String modelType) {
+        this.modelType = modelType;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -60,12 +77,11 @@ public class ProductModel extends BaseEntity {
         this.description = description;
     }
 
-    @Override
-    public String toString() {
-        return "ProductModel{" +
-                "productId='" + productId + '\'' +
-                ", modelLabel='" + modelLabel + '\'' +
-                ", description='" + description + '\'' +
-                '}';
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 }

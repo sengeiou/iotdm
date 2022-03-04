@@ -33,6 +33,9 @@ public class DevicePropertyReport implements Serializable {
      */
     private String propertyId;
 
+    /**
+     * 属性值
+     */
     private String propertyValue;
 
     /**

@@ -1,7 +1,5 @@
 package com.aibaixun.iotdm.config;
 
-import com.aibaixun.basic.context.UserContextHolder;
-import com.aibaixun.basic.exception.BaseException;
 import com.aibaixun.iotdm.util.UserInfoUtil;
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusPropertiesCustomizer;

@@ -42,6 +42,8 @@ public class ProductModelServiceImpl extends ServiceImpl<ProductModelMapper, Pro
             updateWrapper.set(ProductModel::getProductId,productModel.getProductId());
         }else if (StringUtils.isNotBlank(productModel.getDescription())){
             updateWrapper.set(ProductModel::getDescription,productModel.getDescription());
+        }else if(StringUtils.isNotBlank(productModel.getModelType())){
+            updateWrapper.set(ProductModel::getModelType,productModel.getModelType());
         }else {
             return false;
         }

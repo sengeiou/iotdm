@@ -42,4 +42,13 @@ public interface DeviceMapper extends BaseMapper<Device> {
     Page<DeviceInfo> selectPageDeviceInfo(Page<DeviceInfo> page, String tenantId,DeviceStatus deviceStatus,String searchKey,String searchValue);
 
 
+    /**
+     * 查询网关子设备
+     * @param page 分页信息
+     * @param gateWayId 网关id
+     * @return 设备信息
+     */
+    Page<DeviceInfo> selectPageSubDeviceInfo(Page<DeviceInfo> page, String gateWayId);
+
+
 }

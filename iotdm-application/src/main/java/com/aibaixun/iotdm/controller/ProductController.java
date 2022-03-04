@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -48,6 +49,12 @@ public class ProductController extends BaseController{
     }
 
 
+    @GetMapping("/list")
+    public JsonResult<List<Product>> listQueryProducts (@RequestParam(required = false) Integer limit) {
+        List<Product> products = productService.queryProducts(limit);
+        return JsonResult.success(products);
+    }
+
 
     @PostMapping
     public JsonResult<Boolean> createProduct(@RequestBody @Valid Product product) throws BaseException {
@@ -58,6 +65,12 @@ public class ProductController extends BaseController{
         }
         boolean saveResult = productService.save(product);
         return JsonResult.success(saveResult);
+    }
+
+    @DeleteMapping("/{id}")
+    public JsonResult<Boolean> removeProduct (@PathVariable String id) {
+        boolean remove = productService.removeById(id);
+        return JsonResult.success(remove);
     }
 
 

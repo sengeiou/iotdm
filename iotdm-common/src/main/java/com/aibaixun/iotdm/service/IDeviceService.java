@@ -54,4 +54,23 @@ public interface IDeviceService extends IService<Device> {
      */
     Page<DeviceInfo> pageQueryDeviceInfos(Integer page, Integer pageSize, DeviceStatus deviceStatus, String searchKey, String searchValue);
 
+
+    /**
+     * 更改设备名称
+     * @param deviceId 设备id
+     * @param deviceLabel 设备名称
+     * @return 更改结果
+     */
+    Boolean updateDeviceLabel(String deviceId,String deviceLabel);
+
+
+    /**
+     * 查询网关子设备
+     * @param page 页码
+     * @param pageSize 页容
+     * @param gateWayId 网关id
+     * @return 设备信息
+     */
+    Page<DeviceInfo> pageQuerySubDeviceInfos(Integer page, Integer pageSize, String gateWayId);
+
 }

@@ -13,4 +13,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface DeviceMessageReportMapper extends BaseMapper<DeviceMessageReport> {
 
+
+
+
 }

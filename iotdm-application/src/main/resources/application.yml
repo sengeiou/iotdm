@@ -3,6 +3,10 @@ spring:
     name: IOTdmApplication
   profiles:
     active: dev
+  cache:
+    redis:
+      key-prefix: "IOTdm:"
+    type: redis
 
 IOTdm:
   label: IOTdmApplication
@@ -19,3 +23,5 @@ mybatis-plus:
       logic-delete-value: 1
       logic-not-delete-value: 0
   typeEnumsPackage: com.aibaixun.iotdm.enums
+
+

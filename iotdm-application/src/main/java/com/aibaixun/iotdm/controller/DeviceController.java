@@ -5,19 +5,22 @@ import com.aibaixun.basic.result.BaseResultCode;
 import com.aibaixun.basic.result.JsonResult;
 import com.aibaixun.iotdm.entity.Device;
 import com.aibaixun.iotdm.entity.Product;
+import com.aibaixun.iotdm.enums.DeviceAuthType;
 import com.aibaixun.iotdm.enums.DeviceStatus;
+import com.aibaixun.iotdm.enums.NodeType;
 import com.aibaixun.iotdm.service.IDeviceService;
 import com.aibaixun.iotdm.service.IProductService;
-import com.aibaixun.iotdm.support.KvData;
-import com.aibaixun.iotdm.support.DeviceInfo;
+import com.aibaixun.iotdm.support.*;
+import com.aibaixun.iotdm.util.Base64Util;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.aibaixun.iotdm.Constants.NULL_STR;
 
@@ -63,7 +66,7 @@ public class DeviceController extends BaseController{
 
     @GetMapping("/list")
     public JsonResult<List<Device>> listQueryDevice(@RequestParam(required = false) String productId,@RequestParam Integer limit){
-        List<Device> devices = deviceService.queryDevice(productId);
+        List<Device> devices = deviceService.queryDevice(productId,limit);
         return JsonResult.success(devices);
     }
 
@@ -95,7 +98,93 @@ public class DeviceController extends BaseController{
     }
 
 
+    @PutMapping("/device-label")
+    public JsonResult<Boolean> updateDeviceLabel (@RequestBody @Valid UpdateDeviceLabelParam updateDeviceLabelParam) {
+        Boolean aBoolean = deviceService.updateDeviceLabel(updateDeviceLabelParam.getDeviceId(), updateDeviceLabelParam.getDeviceLabel());
+        return JsonResult.success(aBoolean);
+    }
 
+
+
+
+    @PostMapping
+    public JsonResult<Boolean> createDevice (@RequestBody @Valid DeviceParam deviceParam) throws BaseException {
+
+        String deviceSecret = deviceParam.getDeviceSecret();
+        boolean secretBlank = StringUtils.isNotBlank(deviceSecret);
+        if ( !secretBlank && StringUtils.equals(deviceSecret,deviceParam.getConfirmSecret())){
+            throw new BaseException("设备密钥不一致",BaseResultCode.BAD_PARAMS);
+        }
+        if (deviceParam.getAuthType().equals(DeviceAuthType.SECRET)){
+            deviceSecret = secretBlank? RandomStringUtils.randomAlphanumeric(20): Base64Util.decode(deviceSecret);
+        }
+        String productId = deviceParam.getProductId();
+        checkProductId(productId);
+        Device saveDevice = new Device();
+        saveDevice.setDeviceCode(deviceParam.getDeviceCode());
+        saveDevice.setDeviceLabel(deviceParam.getDeviceLabel());
+        saveDevice.setDeviceSecret(deviceSecret);
+        saveDevice.setAuthType(deviceParam.getAuthType());
+        saveDevice.setProductId(productId);
+        saveDevice.setNodeType(NodeType.GATEWAY);
+        saveDevice.setVirtual(false);
+        saveDevice.setDeviceStatus(DeviceStatus.INACTIVE);
+        deviceService.save(saveDevice);
+        return null;
+    }
+
+
+
+    @DeleteMapping("/{id}")
+    public JsonResult<Boolean> removeDevice (@PathVariable String id){
+        boolean remove = deviceService.removeById(id);
+        return JsonResult.success(remove);
+    }
+
+
+    @PostMapping("sub-device")
+    public JsonResult<Boolean> createSubDevice (@RequestParam @Valid SubDeviceParam subDeviceParam) throws BaseException {
+        String gatewayId = subDeviceParam.getGatewayId();
+        Device byId = deviceService.getById(gatewayId);
+        if (Objects.isNull(byId)){
+            throw new BaseException("网关设备不存在",BaseResultCode.BAD_PARAMS);
+        }
+
+        String productId = subDeviceParam.getProductId();
+        checkProductId(productId);
+        Device saveDevice = new Device();
+        saveDevice.setDeviceCode(subDeviceParam.getDeviceCode());
+        saveDevice.setDeviceLabel(subDeviceParam.getDeviceLabel());
+        saveDevice.setDeviceSecret(RandomStringUtils.randomAlphanumeric(20));
+        saveDevice.setAuthType(byId.getAuthType());
+        saveDevice.setProductId(productId);
+        saveDevice.setNodeType(NodeType.ENDPOINT);
+        saveDevice.setVirtual(false);
+        saveDevice.setDeviceStatus(DeviceStatus.INACTIVE);
+        saveDevice.setGatewayId(gatewayId);
+        boolean save = deviceService.save(saveDevice);
+        return JsonResult.success(save);
+    }
+
+
+
+    @GetMapping("/sub-device/page")
+    public JsonResult<Page<DeviceInfo>> pageQuerySubDevices(@RequestParam String gateWayId,
+                                                            @RequestParam Integer page,
+                                                            @RequestParam Integer pageSize) throws BaseException {
+        checkPage(page,pageSize);
+        Page<DeviceInfo> subDeviceInfos = deviceService.pageQuerySubDeviceInfos(page, pageSize, gateWayId);
+        return JsonResult.success(subDeviceInfos);
+    }
+
+
+
+    private void checkProductId(String productId) throws BaseException {
+        Product product = productService.getById(productId);
+        if (Objects.isNull(product)){
+            throw new BaseException("所属产品不存在",BaseResultCode.BAD_PARAMS);
+        }
+    }
 
 
     @Autowired

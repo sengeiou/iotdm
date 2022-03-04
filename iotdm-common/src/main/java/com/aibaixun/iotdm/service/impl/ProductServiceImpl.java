@@ -41,6 +41,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         if (StringUtils.isNotBlank(productLabel)){
             queryWrapper.likeLeft(Product::getProductLabel,productLabel);
         }
+        queryWrapper.orderByDesc(Product::getCreateTime);
         return page(Page.of(page,pageSize),queryWrapper);
     }
 
@@ -72,5 +73,14 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     public Map<String, String> queryProductLabelByIds(List<String> productIds) {
         List<Product> products = list(Wrappers.<Product>lambdaQuery().in(Product::getId, productIds));
         return products.stream().collect(Collectors.toMap(Product::getId, Product::getProductLabel));
+    }
+
+
+    @Override
+    public List<Product> queryProducts(Integer limit) {
+        var queryWrapper = Wrappers.<Product>lambdaQuery();
+        queryWrapper.eq(Product::getTenantId, UserInfoUtil.getTenantIdOfNull());
+        queryWrapper.orderByDesc(Product::getCreateTime);
+        return list(queryWrapper);
     }
 }

@@ -51,4 +51,15 @@ public interface IProductService extends IService<Product> {
      */
     Map<String,String> queryProductLabelByIds(List<String> productIds);
 
+
+    /**
+     * 产品列表
+     * @param limit 限制数
+     * @return 产品列表
+     */
+    List<Product> queryProducts (Integer limit);
+
+
+
+
 }

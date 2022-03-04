@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
 
 /**
  * 设备命令 web api
@@ -16,16 +17,23 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("device-command")
-public class DeviceCommandController {
+public class DeviceCommandController extends BaseController{
 
 
     private IDeviceCommandSendService deviceCommandSendService;
 
 
     @GetMapping("/list")
-    public JsonResult<DeviceCommandSend> queryDeviceCommands (@RequestParam(required = false) String commandLabel) {
+    public JsonResult<List<DeviceCommandSend>> queryDeviceCommands (
+                                                              @RequestParam(required = false)  String deviceId,
+                                                              @RequestParam(required = false) String commandLabel,
+                                                              @RequestParam(required = false) String commandId,
+                                                              @RequestParam(required = false) Long startTs,
+                                                              @RequestParam(required = false) Long endTs,
+                                                              @RequestParam(required = false) Integer limit) {
 
-        return null;
+        List<DeviceCommandSend> deviceCommandSends = deviceCommandSendService.queryDeviceCommandSend(deviceId,commandLabel, commandId, startTs, endTs, limit);
+        return JsonResult.success(deviceCommandSends);
     }
 
     @Autowired

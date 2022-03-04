@@ -29,16 +29,39 @@
             d.device_code,
             d.product_id,
             d.node_type,
-            d.device_status
+            d.device_status,
+            p.product_label
         FROM
             t_device d
+        LEFT JOIN  t_product p ON p.id = d.product_id
         WHERE
             d.tenant_id = #{tenantId}
+
         <if test="deviceStatus != null">
             AND d.device_status = #{device_status}
         </if>
         <if test="searchKey != null and searchKey != '' and searchValue != null and searchValue != ''">
             AND ${searchKey} like  CONCAT('%',#{searchValue})
         </if>
+        ORDER BY d.create_time DESC
+
+    </select>
+
+
+    <select id="selectPageSubDeviceInfo" resultType="com.aibaixun.iotdm.support.DeviceInfo">
+        SELECT
+            d.id,
+            d.device_label,
+            d.device_code,
+            d.product_id,
+            d.node_type,
+            d.device_status
+        FROM
+            t_device d
+        LEFT JOIN  t_product p ON p.id = d.product_id
+        WHERE
+        d.gateway_id = #{gateWayId}
+
+        ORDER BY d.create_time DESC
     </select>
 </mapper>

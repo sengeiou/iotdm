@@ -8,6 +8,7 @@ import com.aibaixun.iotdm.support.DeviceInfo;
 import com.aibaixun.iotdm.support.KvData;
 import com.aibaixun.iotdm.util.UserInfoUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -63,5 +64,19 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
     @Override
     public Page<DeviceInfo> pageQueryDeviceInfos(Integer page, Integer pageSize, DeviceStatus deviceStatus, String searchKey, String searchValue) {
         return baseMapper.selectPageDeviceInfo(Page.of(page,pageSize),UserInfoUtil.getTenantIdOfNull(),deviceStatus,searchKey,searchValue);
+    }
+
+
+    @Override
+    public Boolean updateDeviceLabel(String deviceId, String deviceLabel) {
+        LambdaUpdateWrapper<Device> updateWrapper = Wrappers.lambdaUpdate();
+        updateWrapper.set(Device::getDeviceLabel,deviceLabel);
+        updateWrapper.eq(Device::getId,deviceId);
+        return update(updateWrapper);
+    }
+
+    @Override
+    public Page<DeviceInfo> pageQuerySubDeviceInfos(Integer page, Integer pageSize, String gateWayId) {
+        return baseMapper.selectPageSubDeviceInfo(Page.of(page,pageSize),gateWayId);
     }
 }
