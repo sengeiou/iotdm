@@ -41,13 +41,13 @@ public class DeviceCommandSendServiceImpl extends ServiceImpl<DeviceCommandSendM
             queryWrapper.eq(DeviceCommandSend::getCommandId,commandId);
         }
         if (StringUtils.isNotBlank(commandLabel)){
-            queryWrapper.likeLeft(DeviceCommandSend::getCommandLabel,commandLabel);
+            queryWrapper.likeRight(DeviceCommandSend::getCommandLabel,commandLabel);
         }
         if (Objects.nonNull(startTs) && Objects.nonNull(endTs)){
             queryWrapper.between(DeviceCommandSend::getRespTs,startTs,endTs);
         }
-        queryWrapper.apply(" LIMIT {0}",limit);
         queryWrapper.orderByDesc(DeviceCommandSend::getRespTs);
+        queryWrapper.last(" LIMIT "+limit);
         return list(queryWrapper);
     }
 }

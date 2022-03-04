@@ -2,17 +2,11 @@ package com.aibaixun.iotdm.config;
 
 import com.aibaixun.iotdm.util.UserInfoUtil;
 import com.baomidou.mybatisplus.annotation.DbType;
-import com.baomidou.mybatisplus.autoconfigure.MybatisPlusPropertiesCustomizer;
-import com.baomidou.mybatisplus.core.MybatisConfiguration;
-import com.baomidou.mybatisplus.core.config.GlobalConfig;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
-import com.baomidou.mybatisplus.core.handlers.MybatisEnumTypeHandler;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import org.apache.ibatis.reflection.MetaObject;
 import org.mybatis.spring.annotation.MapperScan;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -27,18 +21,6 @@ import java.time.Instant;
 @MapperScan("com.aibaixun.iotdm.mapper")
 public class MybatisPlusConfiguration {
 
-    private final Logger logger = LoggerFactory.getLogger(MybatisPlusConfiguration.class);
-
-    @Bean
-    public MybatisPlusPropertiesCustomizer mybatisPlusPropertiesCustomizer() {
-        return properties -> {
-            GlobalConfig globalConfig = properties.getGlobalConfig();
-            globalConfig.setBanner(false);
-            MybatisConfiguration configuration = new MybatisConfiguration();
-            configuration.setDefaultEnumTypeHandler(MybatisEnumTypeHandler.class);
-            properties.setConfiguration(configuration);
-        };
-    }
 
 
     @Bean

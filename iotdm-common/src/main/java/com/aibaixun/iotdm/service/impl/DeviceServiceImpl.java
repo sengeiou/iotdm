@@ -57,7 +57,7 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
             limit = 50;
         }
         queryWrapper.orderByDesc(Device::getCreateTime);
-        queryWrapper.apply(" LIMIT {0}",limit );
+        queryWrapper.last(" LIMIT "+limit);
         return list(queryWrapper);
     }
 

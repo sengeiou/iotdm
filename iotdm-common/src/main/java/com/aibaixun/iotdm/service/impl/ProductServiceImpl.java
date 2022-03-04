@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 
@@ -39,7 +40,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         var queryWrapper = Wrappers.<Product>lambdaQuery();
         queryWrapper.eq(Product::getTenantId, UserInfoUtil.getTenantIdOfNull());
         if (StringUtils.isNotBlank(productLabel)){
-            queryWrapper.likeLeft(Product::getProductLabel,productLabel);
+            queryWrapper.likeRight(Product::getProductLabel,productLabel);
         }
         queryWrapper.orderByDesc(Product::getCreateTime);
         return page(Page.of(page,pageSize),queryWrapper);
@@ -80,7 +81,13 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     public List<Product> queryProducts(Integer limit) {
         var queryWrapper = Wrappers.<Product>lambdaQuery();
         queryWrapper.eq(Product::getTenantId, UserInfoUtil.getTenantIdOfNull());
+        if (Objects.isNull(limit)){
+            limit = 10;
+        }
+        queryWrapper.last(" LIMIT "+limit);
         queryWrapper.orderByDesc(Product::getCreateTime);
+
+
         return list(queryWrapper);
     }
 }

@@ -26,7 +26,7 @@ public class DeviceGroupServiceImpl extends ServiceImpl<DeviceGroupMapper, Devic
     public List<DeviceGroup> listQueryDeviceGroup(Integer limit) {
         LambdaQueryWrapper<DeviceGroup> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(DeviceGroup::getTenantId, UserInfoUtil.getTenantIdOfNull());
-        queryWrapper.apply(" LIMIT {0}",limit);
+        queryWrapper.last(" LIMIT "+limit);
         return list(queryWrapper);
     }
 

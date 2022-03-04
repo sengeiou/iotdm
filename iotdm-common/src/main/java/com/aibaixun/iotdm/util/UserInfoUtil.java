@@ -23,7 +23,7 @@ public class UserInfoUtil {
         try {
             tenantId = UserContextHolder.getTenantId();
         }catch (BaseException e){
-            logger.info("获取用户信息错误");
+            logger.info("UserInfoUtil-getTenantIdOfNull is error,msg: 获取用户信息错误");
         }
         return tenantId;
     }
@@ -33,10 +33,9 @@ public class UserInfoUtil {
         try {
             userId = UserContextHolder.getUserId();
         }catch (BaseException e){
-            logger.info("获取用户信息错误");
+            logger.info("UserInfoUtil-getUserIdOfNull is error,msg: 获取用户信息错误");
         }
         return userId;
     }
-
 
 }
