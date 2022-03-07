@@ -13,4 +13,19 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IDeviceTraceService extends IService<DeviceTrace> {
 
+    /**
+     * 设备调试
+     * @param deviceId 设备id
+     * @param traceDebug debug
+     * @return 更改结果
+     */
+    Boolean debugDevice (String deviceId,Boolean traceDebug);
+
+    /**
+     * 设备追踪
+     * @param deviceTrace 设备追踪
+     * @return 更改结果
+     */
+    Boolean traceDevice(DeviceTrace deviceTrace);
+
 }

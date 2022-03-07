@@ -1,9 +1,10 @@
 package com.aibaixun.iotdm.service;
 
 import com.aibaixun.iotdm.entity.RuleResource;
-import com.aibaixun.iotdm.enums.ResourceType;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
  * <p>
@@ -20,9 +21,18 @@ public interface IRuleResourceService extends IService<RuleResource> {
      * 分页查询资源
      * @param page 页码
      * @param pageSize 页容
-     * @param resourceType 资源类型
+     * @param resourceLabel 资源名称
      * @return 资源分页
      */
-    Page<RuleResource> pageQueryRuleResource (Integer page, Integer pageSize, ResourceType resourceType);
+    Page<RuleResource> pageQueryRuleResource (Integer page, Integer pageSize, String resourceLabel);
+
+
+    /**
+     * 查询 资源列表
+     * @param limit 限制数目
+     * @param resourceLabel 资源名称
+     * @return 资源列表
+     */
+    List<RuleResource> listQueryRuleResource (Integer limit, String resourceLabel);
 
 }

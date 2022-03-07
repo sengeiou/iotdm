@@ -3,6 +3,7 @@ package com.aibaixun.iotdm.service.impl;
 import com.aibaixun.iotdm.entity.DeviceTrace;
 import com.aibaixun.iotdm.mapper.DeviceTraceMapper;
 import com.aibaixun.iotdm.service.IDeviceTraceService;
+import com.aibaixun.iotdm.util.UserInfoUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
@@ -17,4 +18,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class DeviceTraceServiceImpl extends ServiceImpl<DeviceTraceMapper, DeviceTrace> implements IDeviceTraceService {
 
+    @Override
+    public Boolean debugDevice(String deviceId,Boolean traceDebug) {
+        Long num = baseMapper.updateDeviceDebug(deviceId, traceDebug ? 1 : 0, UserInfoUtil.getUserIdOfNull(), UserInfoUtil.getTenantIdOfNull());
+        return num>0;
+    }
+
+    @Override
+    public Boolean traceDevice(DeviceTrace deviceTrace) {
+        return saveOrUpdate(deviceTrace);
+    }
 }

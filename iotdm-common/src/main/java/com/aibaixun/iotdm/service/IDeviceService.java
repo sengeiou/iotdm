@@ -39,9 +39,10 @@ public interface IDeviceService extends IService<Device> {
      * 查询设备列表
      * @param productId 产品id
      * @param limit 限制数量
+     * @param deviceLabel 设备名称
      * @return 设备列表
      */
-    List<Device> queryDevice(String productId,Integer limit);
+    List<Device> queryDevice(String productId,Integer limit,String deviceLabel);
 
     /**
      * 分页查询设备

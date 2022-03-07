@@ -47,14 +47,15 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
 
 
     @Override
-    public List<Device> queryDevice(String productId, Integer limit) {
+    public List<Device> queryDevice(String productId, Integer limit,String deviceLabel) {
         LambdaQueryWrapper<Device> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.select(Device::getId,Device::getDeviceLabel,Device::getDeviceCode,Device::getDeviceStatus,Device::getVirtual);
+        queryWrapper.eq(Device::getTenantId,UserInfoUtil.getTenantIdOfNull());
         if (StringUtils.isNotBlank(productId)){
             queryWrapper.eq(Device::getProductId,productId);
         }
-        if (Objects.isNull(limit)){
-            limit = 50;
+        if (StringUtils.isNotBlank(deviceLabel)){
+            queryWrapper.likeRight(Device::getDeviceLabel,deviceLabel);
         }
         queryWrapper.orderByDesc(Device::getCreateTime);
         queryWrapper.last(" LIMIT "+limit);

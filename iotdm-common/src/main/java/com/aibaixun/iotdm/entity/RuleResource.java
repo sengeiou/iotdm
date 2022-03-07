@@ -1,11 +1,10 @@
 package com.aibaixun.iotdm.entity;
 
-import com.aibaixun.iotdm.enums.ResourceType;
+
+import com.aibaixun.iotdm.params.BaseResourceConfig;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
-import com.fasterxml.jackson.databind.JsonNode;
-
 import javax.validation.constraints.NotNull;
 
 
@@ -17,26 +16,22 @@ import javax.validation.constraints.NotNull;
  * @author baixun
  * @since 2022-03-03
  */
-@TableName("t_rule_resource")
+@TableName(value = "t_rule_resource",autoResultMap = true)
 public class RuleResource extends BaseEntity {
 
-    /**
-     * 资源类型
-     */
-    @NotNull(message = "资源类型不能为空")
-    private ResourceType resourceType;
 
     /**
-     * 描述
+     *
      */
-    private String description;
+    private String resourceLabel;
+
 
     /**
      * 资源参数
      */
     @NotNull(message = "资源参数不能为空")
     @TableField(typeHandler = JacksonTypeHandler.class)
-    private JsonNode configuration;
+    private BaseResourceConfig configuration;
 
     /**
      * 是否删除
@@ -44,27 +39,21 @@ public class RuleResource extends BaseEntity {
     private Boolean deleted;
 
 
-    public ResourceType getResourceType() {
-        return resourceType;
+    public String getResourceLabel() {
+        return resourceLabel;
     }
 
-    public void setResourceType(ResourceType resourceType) {
-        this.resourceType = resourceType;
+    public void setResourceLabel(String resourceLabel) {
+        this.resourceLabel = resourceLabel;
     }
 
-    public String getDescription() {
-        return description;
-    }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
-    public JsonNode getConfiguration() {
+    public BaseResourceConfig getConfiguration() {
         return configuration;
     }
 
-    public void setConfiguration(JsonNode configuration) {
+    public void setConfiguration(BaseResourceConfig configuration) {
         this.configuration = configuration;
     }
 
@@ -74,5 +63,16 @@ public class RuleResource extends BaseEntity {
 
     public void setDeleted(Boolean deleted) {
         this.deleted = deleted;
+    }
+
+
+
+    @Override
+    public String toString() {
+        return "RuleResource{" +
+                "resourceLabel='" + resourceLabel + '\'' +
+                ", configuration=" + configuration +
+                ", deleted=" + deleted +
+                '}';
     }
 }

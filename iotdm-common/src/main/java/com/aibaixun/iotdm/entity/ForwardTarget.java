@@ -1,11 +1,9 @@
 package com.aibaixun.iotdm.entity;
 
-import com.aibaixun.iotdm.enums.ResourceType;
+import com.aibaixun.iotdm.params.BaseTargetConfig;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
-import com.fasterxml.jackson.databind.JsonNode;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -18,7 +16,7 @@ import javax.validation.constraints.NotNull;
  * @author baixun
  * @since 2022-03-03
  */
-@TableName("t_forward_target")
+@TableName(value = "t_forward_target",autoResultMap = true)
 public class ForwardTarget extends BaseEntity {
 
 
@@ -35,17 +33,11 @@ public class ForwardTarget extends BaseEntity {
     private String ruleResourceId;
 
     /**
-     * 资源类型
-     */
-    @NotNull(message = "资源类型不允许为空")
-    private ResourceType resourceType;
-
-    /**
      * 转发参数
      */
     @TableField(typeHandler = JacksonTypeHandler.class)
     @NotNull(message = "资源配置参数不允许为空")
-    private JsonNode configuration;
+    private BaseTargetConfig configuration;
 
     public String getForwardRuleId() {
         return forwardRuleId;
@@ -63,19 +55,11 @@ public class ForwardTarget extends BaseEntity {
         this.ruleResourceId = ruleResourceId;
     }
 
-    public ResourceType getResourceType() {
-        return resourceType;
-    }
-
-    public void setResourceType(ResourceType resourceType) {
-        this.resourceType = resourceType;
-    }
-
-    public JsonNode getConfiguration() {
+    public BaseTargetConfig getConfiguration() {
         return configuration;
     }
 
-    public void setConfiguration(JsonNode configuration) {
+    public void setConfiguration(BaseTargetConfig configuration) {
         this.configuration = configuration;
     }
 
@@ -85,7 +69,6 @@ public class ForwardTarget extends BaseEntity {
         return "ForwardTarget{" +
                 "forwardRuleId='" + forwardRuleId + '\'' +
                 ", ruleResourceId='" + ruleResourceId + '\'' +
-                ", resourceType=" + resourceType +
                 ", configuration=" + configuration +
                 '}';
     }

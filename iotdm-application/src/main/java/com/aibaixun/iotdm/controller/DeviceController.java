@@ -65,8 +65,13 @@ public class DeviceController extends BaseController{
 
 
     @GetMapping("/list")
-    public JsonResult<List<Device>> listQueryDevice(@RequestParam(required = false) String productId,@RequestParam Integer limit){
-        List<Device> devices = deviceService.queryDevice(productId,limit);
+    public JsonResult<List<Device>> listQueryDevice(@RequestParam(required = false) String productId,
+                                                    @RequestParam(required = false) Integer limit,
+                                                    @RequestParam(required = false) String deviceLabel){
+        if (Objects.isNull(limit)){
+            limit = 50;
+        }
+        List<Device> devices = deviceService.queryDevice(productId,limit,deviceLabel);
         return JsonResult.success(devices);
     }
 

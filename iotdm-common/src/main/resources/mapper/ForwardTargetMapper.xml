@@ -3,6 +3,16 @@
 <mapper namespace="com.aibaixun.iotdm.mapper.ForwardTargetMapper">
 
 
+    <resultMap id="ruleTargetAndResourceMap" type="com.aibaixun.iotdm.support.RuleTargetResource">
+        <id property="id" column="id"/>
+        <result column="forward_rule_id" property="forwardRuleId" />
+        <result column="rule_resource_id" property="ruleResourceId" />
+        <result column="configuration" property="configuration" />
+        <result column="resource_id" property="ruleResource.id" />
+        <result column="resource_label" property="ruleResource.resourceLabel" />
+        <result column="resource_configuration" property="ruleResource.configuration" />
+    </resultMap>
+
     <select id="countTargetByResourceId" resultType="java.lang.Long">
         SELECT
             COUNT( ft.id )
@@ -18,11 +28,12 @@
     <select id="selectRuleTargetAndResourceByRuleId" resultType="com.aibaixun.iotdm.support.RuleTargetResource">
         SELECT
             ft.id,
-            ft.`options`,
+            ft.forward_rule_id,
             ft.rule_resource_id,
-            ft.resource_type,
-            rr.description,
-            rr.`options`
+            ft.configuration,
+            rr.id as resource_id,
+            rr.resource_label,
+            rr.configuration AS resource_configuration
         FROM
             t_forward_target ft
                 LEFT JOIN t_rule_resource rr ON rr.id = ft.rule_resource_id

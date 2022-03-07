@@ -4,7 +4,6 @@ import com.aibaixun.basic.exception.BaseException;
 import com.aibaixun.basic.result.BaseResultCode;
 import com.aibaixun.basic.result.JsonResult;
 import com.aibaixun.iotdm.entity.RuleResource;
-import com.aibaixun.iotdm.enums.ResourceType;
 import com.aibaixun.iotdm.service.IForwardTargetService;
 import com.aibaixun.iotdm.service.IRuleResourceService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -13,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * 规则资源 web api
@@ -33,11 +34,23 @@ public class RuleResourceController extends BaseController{
     @GetMapping("/page")
     public JsonResult<Page<RuleResource>> pageQueryRuleResource (@RequestParam Integer page,
                                                                  @RequestParam Integer pageSize,
-                                                                 @RequestParam(required = false)ResourceType resourceType) throws BaseException {
+                                                                 @RequestParam(required = false)String resourceLabel) throws BaseException {
 
         checkPage(page,pageSize);
-        Page<RuleResource> ruleResourcePage = ruleResourceService.pageQueryRuleResource(page, pageSize, resourceType);
+        Page<RuleResource> ruleResourcePage = ruleResourceService.pageQueryRuleResource(page, pageSize, resourceLabel);
         return JsonResult.success(ruleResourcePage);
+    }
+
+
+
+    @GetMapping("/list")
+    public JsonResult<List<RuleResource>> listQueryRuleResource (@RequestParam(required = false) Integer limit,
+                                                                 @RequestParam(required = false) String resourceLabel) {
+        if (Objects.isNull(limit)){
+            limit =50;
+        }
+        List<RuleResource> ruleResources = ruleResourceService.listQueryRuleResource(limit, resourceLabel);
+        return JsonResult.success(ruleResources);
     }
 
 

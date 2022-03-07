@@ -21,3 +21,10 @@ spring:
         - 172.16.8.3:6379
         - 172.16.8.4:6379
       max-redirects: 3
+bx:
+  swagger:
+    applicationName: IOTdmApplication
+    basePackage: com.aibaixun.iotdm.controller
+    title: IOTdm Web Api
+    path: /**
+    enable: true

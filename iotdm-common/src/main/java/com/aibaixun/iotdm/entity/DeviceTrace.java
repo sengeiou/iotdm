@@ -2,6 +2,8 @@ package com.aibaixun.iotdm.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import javax.validation.constraints.NotBlank;
+
 
 /**
  * <p>
@@ -18,6 +20,7 @@ public class DeviceTrace extends BaseEntity {
     /**
      * 设备id
      */
+    @NotBlank(message = "设备id不允许为空")
     private String deviceId;
 
     /**
