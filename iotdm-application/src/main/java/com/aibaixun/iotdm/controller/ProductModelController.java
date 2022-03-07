@@ -7,6 +7,7 @@ import com.aibaixun.iotdm.entity.Product;
 import com.aibaixun.iotdm.entity.ProductModel;
 import com.aibaixun.iotdm.service.IProductModelService;
 import com.aibaixun.iotdm.service.IProductService;
+import com.aibaixun.iotdm.util.UserInfoUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -44,6 +45,13 @@ public class ProductModelController extends BaseController{
     public JsonResult<Boolean> removeProductModel(@PathVariable String modelId) throws BaseException {
         if (StringUtils.isBlank(modelId)){
             throw new BaseException("产品模型id不允许为空", BaseResultCode.BAD_PARAMS);
+        }
+        ProductModel productModel = productModelService.getById(modelId);
+        if (Objects.isNull(productModel)){
+            throw new BaseException("产品模型id不允许为空", BaseResultCode.BAD_PARAMS);
+        }
+        if (!StringUtils.equals(productModel.getCreator(), UserInfoUtil.getUserIdOfNull())){
+            throw new BaseException("产品模型必须由创建人删除", BaseResultCode.BAD_PARAMS);
         }
         boolean remove = productModelService.removeById(modelId);
         return JsonResult.success(remove);

@@ -6,6 +6,7 @@ import com.aibaixun.basic.result.JsonResult;
 import com.aibaixun.iotdm.entity.RuleResource;
 import com.aibaixun.iotdm.service.IForwardTargetService;
 import com.aibaixun.iotdm.service.IRuleResourceService;
+import com.aibaixun.iotdm.util.UserInfoUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +66,7 @@ public class RuleResourceController extends BaseController{
     public JsonResult<Boolean> updateRuleResource (@RequestBody @Valid RuleResource ruleResource) throws BaseException {
         String id = ruleResource.getId();
         if (StringUtils.isBlank(id)){
-            throw new BaseException("", BaseResultCode.BAD_PARAMS);
+            throw new BaseException("资源id不允许为空", BaseResultCode.BAD_PARAMS);
         }
         boolean update = ruleResourceService.updateById(ruleResource);
         return JsonResult.success(update);
@@ -74,9 +75,17 @@ public class RuleResourceController extends BaseController{
 
     @DeleteMapping("/{id}")
     public JsonResult<Boolean> removeRuleResource (@PathVariable String id) throws BaseException {
+
+        RuleResource ruleResource = ruleResourceService.getById(id);
+        if (Objects.isNull(ruleResource)){
+            throw new BaseException("资源不存在，无法删除",BaseResultCode.GENERAL_ERROR);
+        }
         Long resourceUseNum = forwardTargetService.countTargetByResourceId(id);
         if (resourceUseNum > 0){
-            throw new BaseException("",BaseResultCode.GENERAL_ERROR);
+            throw new BaseException("资源正在被使用，无法删除",BaseResultCode.GENERAL_ERROR);
+        }
+        if(!StringUtils.equals(ruleResource.getCreator(), UserInfoUtil.getUserIdOfNull())){
+            throw new BaseException("资源只能由创建人删除",BaseResultCode.GENERAL_ERROR);
         }
         boolean remove = ruleResourceService.removeById(id);
         return JsonResult.success(remove);

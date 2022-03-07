@@ -12,6 +12,7 @@ import com.aibaixun.iotdm.service.IDeviceService;
 import com.aibaixun.iotdm.service.IProductService;
 import com.aibaixun.iotdm.support.*;
 import com.aibaixun.iotdm.util.Base64Util;
+import com.aibaixun.iotdm.util.UserInfoUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.aibaixun.iotdm.constants.Constants.NULL_STR;
 
@@ -141,9 +143,28 @@ public class DeviceController extends BaseController{
 
 
     @DeleteMapping("/{id}")
-    public JsonResult<Boolean> removeDevice (@PathVariable String id){
+    public JsonResult<Boolean> removeDevice (@PathVariable String id) throws BaseException {
+        Device device = deviceService.getById(id);
+        if (Objects.isNull(device)){
+            throw new BaseException("设备不存在",BaseResultCode.GENERAL_ERROR);
+        }
+        if (!StringUtils.equals(device.getCreator(), UserInfoUtil.getUserIdOfNull())){
+            throw new BaseException("设备必须由创建人删除",BaseResultCode.GENERAL_ERROR);
+        }
         boolean remove = deviceService.removeById(id);
         return JsonResult.success(remove);
+    }
+
+
+    @DeleteMapping
+    public JsonResult<Boolean> removeDevices(@RequestBody String [] ids ) throws BaseException {
+        List<Device> devices = deviceService.listByIds(Arrays.asList(ids));
+        if (Objects.isNull(devices)){
+            throw new BaseException("设备不存在",BaseResultCode.GENERAL_ERROR);
+        }
+        List<String> collectIds = devices.stream().filter(e -> StringUtils.equals(e.getCreator(), UserInfoUtil.getUserIdOfNull())).map(Device::getId).collect(Collectors.toList());
+        boolean batchRemove = deviceService.removeBatchByIds(collectIds);
+        return JsonResult.successWithMsg("只能移除本人创建的设备，已经过滤了非本人创建的设备",batchRemove);
     }
 
 

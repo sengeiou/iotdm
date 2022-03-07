@@ -10,6 +10,7 @@ import com.aibaixun.iotdm.service.IForwardRuleService;
 import com.aibaixun.iotdm.service.IForwardTargetService;
 import com.aibaixun.iotdm.service.IRuleResourceService;
 import com.aibaixun.iotdm.support.RuleTargetResource;
+import com.aibaixun.iotdm.util.UserInfoUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -76,6 +77,20 @@ public class ForwardTargetController extends BaseController{
         if (Objects.isNull(ruleResource)){
             throw new BaseException("转发资源不存在", BaseResultCode.GENERAL_ERROR);
         }
+    }
+
+
+    @DeleteMapping("/{id}")
+    public JsonResult<Boolean> removeForwardTarget(@PathVariable String id) throws BaseException {
+        ForwardTarget forwardTarget = forwardTargetService.getById(id);
+        if (Objects.isNull(forwardTarget)){
+            throw new BaseException("转发目标不存在", BaseResultCode.GENERAL_ERROR);
+        }
+        if (!StringUtils.equals(forwardTarget.getCreator(), UserInfoUtil.getUserIdOfNull())){
+            throw new BaseException("转发目标必须由创建人删除", BaseResultCode.GENERAL_ERROR);
+        }
+        boolean removeById = forwardTargetService.removeById(forwardTarget);
+        return JsonResult.success(removeById);
     }
 
 

@@ -7,7 +7,9 @@ import com.aibaixun.iotdm.entity.ForwardRule;
 import com.aibaixun.iotdm.service.IForwardRuleService;
 import com.aibaixun.iotdm.service.IForwardTargetService;
 import com.aibaixun.iotdm.support.RuleStatusParam;
+import com.aibaixun.iotdm.util.UserInfoUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -84,6 +86,9 @@ public class ForwardRuleController extends BaseController{
         }
         if (forwardRule.getRuleStatus()){
             throw new BaseException("转发规则正在运行，无法停止", BaseResultCode.GENERAL_ERROR);
+        }
+        if (!StringUtils.equals(forwardRule.getCreator(), UserInfoUtil.getUserIdOfNull())){
+            throw new BaseException("转发规则必须由创建人删除", BaseResultCode.GENERAL_ERROR);
         }
         boolean remove = forwardRuleService.removeById(forwardRule);
         return  JsonResult.success(remove);
