@@ -3,10 +3,10 @@ package com.aibaixun.iotdm.controller;
 import com.aibaixun.basic.exception.BaseException;
 import com.aibaixun.basic.result.BaseResultCode;
 import com.aibaixun.basic.result.JsonResult;
-import com.aibaixun.iotdm.entity.DeviceGroup;
+import com.aibaixun.iotdm.entity.DeviceGroupEntity;
 import com.aibaixun.iotdm.service.IDeviceGroupService;
 import com.aibaixun.iotdm.service.IDeviceService;
-import com.aibaixun.iotdm.support.DeviceInfo;
+import com.aibaixun.iotdm.data.DeviceEntityInfo;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -31,27 +31,27 @@ public class DeviceGroupController extends BaseController{
     private IDeviceService deviceService;
 
     @GetMapping("/list")
-    public JsonResult<List<DeviceGroup>> listQueryDeviceGroup (@RequestParam(required = false) Integer limit) {
+    public JsonResult<List<DeviceGroupEntity>> listQueryDeviceGroup (@RequestParam(required = false) Integer limit) {
         if (Objects.isNull(limit)){
             limit = 200;
         }
-        List<DeviceGroup> deviceGroups = deviceGroupService.listQueryDeviceGroup(limit);
-        return JsonResult.success(deviceGroups);
+        List<DeviceGroupEntity> deviceGroupEntities = deviceGroupService.listQueryDeviceGroup(limit);
+        return JsonResult.success(deviceGroupEntities);
     }
 
 
 
     @GetMapping("/{id}")
-    public JsonResult<DeviceGroup> queryDeviceGroup (@PathVariable String id){
-        DeviceGroup deviceGroup = deviceGroupService.getById(id);
-        return JsonResult.success(deviceGroup);
+    public JsonResult<DeviceGroupEntity> queryDeviceGroup (@PathVariable String id){
+        DeviceGroupEntity deviceGroupEntity = deviceGroupService.getById(id);
+        return JsonResult.success(deviceGroupEntity);
     }
 
 
     @DeleteMapping("/{id}")
     public JsonResult<Boolean> removeDeviceGroup (@PathVariable String id) throws BaseException {
-        DeviceGroup deviceGroup = deviceGroupService.getById(id);
-        if (Objects.isNull(deviceGroup)){
+        DeviceGroupEntity deviceGroupEntity = deviceGroupService.getById(id);
+        if (Objects.isNull(deviceGroupEntity)){
             throw new BaseException("设备分组不存在无法删除", BaseResultCode.BAD_PARAMS);
         }
         Long countSubGroup = deviceGroupService.countSubGroup(id);
@@ -64,23 +64,23 @@ public class DeviceGroupController extends BaseController{
 
 
     @PostMapping
-    public JsonResult<Boolean> createDeviceGroup (@RequestBody @Valid DeviceGroup deviceGroup){
-        boolean save = deviceGroupService.save(deviceGroup);
+    public JsonResult<Boolean> createDeviceGroup (@RequestBody @Valid DeviceGroupEntity deviceGroupEntity){
+        boolean save = deviceGroupService.save(deviceGroupEntity);
         return JsonResult.success(save);
     }
 
 
 
     @GetMapping("/devices")
-    public JsonResult<Page<DeviceInfo>> pageQueryDeviceByGroup (@RequestParam Integer  page,
-                                                                @RequestParam Integer pageSize,
-                                                                @RequestParam(required = false) String groupId,
-                                                                @RequestParam(required = false) String productId,
-                                                                @RequestParam(required = false) String deviceCode,
-                                                                @RequestParam(required = false) String deviceLabel) throws BaseException {
+    public JsonResult<Page<DeviceEntityInfo>> pageQueryDeviceByGroup (@RequestParam Integer  page,
+                                                                      @RequestParam Integer pageSize,
+                                                                      @RequestParam(required = false) String groupId,
+                                                                      @RequestParam(required = false) String productId,
+                                                                      @RequestParam(required = false) String deviceCode,
+                                                                      @RequestParam(required = false) String deviceLabel) throws BaseException {
 
         checkPage(page,pageSize);
-        Page<DeviceInfo> deviceInfoPage = deviceService.pageQueryDeviceByGroup(page, pageSize, groupId, productId, deviceCode, deviceLabel);
+        Page<DeviceEntityInfo> deviceInfoPage = deviceService.pageQueryDeviceByGroup(page, pageSize, groupId, productId, deviceCode, deviceLabel);
         return JsonResult.success(deviceInfoPage);
     }
 

@@ -3,10 +3,10 @@ package com.aibaixun.iotdm.controller;
 import com.aibaixun.basic.exception.BaseException;
 import com.aibaixun.basic.result.BaseResultCode;
 import com.aibaixun.basic.result.JsonResult;
-import com.aibaixun.iotdm.entity.Device;
+import com.aibaixun.iotdm.entity.DeviceEntity;
 import com.aibaixun.iotdm.service.IDevicePropertyReportService;
 import com.aibaixun.iotdm.service.IDeviceService;
-import com.aibaixun.iotdm.support.DevicePropertyInfo;
+import com.aibaixun.iotdm.data.DevicePropertyInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,8 +36,8 @@ public class DevicePropertyReportController extends BaseController{
         if (StringUtils.isBlank(deviceId)){
             throw new BaseException("设备id不允许为空", BaseResultCode.BAD_PARAMS);
         }
-        Device device = deviceService.getById(deviceId);
-        if (Objects.isNull(device)){
+        DeviceEntity deviceEntity = deviceService.getById(deviceId);
+        if (Objects.isNull(deviceEntity)){
             throw new BaseException("设备已经被删除",BaseResultCode.BAD_PARAMS);
         }
         List<DevicePropertyInfo> devicePropertyInfos = devicePropertyReportService.queryLatestDeviceProperty(deviceId);
@@ -50,8 +50,8 @@ public class DevicePropertyReportController extends BaseController{
         if (StringUtils.isBlank(deviceId)){
             throw new BaseException("设备id不允许为空", BaseResultCode.BAD_PARAMS);
         }
-        Device device = deviceService.getById(deviceId);
-        if (Objects.isNull(device)){
+        DeviceEntity deviceEntity = deviceService.getById(deviceId);
+        if (Objects.isNull(deviceEntity)){
             throw new BaseException("设备已经被删除",BaseResultCode.BAD_PARAMS);
         }
         List<DevicePropertyInfo> devicePropertyInfos = devicePropertyReportService.queryShadowDeviceProperty(deviceId);

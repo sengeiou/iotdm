@@ -3,9 +3,9 @@ package com.aibaixun.iotdm.controller;
 import com.aibaixun.basic.exception.BaseException;
 import com.aibaixun.basic.result.BaseResultCode;
 import com.aibaixun.basic.result.JsonResult;
-import com.aibaixun.iotdm.entity.Device;
-import com.aibaixun.iotdm.entity.DeviceTrace;
-import com.aibaixun.iotdm.entity.MessageTrace;
+import com.aibaixun.iotdm.entity.DeviceEntity;
+import com.aibaixun.iotdm.entity.DeviceTraceEntity;
+import com.aibaixun.iotdm.entity.MessageTraceEntity;
 import com.aibaixun.iotdm.service.IDeviceService;
 import com.aibaixun.iotdm.service.IDeviceTraceService;
 import com.aibaixun.iotdm.service.IMessageTraceService;
@@ -34,11 +34,11 @@ public class DeviceTraceController extends BaseController{
     private IMessageTraceService messageTraceService;
 
     @PostMapping("/debug")
-    public JsonResult<Boolean>  debugDevice(@RequestBody @Valid DeviceTrace deviceTrace) throws BaseException {
-        String deviceId = deviceTrace.getDeviceId();
-        Boolean traceDebug = deviceTrace.getTraceDebug();
-        Device device = deviceService.getById(deviceId);
-        if (Objects.isNull(device)){
+    public JsonResult<Boolean>  debugDevice(@RequestBody @Valid DeviceTraceEntity deviceTraceEntity) throws BaseException {
+        String deviceId = deviceTraceEntity.getDeviceId();
+        Boolean traceDebug = deviceTraceEntity.getTraceDebug();
+        DeviceEntity deviceEntity = deviceService.getById(deviceId);
+        if (Objects.isNull(deviceEntity)){
             throw new BaseException("设备信息不存在，无法在线调试", BaseResultCode.GENERAL_ERROR);
         }
         Boolean aBoolean = deviceTraceService.debugDevice(deviceId, traceDebug);
@@ -46,13 +46,13 @@ public class DeviceTraceController extends BaseController{
     }
 
     @PostMapping
-    public JsonResult<Boolean> traceDevice(@RequestBody @Valid DeviceTrace deviceTrace) throws BaseException {
-        String deviceId = deviceTrace.getDeviceId();
-        Device device = deviceService.getById(deviceId);
-        if (Objects.isNull(device)){
+    public JsonResult<Boolean> traceDevice(@RequestBody @Valid DeviceTraceEntity deviceTraceEntity) throws BaseException {
+        String deviceId = deviceTraceEntity.getDeviceId();
+        DeviceEntity deviceEntity = deviceService.getById(deviceId);
+        if (Objects.isNull(deviceEntity)){
             throw new BaseException("设备信息不存在，无法在线调试", BaseResultCode.GENERAL_ERROR);
         }
-        Boolean aBoolean = deviceTraceService.traceDevice(deviceTrace);
+        Boolean aBoolean = deviceTraceService.traceDevice(deviceTraceEntity);
         return JsonResult.success(aBoolean);
     }
 
@@ -60,10 +60,10 @@ public class DeviceTraceController extends BaseController{
 
 
     @GetMapping("/{deviceId}/{ts}")
-    public JsonResult<List<MessageTrace>> getDeviceTrace (@PathVariable String deviceId,
-                                                          @PathVariable Long ts){
-        List<MessageTrace> messageTraces = messageTraceService.queryMessageTrace(deviceId, ts);
-        return JsonResult.success(messageTraces);
+    public JsonResult<List<MessageTraceEntity>> getDeviceTrace (@PathVariable String deviceId,
+                                                                @PathVariable Long ts){
+        List<MessageTraceEntity> messageTraceEntities = messageTraceService.queryMessageTrace(deviceId, ts);
+        return JsonResult.success(messageTraceEntities);
     }
 
 

@@ -4,9 +4,9 @@ package com.aibaixun.iotdm.controller;
 import com.aibaixun.basic.exception.BaseException;
 import com.aibaixun.basic.result.BaseResultCode;
 import com.aibaixun.basic.result.JsonResult;
-import com.aibaixun.iotdm.entity.Product;
+import com.aibaixun.iotdm.entity.ProductEntity;
 import com.aibaixun.iotdm.service.IProductService;
-import com.aibaixun.iotdm.support.ProductInfo;
+import com.aibaixun.iotdm.data.ProductEntityInfo;
 import com.aibaixun.iotdm.util.UserInfoUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.commons.lang3.StringUtils;
@@ -34,44 +34,44 @@ public class ProductController extends BaseController{
     }
 
     @GetMapping("/page")
-    public JsonResult<Page<Product>> pageQueryProducts(@RequestParam Integer page,
-                                                       @RequestParam Integer pageSize,
-                                                       @RequestParam(required = false) String productLabel) throws BaseException {
+    public JsonResult<Page<ProductEntity>> pageQueryProducts(@RequestParam Integer page,
+                                                             @RequestParam Integer pageSize,
+                                                             @RequestParam(required = false) String productLabel) throws BaseException {
         checkPage(page,pageSize);
-        Page<Product> productPage = productService.pageQueryByLabel(page, pageSize, productLabel);
+        Page<ProductEntity> productPage = productService.pageQueryByLabel(page, pageSize, productLabel);
         return JsonResult.success(productPage);
     }
 
 
 
     @GetMapping("/{id}")
-    public JsonResult<ProductInfo> queryById(@PathVariable String id){
-        ProductInfo productInfo = productService.queryProductInfoById(id);
+    public JsonResult<ProductEntityInfo> queryById(@PathVariable String id){
+        ProductEntityInfo productInfo = productService.queryProductInfoById(id);
         return JsonResult.success(productInfo);
     }
 
 
     @GetMapping("/list")
-    public JsonResult<List<Product>> listQueryProducts (@RequestParam(required = false) Integer limit) {
-        List<Product> products = productService.queryProducts(limit);
-        return JsonResult.success(products);
+    public JsonResult<List<ProductEntity>> listQueryProducts (@RequestParam(required = false) Integer limit) {
+        List<ProductEntity> productEntities = productService.queryProducts(limit);
+        return JsonResult.success(productEntities);
     }
 
 
     @PostMapping
-    public JsonResult<Boolean> createProduct(@RequestBody @Valid Product product) throws BaseException {
-        String productLabel = product.getProductLabel();
-        Product checkProduct = productService.queryProductByLabel(productLabel);
-        if (Objects.nonNull(checkProduct)){
+    public JsonResult<Boolean> createProduct(@RequestBody @Valid ProductEntity productEntity) throws BaseException {
+        String productLabel = productEntity.getProductLabel();
+        ProductEntity checkProductEntity = productService.queryProductByLabel(productLabel);
+        if (Objects.nonNull(checkProductEntity)){
             throw new BaseException("当前租户下已有同名产品", BaseResultCode.BAD_PARAMS);
         }
-        boolean saveResult = productService.save(product);
+        boolean saveResult = productService.save(productEntity);
         return JsonResult.success(saveResult);
     }
 
     @DeleteMapping("/{id}")
     public JsonResult<Boolean> removeProduct (@PathVariable String id) throws BaseException {
-        Product pr = productService.getById(id);
+        ProductEntity pr = productService.getById(id);
         if (Objects.isNull(pr)){
             throw new BaseException("产品不存在无法删除",BaseResultCode.GENERAL_ERROR);
         }

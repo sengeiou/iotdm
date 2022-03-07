@@ -1,0 +1,89 @@
+package com.aibaixun.iotdm.service.impl;
+
+import com.aibaixun.iotdm.entity.DeviceEntity;
+import com.aibaixun.iotdm.enums.DeviceStatus;
+import com.aibaixun.iotdm.mapper.DeviceMapper;
+import com.aibaixun.iotdm.service.IDeviceService;
+import com.aibaixun.iotdm.data.DeviceEntityInfo;
+import com.aibaixun.iotdm.data.KvData;
+import com.aibaixun.iotdm.util.UserInfoUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+/**
+ * <p>
+ * 设备表 服务实现类
+ * </p>
+ *
+ * @author baixun
+ * @since 2022-03-03
+ */
+@Service
+public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, DeviceEntity> implements IDeviceService {
+
+
+    @Override
+    public DeviceEntity queryById(String id) {
+        DeviceEntity deviceEntity = getById(id);
+        deviceEntity.setTenantId(null);
+        deviceEntity.setLastConnectTs(null);
+        deviceEntity.setCreator(null);
+        return deviceEntity;
+    }
+
+    @Override
+    public List<KvData<Long>> countDevice(String productId) {
+        String tenantId = UserInfoUtil.getTenantIdOfNull();
+        return baseMapper.countDevice(productId, tenantId);
+    }
+
+
+    @Override
+    public List<DeviceEntity> queryDevice(String productId, Integer limit, String deviceLabel) {
+        LambdaQueryWrapper<DeviceEntity> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.select(DeviceEntity::getId, DeviceEntity::getDeviceLabel, DeviceEntity::getDeviceCode, DeviceEntity::getDeviceStatus, DeviceEntity::getVirtual);
+        queryWrapper.eq(DeviceEntity::getTenantId,UserInfoUtil.getTenantIdOfNull());
+        if (StringUtils.isNotBlank(productId)){
+            queryWrapper.eq(DeviceEntity::getProductId,productId);
+        }
+        if (StringUtils.isNotBlank(deviceLabel)){
+            queryWrapper.likeRight(DeviceEntity::getDeviceLabel,deviceLabel);
+        }
+        queryWrapper.orderByDesc(DeviceEntity::getCreateTime);
+        queryWrapper.last(" LIMIT "+limit);
+        return list(queryWrapper);
+    }
+
+    @Override
+    public Page<DeviceEntityInfo> pageQueryDeviceInfos(Integer page, Integer pageSize, DeviceStatus deviceStatus, String searchKey, String searchValue) {
+        return baseMapper.selectPageDeviceInfo(Page.of(page,pageSize),UserInfoUtil.getTenantIdOfNull(),deviceStatus,searchKey,searchValue);
+    }
+
+
+    @Override
+    public Boolean updateDeviceLabel(String deviceId, String deviceLabel) {
+        LambdaUpdateWrapper<DeviceEntity> updateWrapper = Wrappers.lambdaUpdate();
+        updateWrapper.set(DeviceEntity::getDeviceLabel,deviceLabel);
+        updateWrapper.eq(DeviceEntity::getId,deviceId);
+        return update(updateWrapper);
+    }
+
+    @Override
+    public Page<DeviceEntityInfo> pageQuerySubDeviceInfos(Integer page, Integer pageSize, String gateWayId) {
+        return baseMapper.selectPageSubDeviceInfo(Page.of(page,pageSize),gateWayId);
+    }
+
+
+    @Override
+    public Page<DeviceEntityInfo> pageQueryDeviceByGroup(Integer page, Integer pageSize, String groupId, String productId, String deviceCode, String deviceLabel) {
+        String tenantId = UserInfoUtil.getTenantIdOfNull();
+        return baseMapper.selectPageDeviceInfoByGroup(Page.of(page,pageSize),tenantId,productId,groupId,deviceCode,deviceLabel);
+    }
+}

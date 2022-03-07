@@ -3,9 +3,9 @@ package com.aibaixun.iotdm.controller;
 import com.aibaixun.basic.exception.BaseException;
 import com.aibaixun.basic.result.BaseResultCode;
 import com.aibaixun.basic.result.JsonResult;
-import com.aibaixun.iotdm.entity.ProductPluginJs;
+import com.aibaixun.iotdm.entity.ProductPluginJsEntity;
 import com.aibaixun.iotdm.service.IProductPluginJsService;
-import com.aibaixun.iotdm.support.JsDebugParam;
+import com.aibaixun.iotdm.data.JsDebugParam;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,23 +24,23 @@ public class ProductPluginJsController extends BaseController{
     private IProductPluginJsService productPluginJsService;
 
     @GetMapping
-    public JsonResult<ProductPluginJs> queryJsPlugin (@RequestParam String productId) throws BaseException {
+    public JsonResult<ProductPluginJsEntity> queryJsPlugin (@RequestParam String productId) throws BaseException {
         if (StringUtils.isBlank(productId)){
             throw new BaseException("产品id不存在", BaseResultCode.BAD_PARAMS);
         }
-        ProductPluginJs pluginJs = productPluginJsService.queryByProductPluginJs(productId);
+        ProductPluginJsEntity pluginJs = productPluginJsService.queryByProductPluginJs(productId);
         return JsonResult.success(pluginJs);
     }
 
 
     @PostMapping
-    public JsonResult<Boolean> createOrUpdateJsPlugin (@RequestBody @Valid ProductPluginJs productPluginJs){
-        String id = productPluginJs.getId();
+    public JsonResult<Boolean> createOrUpdateJsPlugin (@RequestBody @Valid ProductPluginJsEntity productPluginJsEntity){
+        String id = productPluginJsEntity.getId();
         boolean result ;
         if (StringUtils.isBlank(id)){
-            result = productPluginJsService.save(productPluginJs);
+            result = productPluginJsService.save(productPluginJsEntity);
         }else {
-            result = productPluginJsService.updateById(productPluginJs);
+            result = productPluginJsService.updateById(productPluginJsEntity);
         }
         return JsonResult.success(result);
     }

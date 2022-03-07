@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aibaixun.iotdm.mapper.DevicePropertyReportMapper">
+
+    <select id="selectLatestDeviceProperty" resultType="com.aibaixun.iotdm.data.DevicePropertyInfo">
+        SELECT
+            DISTINCT pr.property_id,
+                     pr.device_id,
+                     pr.property_value,
+                     pr.ts ,
+                     mp.property_label,
+                     pm.model_label
+        FROM
+            t_device_property_report pr
+                LEFT JOIN t_model_property mp ON mp.id = pr.property_id ,t_product_model pm
+        WHERE
+            pr.device_id = #{deviceId}
+          AND
+            pm.product_id = mp.product_model_id
+    </select>
+
+
+    <select id="selectShadowDeviceProperty" resultType="com.aibaixun.iotdm.data.DevicePropertyInfo">
+        SELECT
+            pr.property_id,
+            pr.device_id,
+            pr.property_value,
+            pr.ts,
+            mp.property_label,
+            pm.model_label
+        FROM
+            t_product_model pm
+                LEFT JOIN t_model_property mp ON mp.product_model_id = pm.id
+                LEFT JOIN t_device_property_report pr ON mp.id = pr.property_id
+        WHERE
+            pr.device_id = #{deviceId}
+
+          AND pm.deleted = 0
+    </select>
+</mapper>

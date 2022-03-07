@@ -3,10 +3,10 @@ package com.aibaixun.iotdm.controller;
 import com.aibaixun.basic.exception.BaseException;
 import com.aibaixun.basic.result.BaseResultCode;
 import com.aibaixun.basic.result.JsonResult;
-import com.aibaixun.iotdm.entity.ForwardRule;
+import com.aibaixun.iotdm.entity.ForwardRuleEntity;
 import com.aibaixun.iotdm.service.IForwardRuleService;
 import com.aibaixun.iotdm.service.IForwardTargetService;
-import com.aibaixun.iotdm.support.RuleStatusParam;
+import com.aibaixun.iotdm.data.RuleStatusParam;
 import com.aibaixun.iotdm.util.UserInfoUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.commons.lang3.StringUtils;
@@ -33,26 +33,26 @@ public class ForwardRuleController extends BaseController{
     private IForwardTargetService forwardTargetService;
 
     @GetMapping("/page")
-    public JsonResult<Page<ForwardRule>> pageQueryForwardRule (@RequestParam Integer page,
-                                                   @RequestParam Integer pageSize,
-                                                   @RequestParam(required = false) String ruleLabel) {
-        Page<ForwardRule> forwardRulePage = forwardRuleService.pageQueryForwardRule(page, pageSize, ruleLabel);
+    public JsonResult<Page<ForwardRuleEntity>> pageQueryForwardRule (@RequestParam Integer page,
+                                                                     @RequestParam Integer pageSize,
+                                                                     @RequestParam(required = false) String ruleLabel) {
+        Page<ForwardRuleEntity> forwardRulePage = forwardRuleService.pageQueryForwardRule(page, pageSize, ruleLabel);
         return JsonResult.success(forwardRulePage);
     }
 
 
 
     @GetMapping("/{id}")
-    public JsonResult<ForwardRule> queryPyId (@PathVariable String id){
-        ForwardRule forwardRule = forwardRuleService.getById(id);
-        return JsonResult.success(forwardRule);
+    public JsonResult<ForwardRuleEntity> queryPyId (@PathVariable String id){
+        ForwardRuleEntity forwardRuleEntity = forwardRuleService.getById(id);
+        return JsonResult.success(forwardRuleEntity);
     }
 
 
     @PostMapping
-    public JsonResult<String> createForwardRule (@RequestBody @Valid ForwardRule forwardRule) {
-        forwardRuleService.save(forwardRule);
-        String id = forwardRule.getId();
+    public JsonResult<String> createForwardRule (@RequestBody @Valid ForwardRuleEntity forwardRuleEntity) {
+        forwardRuleService.save(forwardRuleEntity);
+        String id = forwardRuleEntity.getId();
         return JsonResult.success(id);
     }
 
@@ -63,11 +63,11 @@ public class ForwardRuleController extends BaseController{
 
         Boolean status = statusParam.getStatus();
         String forwardRuleId = statusParam.getForwardRuleId();
-        ForwardRule forwardRule = forwardRuleService.getById(forwardRuleId);
-        if (Objects.isNull(forwardRule)){
+        ForwardRuleEntity forwardRuleEntity = forwardRuleService.getById(forwardRuleId);
+        if (Objects.isNull(forwardRuleEntity)){
             throw new BaseException("转发规则不存在", BaseResultCode.GENERAL_ERROR);
         }
-        if (Objects.equals(status,forwardRule.getRuleStatus())){
+        if (Objects.equals(status, forwardRuleEntity.getRuleStatus())){
             throw new BaseException("转发规则状态与当前状态一致，不需要更改", BaseResultCode.GENERAL_ERROR);
         }
         if (status && forwardTargetService.countTargetByRuleId(forwardRuleId)<=0){
@@ -80,17 +80,17 @@ public class ForwardRuleController extends BaseController{
 
     @DeleteMapping("/{id}")
     public JsonResult<Boolean> removeForwardRule (@PathVariable String id) throws BaseException {
-        ForwardRule forwardRule = forwardRuleService.getById(id);
-        if (Objects.isNull(forwardRule)){
+        ForwardRuleEntity forwardRuleEntity = forwardRuleService.getById(id);
+        if (Objects.isNull(forwardRuleEntity)){
             throw new BaseException("转发规则不存在", BaseResultCode.GENERAL_ERROR);
         }
-        if (forwardRule.getRuleStatus()){
+        if (forwardRuleEntity.getRuleStatus()){
             throw new BaseException("转发规则正在运行，无法停止", BaseResultCode.GENERAL_ERROR);
         }
-        if (!StringUtils.equals(forwardRule.getCreator(), UserInfoUtil.getUserIdOfNull())){
+        if (!StringUtils.equals(forwardRuleEntity.getCreator(), UserInfoUtil.getUserIdOfNull())){
             throw new BaseException("转发规则必须由创建人删除", BaseResultCode.GENERAL_ERROR);
         }
-        boolean remove = forwardRuleService.removeById(forwardRule);
+        boolean remove = forwardRuleService.removeById(forwardRuleEntity);
         return  JsonResult.success(remove);
     }
 
