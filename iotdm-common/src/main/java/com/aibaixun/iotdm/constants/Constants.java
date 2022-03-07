@@ -1,4 +1,4 @@
-package com.aibaixun.iotdm;
+package com.aibaixun.iotdm.constants;
 
 /**
  * 常量信息

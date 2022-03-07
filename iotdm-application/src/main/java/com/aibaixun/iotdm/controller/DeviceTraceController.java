@@ -8,6 +8,7 @@ import com.aibaixun.iotdm.entity.DeviceTrace;
 import com.aibaixun.iotdm.entity.MessageTrace;
 import com.aibaixun.iotdm.service.IDeviceService;
 import com.aibaixun.iotdm.service.IDeviceTraceService;
+import com.aibaixun.iotdm.service.IMessageTraceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +30,8 @@ public class DeviceTraceController extends BaseController{
 
 
     private IDeviceService deviceService;
+
+    private IMessageTraceService messageTraceService;
 
     @PostMapping("/debug")
     public JsonResult<Boolean>  debugDevice(@RequestBody @Valid DeviceTrace deviceTrace) throws BaseException {
@@ -71,5 +74,10 @@ public class DeviceTraceController extends BaseController{
     @Autowired
     public void setDeviceService(IDeviceService deviceService) {
         this.deviceService = deviceService;
+    }
+
+    @Autowired
+    public void setMessageTraceService(IMessageTraceService messageTraceService) {
+        this.messageTraceService = messageTraceService;
     }
 }

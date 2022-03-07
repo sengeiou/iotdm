@@ -3,7 +3,7 @@ package com.aibaixun.iotdm.controller;
 import com.aibaixun.basic.exception.BaseException;
 import com.aibaixun.basic.result.BaseResultCode;
 
-import static com.aibaixun.iotdm.Constants.QUERY_PAGE_MAX;
+import static com.aibaixun.iotdm.constants.Constants.QUERY_PAGE_MAX;
 
 /**
  * @author wangxiao@aibaixun.com

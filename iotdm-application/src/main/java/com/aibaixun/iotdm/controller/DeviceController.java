@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.*;
 
-import static com.aibaixun.iotdm.Constants.NULL_STR;
+import static com.aibaixun.iotdm.constants.Constants.NULL_STR;
 
 /**
  * 设备 Web Api
