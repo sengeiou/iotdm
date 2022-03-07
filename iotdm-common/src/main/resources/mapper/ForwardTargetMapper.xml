@@ -2,4 +2,32 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.aibaixun.iotdm.mapper.ForwardTargetMapper">
 
+
+    <select id="countTargetByResourceId" resultType="java.lang.Long">
+        SELECT
+            COUNT( ft.id )
+        FROM
+            t_forward_target ft
+        LEFT JOIN t_forward_rule fr ON fr.id = ft.forward_rule_id
+        WHERE
+            ft.rule_resource_id = #{resourceId}
+          AND fr.deleted = 0
+    </select>
+
+
+    <select id="selectRuleTargetAndResourceByRuleId" resultType="com.aibaixun.iotdm.support.RuleTargetResource">
+        SELECT
+            ft.id,
+            ft.`options`,
+            ft.rule_resource_id,
+            ft.resource_type,
+            rr.description,
+            rr.`options`
+        FROM
+            t_forward_target ft
+                LEFT JOIN t_rule_resource rr ON rr.id = ft.rule_resource_id
+        WHERE
+            ft.forward_rule_id = #{ruleId}
+    </select>
+
 </mapper>

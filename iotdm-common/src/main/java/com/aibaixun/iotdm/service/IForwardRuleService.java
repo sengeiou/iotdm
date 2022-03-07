@@ -1,6 +1,7 @@
 package com.aibaixun.iotdm.service;
 
 import com.aibaixun.iotdm.entity.ForwardRule;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -13,4 +14,24 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IForwardRuleService extends IService<ForwardRule> {
 
+
+    /**
+     * 分页查询转发 规则
+     * @param page 页码
+     * @param pageSize 页容
+     * @param ruleLabel 规则名称
+     * @return 转发规则
+     */
+    Page<ForwardRule> pageQueryForwardRule(Integer page,Integer pageSize,String ruleLabel);
+
+
+
+
+    /**
+     * 更改 规则状态
+     * @param id id
+     * @param status 状态
+     * @return 修改标识
+     */
+    Boolean updateRuleStatus (String id,Boolean status);
 }

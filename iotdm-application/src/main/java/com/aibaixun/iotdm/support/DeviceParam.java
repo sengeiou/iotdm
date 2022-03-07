@@ -79,5 +79,15 @@ public class DeviceParam {
         this.confirmSecret = confirmSecret;
     }
 
-
+    @Override
+    public String toString() {
+        return "DeviceParam{" +
+                "productId='" + productId + '\'' +
+                ", deviceCode='" + deviceCode + '\'' +
+                ", deviceLabel='" + deviceLabel + '\'' +
+                ", authType=" + authType +
+                ", deviceSecret='" + deviceSecret + '\'' +
+                ", confirmSecret='" + confirmSecret + '\'' +
+                '}';
+    }
 }

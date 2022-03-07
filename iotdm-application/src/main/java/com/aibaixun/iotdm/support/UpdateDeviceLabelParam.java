@@ -31,4 +31,12 @@ public class UpdateDeviceLabelParam {
     public void setDeviceLabel(String deviceLabel) {
         this.deviceLabel = deviceLabel;
     }
+
+    @Override
+    public String toString() {
+        return "UpdateDeviceLabelParam{" +
+                "deviceId='" + deviceId + '\'' +
+                ", deviceLabel='" + deviceLabel + '\'' +
+                '}';
+    }
 }

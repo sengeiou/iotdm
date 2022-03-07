@@ -1,7 +1,12 @@
 package com.aibaixun.iotdm.entity;
 
 import com.aibaixun.iotdm.enums.ResourceType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
+import com.fasterxml.jackson.databind.JsonNode;
+
+import javax.validation.constraints.NotNull;
 
 
 /**
@@ -18,6 +23,7 @@ public class RuleResource extends BaseEntity {
     /**
      * 资源类型
      */
+    @NotNull(message = "资源类型不能为空")
     private ResourceType resourceType;
 
     /**
@@ -28,7 +34,9 @@ public class RuleResource extends BaseEntity {
     /**
      * 资源参数
      */
-    private String options;
+    @NotNull(message = "资源参数不能为空")
+    @TableField(typeHandler = JacksonTypeHandler.class)
+    private JsonNode configuration;
 
     /**
      * 是否删除
@@ -52,12 +60,12 @@ public class RuleResource extends BaseEntity {
         this.description = description;
     }
 
-    public String getOptions() {
-        return options;
+    public JsonNode getConfiguration() {
+        return configuration;
     }
 
-    public void setOptions(String options) {
-        this.options = options;
+    public void setConfiguration(JsonNode configuration) {
+        this.configuration = configuration;
     }
 
     public Boolean getDeleted() {
@@ -66,15 +74,5 @@ public class RuleResource extends BaseEntity {
 
     public void setDeleted(Boolean deleted) {
         this.deleted = deleted;
-    }
-
-    @Override
-    public String toString() {
-        return "RuleResource{" +
-                "resourceType='" + resourceType + '\'' +
-                ", description='" + description + '\'' +
-                ", options='" + options + '\'' +
-                ", deleted=" + deleted +
-                '}';
     }
 }

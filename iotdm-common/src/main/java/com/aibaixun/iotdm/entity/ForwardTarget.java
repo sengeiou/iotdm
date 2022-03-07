@@ -1,7 +1,13 @@
 package com.aibaixun.iotdm.entity;
 
 import com.aibaixun.iotdm.enums.ResourceType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
+import com.fasterxml.jackson.databind.JsonNode;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 
 /**
@@ -19,22 +25,27 @@ public class ForwardTarget extends BaseEntity {
     /**
      * 转发规则id
      */
+    @NotBlank(message = "转发规则id不允许为空")
     private String forwardRuleId;
 
     /**
      * 转发资源id
      */
+    @NotBlank(message = "转发规则资源不允许为空")
     private String ruleResourceId;
 
     /**
      * 资源类型
      */
+    @NotNull(message = "资源类型不允许为空")
     private ResourceType resourceType;
 
     /**
      * 转发参数
      */
-    private String options;
+    @TableField(typeHandler = JacksonTypeHandler.class)
+    @NotNull(message = "资源配置参数不允许为空")
+    private JsonNode configuration;
 
     public String getForwardRuleId() {
         return forwardRuleId;
@@ -60,21 +71,22 @@ public class ForwardTarget extends BaseEntity {
         this.resourceType = resourceType;
     }
 
-    public String getOptions() {
-        return options;
+    public JsonNode getConfiguration() {
+        return configuration;
     }
 
-    public void setOptions(String options) {
-        this.options = options;
+    public void setConfiguration(JsonNode configuration) {
+        this.configuration = configuration;
     }
+
 
     @Override
     public String toString() {
         return "ForwardTarget{" +
                 "forwardRuleId='" + forwardRuleId + '\'' +
                 ", ruleResourceId='" + ruleResourceId + '\'' +
-                ", resourceType='" + resourceType + '\'' +
-                ", options='" + options + '\'' +
+                ", resourceType=" + resourceType +
+                ", configuration=" + configuration +
                 '}';
     }
 }

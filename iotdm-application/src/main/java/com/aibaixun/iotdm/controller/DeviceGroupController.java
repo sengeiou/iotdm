@@ -56,7 +56,7 @@ public class DeviceGroupController extends BaseController{
         }
         Long countSubGroup = deviceGroupService.countSubGroup(id);
         if (countSubGroup>0){
-            throw new BaseException("该群组下面包含子群组,请删除后再重试", BaseResultCode.BAD_PARAMS);
+            throw new BaseException("该群组下面包含子群组,请删除后再重试", BaseResultCode.GENERAL_ERROR);
         }
         boolean b = deviceGroupService.removeById(id);
         return JsonResult.success(b);
@@ -91,5 +91,10 @@ public class DeviceGroupController extends BaseController{
     @Autowired
     public void setDeviceGroupService(IDeviceGroupService deviceGroupService) {
         this.deviceGroupService = deviceGroupService;
+    }
+
+    @Autowired
+    public void setDeviceService(IDeviceService deviceService) {
+        this.deviceService = deviceService;
     }
 }

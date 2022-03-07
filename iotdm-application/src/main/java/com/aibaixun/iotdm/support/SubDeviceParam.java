@@ -53,5 +53,13 @@ public class SubDeviceParam {
     }
 
 
-
+    @Override
+    public String toString() {
+        return "SubDeviceParam{" +
+                "gatewayId='" + gatewayId + '\'' +
+                ", deviceLabel='" + deviceLabel + '\'' +
+                ", productId='" + productId + '\'' +
+                ", deviceCode='" + deviceCode + '\'' +
+                '}';
+    }
 }

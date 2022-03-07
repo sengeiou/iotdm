@@ -41,4 +41,14 @@ public class JsDebugParam {
     public void setTopic(String topic) {
         this.topic = topic;
     }
+
+
+    @Override
+    public String toString() {
+        return "JsDebugParam{" +
+                "input='" + input + '\'' +
+                ", jsScriptBody='" + jsScriptBody + '\'' +
+                ", topic='" + topic + '\'' +
+                '}';
+    }
 }

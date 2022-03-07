@@ -1,6 +1,10 @@
 package com.aibaixun.iotdm.entity;
 
+import com.aibaixun.iotdm.enums.SubjectEvent;
 import com.baomidou.mybatisplus.annotation.TableName;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 
 /**
@@ -17,6 +21,7 @@ public class ForwardRule extends BaseEntity {
     /**
      * 规则名称
      */
+    @NotBlank(message = "规则名称不允许为空")
     private String ruleLabel;
 
     /**
@@ -27,12 +32,14 @@ public class ForwardRule extends BaseEntity {
     /**
      * 数据来源
      */
+    @NotNull(message = "规则的数据来源不允许为空")
     private String subjectResource;
 
     /**
      * 触发事件
      */
-    private String subjectEvent;
+    @NotNull(message = "规则的触发事件不允许为空")
+    private SubjectEvent subjectEvent;
 
     /**
      * 规则状态
@@ -69,11 +76,11 @@ public class ForwardRule extends BaseEntity {
         this.subjectResource = subjectResource;
     }
 
-    public String getSubjectEvent() {
+    public SubjectEvent getSubjectEvent() {
         return subjectEvent;
     }
 
-    public void setSubjectEvent(String subjectEvent) {
+    public void setSubjectEvent(SubjectEvent subjectEvent) {
         this.subjectEvent = subjectEvent;
     }
 
@@ -99,7 +106,7 @@ public class ForwardRule extends BaseEntity {
                 "ruleLabel='" + ruleLabel + '\'' +
                 ", description='" + description + '\'' +
                 ", subjectResource='" + subjectResource + '\'' +
-                ", subjectEvent='" + subjectEvent + '\'' +
+                ", subjectEvent=" + subjectEvent +
                 ", ruleStatus=" + ruleStatus +
                 ", deleted=" + deleted +
                 '}';
