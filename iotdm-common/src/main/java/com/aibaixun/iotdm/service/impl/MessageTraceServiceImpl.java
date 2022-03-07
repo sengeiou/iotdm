@@ -26,7 +26,8 @@ public class MessageTraceServiceImpl extends ServiceImpl<MessageTraceMapper, Mes
 
         LambdaQueryWrapper<MessageTrace> q = Wrappers.<MessageTrace>lambdaQuery()
                 .eq(MessageTrace::getDeviceId, deviceId)
-                .ge(MessageTrace::getCreateTime, ts);
+                .ge(MessageTrace::getCreateTime, ts)
+                .orderByDesc(MessageTrace::getCreateTime);
         return list(q);
     }
 }
