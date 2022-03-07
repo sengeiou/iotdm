@@ -62,7 +62,8 @@ public class DeviceTraceController extends BaseController{
     @GetMapping("/{deviceId}/{ts}")
     public JsonResult<List<MessageTrace>> getDeviceTrace (@PathVariable String deviceId,
                                                           @PathVariable Long ts){
-        return null;
+        List<MessageTrace> messageTraces = messageTraceService.queryMessageTrace(deviceId, ts);
+        return JsonResult.success(messageTraces);
     }
 
 
