@@ -305,7 +305,7 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
      * @param channelHandlerContext ctx
      */
     private void processPingMsg(ChannelHandlerContext channelHandlerContext){
-        if (checkConnected(channelHandlerContext)) {
+        if (checkConnected()) {
             channelHandlerContext.writeAndFlush(new MqttMessage(new MqttFixedHeader(PINGRESP, false, AT_MOST_ONCE, false, 0)));
             transportService.reportActivity(deviceSessionCtx.getSessionInfo());
         }
@@ -330,10 +330,9 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
 
     /**
      * 监测是否连接
-     * @param channelHandlerContext ctx
      * @return bool
      */
-    private boolean checkConnected(ChannelHandlerContext channelHandlerContext) {
+    private boolean checkConnected() {
         if (deviceSessionCtx.isConnected()) {
             return true;
         } else {
