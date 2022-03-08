@@ -48,7 +48,7 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, DeviceEntity> i
     @Override
     public List<DeviceEntity> queryDevice(String productId, Integer limit, String deviceLabel) {
         LambdaQueryWrapper<DeviceEntity> queryWrapper = Wrappers.lambdaQuery();
-        queryWrapper.select(DeviceEntity::getId, DeviceEntity::getDeviceLabel, DeviceEntity::getDeviceCode, DeviceEntity::getDeviceStatus, DeviceEntity::getVirtual);
+        queryWrapper.select(DeviceEntity::getId, DeviceEntity::getDeviceLabel, DeviceEntity::getDeviceCode, DeviceEntity::getDeviceStatus, DeviceEntity::getInvented);
         queryWrapper.eq(DeviceEntity::getTenantId,UserInfoUtil.getTenantIdOfNull());
         if (StringUtils.isNotBlank(productId)){
             queryWrapper.eq(DeviceEntity::getProductId,productId);

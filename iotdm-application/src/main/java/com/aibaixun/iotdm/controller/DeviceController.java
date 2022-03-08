@@ -134,7 +134,7 @@ public class DeviceController extends BaseController{
         saveDeviceEntity.setAuthType(deviceParam.getAuthType());
         saveDeviceEntity.setProductId(productId);
         saveDeviceEntity.setNodeType(NodeType.GATEWAY);
-        saveDeviceEntity.setVirtual(false);
+        saveDeviceEntity.setInvented(false);
         saveDeviceEntity.setDeviceStatus(DeviceStatus.INACTIVE);
         deviceService.save(saveDeviceEntity);
         return null;
@@ -185,7 +185,7 @@ public class DeviceController extends BaseController{
         saveDeviceEntity.setAuthType(byId.getAuthType());
         saveDeviceEntity.setProductId(productId);
         saveDeviceEntity.setNodeType(NodeType.ENDPOINT);
-        saveDeviceEntity.setVirtual(false);
+        saveDeviceEntity.setInvented(false);
         saveDeviceEntity.setDeviceStatus(DeviceStatus.INACTIVE);
         saveDeviceEntity.setGatewayId(gatewayId);
         boolean save = deviceService.save(saveDeviceEntity);

@@ -76,7 +76,7 @@ public class DeviceEntity extends BaseEntity {
     /**
      * 是否是虚拟设备
      */
-    private Boolean virtual;
+    private Boolean invented;
 
 
 
@@ -169,12 +169,12 @@ public class DeviceEntity extends BaseEntity {
         this.deleted = deleted;
     }
 
-    public Boolean getVirtual() {
-        return virtual;
+    public void setInvented(Boolean invented) {
+        this.invented = invented;
     }
 
-    public void setVirtual(Boolean virtual) {
-        this.virtual = virtual;
+    public Boolean getInvented() {
+        return invented;
     }
 
     @Override
@@ -191,7 +191,7 @@ public class DeviceEntity extends BaseEntity {
                 ", deviceSecret='" + deviceSecret + '\'' +
                 ", lastConnectTs=" + lastConnectTs +
                 ", deleted=" + deleted +
-                ", virtual=" + virtual +
+                ", invented=" + invented +
                 '}';
     }
 }

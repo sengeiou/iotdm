@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
+ * 产品单元测试
  * @author wangxiao@aibaixun.com
  * @date 2022/3/4
  */
@@ -46,7 +47,7 @@ public class ProductEntityServiceTest {
 
     @Test
     public void testPageQueryProduct (){
-        Page<ProductEntity> productPage = pageQueryProduct(1, 10, "测试");
+        Page<ProductEntity> productPage = pageQueryProduct();
         for (ProductEntity record : productPage.getRecords()) {
             logger.info(String.valueOf(record));
             productService.removeById(record.getId());
@@ -55,7 +56,7 @@ public class ProductEntityServiceTest {
 
     @Test
     public void testListQueryProduct (){
-        List<ProductEntity> productEntities = listQueryProduct(10);
+        List<ProductEntity> productEntities = listQueryProduct();
         for (ProductEntity productEntity : productEntities) {
             logger.info(productEntity.toString());
         }
@@ -71,13 +72,13 @@ public class ProductEntityServiceTest {
         return productService.save(productEntity);
     }
 
-    private List<ProductEntity> listQueryProduct (int limit) {
-        return productService.queryProducts(limit);
+    private List<ProductEntity> listQueryProduct() {
+        return productService.queryProducts(10);
     }
 
 
-    private Page<ProductEntity> pageQueryProduct (int page, int pageSize, String productLabel) {
-        return productService.pageQueryByLabel(page, pageSize, productLabel);
+    private Page<ProductEntity> pageQueryProduct() {
+        return productService.pageQueryByLabel(1, 10, "测试");
     }
 
 

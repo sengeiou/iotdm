@@ -38,7 +38,8 @@ public interface DeviceMapper extends BaseMapper<DeviceEntity> {
      * @param searchValue 查询条件
      * @return 设备分页信息
      */
-    Page<DeviceEntityInfo> selectPageDeviceInfo(Page<DeviceEntityInfo> page, String tenantId, DeviceStatus deviceStatus, String searchKey, String searchValue);
+    Page<DeviceEntityInfo> selectPageDeviceInfo(Page<DeviceEntityInfo> page, @Param("tenantId") String tenantId,
+                                                @Param("deviceStatus") DeviceStatus deviceStatus,  @Param("searchKey")  String searchKey,  @Param("searchValue") String searchValue);
 
 
     /**
@@ -47,7 +48,7 @@ public interface DeviceMapper extends BaseMapper<DeviceEntity> {
      * @param gateWayId 网关id
      * @return 设备信息
      */
-    Page<DeviceEntityInfo> selectPageSubDeviceInfo(Page<DeviceEntityInfo> page, String gateWayId);
+    Page<DeviceEntityInfo> selectPageSubDeviceInfo(Page<DeviceEntityInfo> page, @Param("gateWayId") String gateWayId);
 
 
     /**
@@ -60,7 +61,11 @@ public interface DeviceMapper extends BaseMapper<DeviceEntity> {
      * @param deviceLabel 设备名称
      * @return 设备信息
      */
-    Page<DeviceEntityInfo> selectPageDeviceInfoByGroup(Page<DeviceEntityInfo> page, String tenantId, String productId, String groupId, String deviceCode, String deviceLabel);
+    Page<DeviceEntityInfo> selectPageDeviceInfoByGroup(Page<DeviceEntityInfo> page, @Param("tenantId") String tenantId,
+                                                       @Param("productId") String productId,
+                                                       @Param("groupId") String groupId,
+                                                       @Param("deviceCode")  String deviceCode,
+                                                       @Param("deviceLabel") String deviceLabel);
 
 
 }
