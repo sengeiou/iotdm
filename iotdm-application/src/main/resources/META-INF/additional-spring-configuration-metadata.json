@@ -14,5 +14,65 @@
       "name": "IOTdm.version",
       "type": "java.lang.String",
       "description": "Description for IOTdm.version."
+    },
+    {
+      "name": "bx.swagger.applicationName",
+      "type": "java.lang.String",
+      "description": "Description for bx.swagger.applicationName."
+    },
+    {
+      "name": "bx.swagger.basePackage",
+      "type": "java.lang.String",
+      "description": "Description for bx.swagger.basePackage."
+    },
+    {
+      "name": "transport.mqtt.enabled",
+      "type": "java.lang.String",
+      "description": "Description for transport.mqtt.enabled."
+    },
+    {
+      "name": "transport.mqtt.bind_address",
+      "type": "java.lang.String",
+      "description": "Description for transport.mqtt.bind_address."
+    },
+    {
+      "name": "transport.mqtt.netty.leak_detector_level",
+      "type": "java.lang.String",
+      "description": "Description for transport.mqtt.netty.leak_detector_level."
+    },
+    {
+      "name": "transport.mqtt.netty.boss_group_thread_count",
+      "type": "java.lang.String",
+      "description": "Description for transport.mqtt.netty.boss_group_thread_count."
+    },
+    {
+      "name": "transport.mqtt.netty.worker_group_thread_count",
+      "type": "java.lang.String",
+      "description": "Description for transport.mqtt.netty.worker_group_thread_count."
+    },
+    {
+      "name": "transport.mqtt.netty.max_payload_size",
+      "type": "java.lang.String",
+      "description": "Description for transport.mqtt.netty.max_payload_size."
+    },
+    {
+      "name": "transport.mqtt.netty.so_keep_alive",
+      "type": "java.lang.String",
+      "description": "Description for transport.mqtt.netty.so_keep_alive."
+    },
+    {
+      "name": "transport.mqtt.ssl.enabled",
+      "type": "java.lang.String",
+      "description": "Description for transport.mqtt.ssl.enabled."
+    },
+    {
+      "name": "transport.mqtt.ssl.bind_address",
+      "type": "java.lang.String",
+      "description": "Description for transport.mqtt.ssl.bind_address."
+    },
+    {
+      "name": "transport.mqtt.ssl.bind_port",
+      "type": "java.lang.String",
+      "description": "Description for transport.mqtt.ssl.bind_port."
     }
   ] }

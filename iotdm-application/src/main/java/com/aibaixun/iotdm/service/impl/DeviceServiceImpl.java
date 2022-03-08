@@ -86,4 +86,10 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, DeviceEntity> i
         String tenantId = UserInfoUtil.getTenantIdOfNull();
         return baseMapper.selectPageDeviceInfoByGroup(Page.of(page,pageSize),tenantId,productId,groupId,deviceCode,deviceLabel);
     }
+
+
+    @Override
+    public Long countDeviceByDeviceCodeAndProductId(String deviceCode, String productId) {
+        return count(Wrappers.<DeviceEntity>lambdaQuery().eq(DeviceEntity::getDeviceCode,deviceCode).eq(DeviceEntity::getProductId,productId));
+    }
 }

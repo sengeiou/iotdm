@@ -28,3 +28,36 @@ bx:
     title: IOTdm Web Api
     path: /**
     enable: true
+
+transport:
+  mqtt:
+    # mqtt 开关
+    enabled: "${MQTT_ENABLED:true}"
+    # mqtt 绑定地址
+    bind_address: "${MQTT_BIND_ADDRESS:0.0.0.0}"
+    # mqtt 绑定端口
+    bind_port: "${MQTT_BIND_PORT:1883}"
+    netty:
+      # netty 监控级别
+      leak_detector_level: "${NETTY_LEAK_DETECTOR_LVL:DISABLED}"
+      # boss 线程数
+      boss_group_thread_count: "${NETTY_BOSS_GROUP_THREADS:1}"
+      # work 线程数
+      worker_group_thread_count: "${NETTY_WORKER_GROUP_THREADS:12}"
+      # 负载内容
+      max_payload_size: "${NETTY_MAX_PAYLOAD_SIZE:65536}"
+      # 开启keep alive
+      so_keep_alive: "${NETTY_SO_KEEPALIVE:false}"
+    ssl:
+      enabled: "${MQTT_SSL_ENABLED:false}"
+      bind_address: "${MQTT_SSL_BIND_ADDRESS:0.0.0.0}"
+      bind_port: "${MQTT_SSL_BIND_PORT:1883}"
+      protocol: "${MQTT_SSL_PROTOCOL:TLSv1.2}"
+
+  limit:
+    # ip 限制开关
+    ip_limit_enabled: "${TRANSPORT_IP_LIMITS_ENABLED:false}"
+    # 限制 过期时间
+    ip_block_timeout: "${TRANSPORT_IP_BLOCK_TIMEOUT:60000}"
+    # 错误次数
+    max_wrong_credentials_per_ip: "${TRANSPORT_MAX_WRONG_CREDENTIALS_PER_IP:10}"

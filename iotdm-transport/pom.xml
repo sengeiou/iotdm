@@ -17,6 +17,7 @@
 
     <modules>
         <module>transport-api</module>
+        <module>mqtt</module>
     </modules>
 
     <properties>

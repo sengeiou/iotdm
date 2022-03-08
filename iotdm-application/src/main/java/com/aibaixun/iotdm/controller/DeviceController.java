@@ -24,7 +24,7 @@ import javax.validation.Valid;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.aibaixun.iotdm.constants.Constants.NULL_STR;
+import static com.aibaixun.iotdm.constants.DataConstants.NULL_STR;
 
 /**
  * 设备 Web Api
@@ -125,10 +125,12 @@ public class DeviceController extends BaseController{
         if (deviceParam.getAuthType().equals(DeviceAuthType.SECRET)){
             deviceSecret = secretBlank? RandomStringUtils.randomAlphanumeric(20): Base64Util.decode(deviceSecret);
         }
+        String deviceCode = deviceParam.getDeviceCode();
         String productId = deviceParam.getProductId();
         checkProductId(productId);
+        checkDeviceCode(deviceCode,productId);
         DeviceEntity saveDeviceEntity = new DeviceEntity();
-        saveDeviceEntity.setDeviceCode(deviceParam.getDeviceCode());
+        saveDeviceEntity.setDeviceCode(deviceCode);
         saveDeviceEntity.setDeviceLabel(deviceParam.getDeviceLabel());
         saveDeviceEntity.setDeviceSecret(deviceSecret);
         saveDeviceEntity.setAuthType(deviceParam.getAuthType());
@@ -136,8 +138,8 @@ public class DeviceController extends BaseController{
         saveDeviceEntity.setNodeType(NodeType.GATEWAY);
         saveDeviceEntity.setInvented(false);
         saveDeviceEntity.setDeviceStatus(DeviceStatus.INACTIVE);
-        deviceService.save(saveDeviceEntity);
-        return null;
+        boolean save = deviceService.save(saveDeviceEntity);
+        return JsonResult.success(save);
     }
 
 
@@ -178,8 +180,10 @@ public class DeviceController extends BaseController{
 
         String productId = subDeviceParam.getProductId();
         checkProductId(productId);
+        String deviceCode = subDeviceParam.getDeviceCode();
+        checkDeviceCode(deviceCode,productId);
         DeviceEntity saveDeviceEntity = new DeviceEntity();
-        saveDeviceEntity.setDeviceCode(subDeviceParam.getDeviceCode());
+        saveDeviceEntity.setDeviceCode(deviceCode);
         saveDeviceEntity.setDeviceLabel(subDeviceParam.getDeviceLabel());
         saveDeviceEntity.setDeviceSecret(RandomStringUtils.randomAlphanumeric(20));
         saveDeviceEntity.setAuthType(byId.getAuthType());
@@ -208,7 +212,14 @@ public class DeviceController extends BaseController{
     private void checkProductId(String productId) throws BaseException {
         ProductEntity productEntity = productService.getById(productId);
         if (Objects.isNull(productEntity)){
-            throw new BaseException("所属产品不存在",BaseResultCode.BAD_PARAMS);
+            throw new BaseException("所属产品不存在",BaseResultCode.GENERAL_ERROR);
+        }
+    }
+
+    private void checkDeviceCode (String deviceCode,String productId) throws BaseException {
+        Long deviceNum = deviceService.countDeviceByDeviceCodeAndProductId(deviceCode, productId);
+        if (deviceNum>0){
+            throw new BaseException("产品下已经存在该标识码设备",BaseResultCode.GENERAL_ERROR);
         }
     }
 

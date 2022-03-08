@@ -87,4 +87,13 @@ public interface IDeviceService extends IService<DeviceEntity> {
      */
     Page<DeviceEntityInfo> pageQueryDeviceByGroup(Integer page, Integer pageSize, String groupId, String productId, String deviceCode, String deviceLabel);
 
+
+    /**
+     * 统计产品下 设备标识码是否存在
+     * @param deviceCode 设备标识码
+     * @param productId 产品id
+     * @return 数目
+     */
+    Long countDeviceByDeviceCodeAndProductId(String deviceCode,String productId);
+
 }

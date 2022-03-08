@@ -82,7 +82,12 @@
                 <artifactId>application</artifactId>
                 <version>${iotdm.version}</version>
             </dependency>
-            <!--IOTdm  start-->
+            <dependency>
+                <groupId>com.aibaixun.iotdm.transport</groupId>
+                <artifactId>transport-api</artifactId>
+                <version>${iotdm.version}</version>
+            </dependency>
+            <!--IOTdm  end-->
         </dependencies>
     </dependencyManagement>
 

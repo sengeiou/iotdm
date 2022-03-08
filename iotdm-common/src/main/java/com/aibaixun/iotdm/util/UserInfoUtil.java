@@ -5,7 +5,7 @@ import com.aibaixun.basic.exception.BaseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.aibaixun.iotdm.constants.Constants.NULL_STR;
+import static com.aibaixun.iotdm.constants.DataConstants.NULL_STR;
 
 /**
  * @author wangxiao@aibaixun.com

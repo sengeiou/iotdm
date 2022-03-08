@@ -5,9 +5,9 @@ package com.aibaixun.iotdm.constants;
  * @author wangxiao@aibaixun.com
  * @date 2022/3/3
  */
-public class Constants {
+public class DataConstants {
 
-    private Constants() {
+    private DataConstants() {
     }
 
     /**
@@ -19,4 +19,7 @@ public class Constants {
      * null 字符串
      */
     public static String NULL_STR = "NULL";
+
+
+    public static final String MQTT_TRANSPORT_NAME = "MQTT";
 }
