@@ -2,7 +2,7 @@ package com.aibaixun.iotdm.service;
 
 import com.aibaixun.basic.exception.BaseException;
 import com.aibaixun.basic.result.BaseResultCode;
-import com.aibaixun.iotdm.IOTdmApplication;
+import com.aibaixun.iotdm.IotDmApplication;
 import com.aibaixun.iotdm.entity.ProductEntity;
 import com.aibaixun.iotdm.enums.DataFormat;
 import com.aibaixun.iotdm.enums.ProtocolType;
@@ -24,7 +24,7 @@ import java.util.Objects;
  * @date 2022/3/4
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = IOTdmApplication.class)
+@SpringBootTest(classes = IotDmApplication.class)
 public class ProductEntityServiceTest {
 
     private final Logger logger = LoggerFactory.getLogger(ProductEntityServiceTest.class);

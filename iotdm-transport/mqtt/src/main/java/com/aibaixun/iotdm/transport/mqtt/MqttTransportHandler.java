@@ -5,7 +5,6 @@ import com.aibaixun.iotdm.msg.DeviceAuthRespMsg;
 import com.aibaixun.iotdm.msg.DeviceAuthSecretReqMsg;
 import com.aibaixun.iotdm.msg.TransportSessionInfo;
 import com.aibaixun.iotdm.msg.TransportSessionInfoCreator;
-import com.aibaixun.iotdm.scheduler.SchedulerComponent;
 import com.aibaixun.iotdm.transport.TransportService;
 import com.aibaixun.iotdm.transport.TransportServiceCallback;
 import com.aibaixun.iotdm.transport.TransportSessionListener;
@@ -13,7 +12,6 @@ import com.aibaixun.iotdm.transport.mqtt.session.DeviceSessionCtx;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.mqtt.*;
-import io.netty.handler.ssl.SslHandler;
 import io.netty.util.CharsetUtil;
 import io.netty.util.ReferenceCountUtil;
 import io.netty.util.concurrent.Future;
@@ -54,16 +52,6 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
     private final TransportService transportService;
 
     /**
-     * 定时处理器
-     */
-    private final SchedulerComponent scheduler;
-
-    /**
-     * ssl handler
-     */
-    private final SslHandler sslHandler;
-
-    /**
      * 设备session
      */
     private final DeviceSessionCtx deviceSessionCtx;
@@ -75,12 +63,10 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
 
 
 
-    MqttTransportHandler(MqttTransportContext context, SslHandler sslHandler) {
+    MqttTransportHandler(MqttTransportContext context) {
         this.sessionId = UUID.randomUUID();
         this.context = context;
         this.transportService = context.getTransportService();
-        this.scheduler = context.getScheduler();
-        this.sslHandler = sslHandler;
         this.deviceSessionCtx = new DeviceSessionCtx(sessionId,context);
     }
 
@@ -136,7 +122,7 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
     }
 
     @Override
-    public void operationComplete(Future<? super Void> future) throws Exception {
+    public void operationComplete(Future<? super Void> future) {
         log.trace("MqttTransportHandler.operationComplete >> [{}] Channel closed!", sessionId);
         doDisconnect();
     }
@@ -155,6 +141,8 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
         deviceSessionCtx.setChannel(channelHandlerContext);
         if (CONNECT.equals(msg.fixedHeader().messageType())) {
             processConnect(channelHandlerContext, (MqttConnectMessage) msg);
+        }else {
+            processSessionMsg(channelHandlerContext,msg);
         }
     }
 
@@ -239,7 +227,7 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
             transportService.processDeviceConnectSuccess(transportSessionInfo, new TransportServiceCallback<>() {
                 @Override
                 public void onSuccess(Void msg) {
-                    transportService.registerAsyncSession(deviceSessionCtx.getSessionInfo(), MqttTransportHandler.this);
+                    transportService.registerSession(deviceSessionCtx.getSessionInfo(), MqttTransportHandler.this);
                 }
 
                 @Override
@@ -253,27 +241,117 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
     }
 
     /**
-     * 处理 报文
+     * 处理 会话 报文
      * @param channelHandlerContext  ctx
      * @param mqttMessage 数据报文
      */
     private void  processSessionMsg (ChannelHandlerContext channelHandlerContext,MqttMessage mqttMessage){
+        MqttMessageType mqttMessageType = mqttMessage.fixedHeader().messageType();
+        switch (mqttMessageType){
+            case PUBLISH:
+                processPublishMsg(channelHandlerContext,(MqttPublishMessage) mqttMessage);
+                break;
+            case SUBSCRIBE:
+                processSubscribeMsg(channelHandlerContext,(MqttSubscribeMessage) mqttMessage);
+                break;
+            case UNSUBSCRIBE:
+                processUnsubscribeMsg(channelHandlerContext,(MqttUnsubscribeMessage) mqttMessage);
+                break;
+            case PINGREQ:
+                processPingMsg(channelHandlerContext);
+                break;
+            case DISCONNECT:
+                processDisConnectMsg(channelHandlerContext);
+                break;
+            case PUBACK:
+                processPubAckMsg(channelHandlerContext, (MqttPubAckMessage) mqttMessage);
+                break;
+            default:
+                break;
+        }
+    }
+
+
+    /**
+     * 处理 发布消息
+     * @param channelHandlerContext ctx
+     * @param mqttPublishMessage 发布消息
+     */
+   private void  processPublishMsg (ChannelHandlerContext channelHandlerContext,MqttPublishMessage mqttPublishMessage) {
+
+    }
+
+    /**
+     * 处理订阅消息
+     * @param channelHandlerContext ctx
+     * @param mqttSubscribeMessage 订阅消息
+     */
+    private void processSubscribeMsg(ChannelHandlerContext channelHandlerContext,MqttSubscribeMessage mqttSubscribeMessage){
+
+    }
+
+    /**
+     * 处理取消订阅消息
+     * @param channelHandlerContext ctx
+     * @param mqttUnsubscribeMessage 取消订阅消息
+     */
+    private void processUnsubscribeMsg(ChannelHandlerContext channelHandlerContext, MqttUnsubscribeMessage mqttUnsubscribeMessage){
 
     }
 
 
+    /**
+     * 处理 ping 报文
+     * @param channelHandlerContext ctx
+     */
+    private void processPingMsg(ChannelHandlerContext channelHandlerContext){
+        if (checkConnected(channelHandlerContext)) {
+            channelHandlerContext.writeAndFlush(new MqttMessage(new MqttFixedHeader(PINGRESP, false, AT_MOST_ONCE, false, 0)));
+            transportService.reportActivity(deviceSessionCtx.getSessionInfo());
+        }
+    }
+
+    /**
+     * 处理断开报文
+     * @param channelHandlerContext ctx
+     */
+    private void  processDisConnectMsg(ChannelHandlerContext channelHandlerContext){
+        channelHandlerContext.close();
+    }
+
+
+    /**
+     * 处理 发布 ack
+     * @param channelHandlerContext ctx
+     * @param mqttPubAckMessage 发布消息
+     */
+    private void  processPubAckMsg(ChannelHandlerContext channelHandlerContext,MqttPubAckMessage mqttPubAckMessage){}
+
+
+    /**
+     * 监测是否连接
+     * @param channelHandlerContext ctx
+     * @return bool
+     */
+    private boolean checkConnected(ChannelHandlerContext channelHandlerContext) {
+        if (deviceSessionCtx.isConnected()) {
+            return true;
+        } else {
+            log.info("MqttTransportHandler.checkConnected [{}] [{}] Closing current session ", address,sessionId);
+            return false;
+        }
+    }
 
     private void doDisconnect() {
         if (deviceSessionCtx.isConnected()) {
             log.debug("MqttTransportHandler.doDisconnect >> [{}] Client disconnected!", sessionId);
-//            transportService.process(deviceSessionCtx.getSessionInfo(), SESSION_EVENT_MSG_CLOSED, null);
-//            transportService.deregisterSession(deviceSessionCtx.getSessionInfo());
-//            if (gatewaySessionHandler != null) {
-//                gatewaySessionHandler.onGatewayDisconnect();
-//            }
+            transportService.processDeviceDisConnect(deviceSessionCtx.getSessionInfo(), null);
+            transportService.deregisterSession(deviceSessionCtx.getSessionInfo());
             deviceSessionCtx.setDisconnected();
         }
     }
+
+
 
 
 

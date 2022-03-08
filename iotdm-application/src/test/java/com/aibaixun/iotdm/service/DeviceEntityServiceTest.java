@@ -2,7 +2,7 @@ package com.aibaixun.iotdm.service;
 
 import com.aibaixun.basic.exception.BaseException;
 import com.aibaixun.basic.result.BaseResultCode;
-import com.aibaixun.iotdm.IOTdmApplication;
+import com.aibaixun.iotdm.IotDmApplication;
 import com.aibaixun.iotdm.data.DeviceEntityInfo;
 import com.aibaixun.iotdm.data.DeviceParam;
 import com.aibaixun.iotdm.data.SubDeviceParam;
@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
  * @date 2022/3/8
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = IOTdmApplication.class)
+@SpringBootTest(classes = IotDmApplication.class)
 public class DeviceEntityServiceTest extends BaseTest{
 
 

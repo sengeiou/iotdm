@@ -1,8 +1,6 @@
 package com.aibaixun.iotdm.transport.mqtt;
 
 import com.aibaixun.iotdm.transport.TransportContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
@@ -21,11 +19,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class MqttTransportContext extends TransportContext {
 
 
-    private final Logger log  = LoggerFactory.getLogger("mqtt-transport");
 
     @Value("${transport.mqtt.netty.max_payload_size}")
     private Integer maxPayloadSize;
 
+    /**
+     * ssl handler provider
+     */
     private MqttSslHandlerProvider sslHandlerProvider;
 
     /**

@@ -9,9 +9,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @date 2022/3/3
  */
 @SpringBootApplication
-public class IOTdmApplication {
+public class IotDmApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(IOTdmApplication.class, args);
+        SpringApplication.run(IotDmApplication.class, args);
     }
 }

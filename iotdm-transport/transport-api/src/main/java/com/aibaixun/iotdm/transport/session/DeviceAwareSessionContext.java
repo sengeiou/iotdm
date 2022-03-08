@@ -1,6 +1,7 @@
 package com.aibaixun.iotdm.transport.session;
 
-
+import com.aibaixun.iotdm.msg.DeviceInfo;
+import com.aibaixun.iotdm.msg.TransportSessionInfo;
 
 import java.util.UUID;
 
@@ -14,9 +15,9 @@ public abstract class DeviceAwareSessionContext implements TransportSessionConte
 
     protected final UUID sessionId;
 
-    private volatile String deviceId;
-
     private volatile boolean connected;
+
+    private TransportSessionInfo sessionInfo;
 
     protected DeviceAwareSessionContext(UUID sessionId) {
         this.sessionId = sessionId;
@@ -41,47 +42,17 @@ public abstract class DeviceAwareSessionContext implements TransportSessionConte
         return sessionId;
     }
 
+
     @Override
-    public String getDeviceId() {
-        return deviceId;
+    public void onDeviceUpdate(TransportSessionInfo sessionInfo, DeviceInfo deviceInfo) {
+        this.sessionInfo = sessionInfo;
     }
 
-    public void setDeviceId(String deviceId) {
-        this.deviceId = deviceId;
+    public TransportSessionInfo getSessionInfo() {
+        return sessionInfo;
     }
 
-
-
-    //    protected volatile TransportDeviceInfo deviceInfo;
-//
-//
-//    protected volatile DeviceProfile deviceProfile;
-//
-//    private volatile TransportProtos.SessionInfoProto sessionInfo;
-
-    //    public DeviceId getDeviceId() {
-//        return deviceId;
-//    }
-//
-//    public void setDeviceInfo(TransportDeviceInfo deviceInfo) {
-//        this.deviceInfo = deviceInfo;
-//        this.deviceId = deviceInfo.getDeviceId();
-//    }
-//
-//    @Override
-//    public void onDeviceProfileUpdate(TransportProtos.SessionInfoProto sessionInfo, DeviceProfile deviceProfile) {
-//        this.sessionInfo = sessionInfo;
-//        this.deviceProfile = deviceProfile;
-//        this.deviceInfo.setDeviceType(deviceProfile.getName());
-//
-//    }
-//
-//    @Override
-//    public void onDeviceUpdate(TransportProtos.SessionInfoProto sessionInfo, Device device, Optional<DeviceProfile> deviceProfileOpt) {
-//        this.sessionInfo = sessionInfo;
-//        this.deviceInfo.setDeviceProfileId(device.getDeviceProfileId());
-//        this.deviceInfo.setDeviceType(device.getType());
-//        deviceProfileOpt.ifPresent(profile -> this.deviceProfile = profile);
-//    }
-
+    public void setSessionInfo(TransportSessionInfo sessionInfo) {
+        this.sessionInfo = sessionInfo;
+    }
 }

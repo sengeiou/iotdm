@@ -30,10 +30,32 @@ public interface TransportService {
 
 
     /**
+     * 设备断开连接
+     * @param sessionInfo 会话信息
+     * @param callback 回调函数
+     */
+    void processDeviceDisConnect(TransportSessionInfo sessionInfo,TransportServiceCallback<Void> callback);
+
+
+    /**
      * 注册session 元数据
      * @param transportSessionInfo session 信息
      * @param listener 监听者
      */
-    void registerAsyncSession(TransportSessionInfo transportSessionInfo, TransportSessionListener listener);
+    void registerSession(TransportSessionInfo transportSessionInfo, TransportSessionListener listener);
+
+
+    /**
+     * 移除 session
+     * @param transportSessionInfo session 信息
+     */
+    void deregisterSession(TransportSessionInfo transportSessionInfo);
+
+
+    /**
+     * 记录活跃时间
+     * @param sessionInfo session 信息
+     */
+    void reportActivity(TransportSessionInfo sessionInfo);
 
 }
