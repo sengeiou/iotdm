@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.Objects;
 
 /**
@@ -60,18 +61,20 @@ public class DeviceInfoServiceImpl extends BaseSqlInfoService implements DeviceI
 
     @Override
     public ListenableFuture<Boolean> setDeviceStatus2OnLine(String deviceId) {
-        return sqlExecutorService.submit(()->deviceService.updateDeviceStatus(deviceId, DeviceStatus.ONLINE));
+        return sqlExecutorService.submit(()->deviceService.updateDeviceStatus(deviceId, DeviceStatus.ONLINE, Instant.now().toEpochMilli(),null,null));
     }
+
+
+
 
     @Override
-    public ListenableFuture<Boolean> setDeviceStatus2OffOnLine(String deviceId) {
-        return sqlExecutorService.submit(()->deviceService.updateDeviceStatus(deviceId, DeviceStatus.OFFLINE));
+    public ListenableFuture<Boolean> setDeviceStatus2OffOnLine(String deviceId, Long lastConnectTime, Long lastActivityTime, String hostName) {
+        return sqlExecutorService.submit(()->deviceService.updateDeviceStatus(deviceId, DeviceStatus.OFFLINE,lastConnectTime,lastActivityTime,hostName));
     }
-
 
     @Override
     public ListenableFuture<Boolean> setDeviceStatus2Warn(String deviceId) {
-        return sqlExecutorService.submit(()->deviceService.updateDeviceStatus(deviceId, DeviceStatus.WARN));
+        return sqlExecutorService.submit(()->deviceService.updateDeviceStatus(deviceId, DeviceStatus.WARN,null,null,null));
     }
 
     @Autowired

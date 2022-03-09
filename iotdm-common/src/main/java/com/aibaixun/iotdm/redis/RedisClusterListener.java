@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
+
 import static com.aibaixun.iotdm.constants.DataConstants.EXPIRED_CHANNEL;
 import static com.aibaixun.iotdm.constants.DataConstants.IOT_SESSION_CACHE_KEY_PREFIX;
 
@@ -35,7 +37,7 @@ public class RedisClusterListener extends RedisClusterPubSubAdapter<String,Strin
             String sessionId = splitStr[2];
             String deviceId = splitStr[3];
             log.info("RedisClusterListener.message >> Session Cache is expired,cache key:{},sessionId:{} ",message,sessionId);
-            deviceInfoService.setDeviceStatus2OffOnLine(deviceId);
+            deviceInfoService.setDeviceStatus2OffOnLine(deviceId,null, Instant.now().toEpochMilli(),null);
         }
     }
 

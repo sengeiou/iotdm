@@ -35,8 +35,18 @@ public interface TransportService {
      * 设备断开连接
      * @param sessionId 会话信息
      * @param deviceId 设备id  [主要防止缓存移除 但tcp 未断开]
+     * @param hostName 连接地址
      */
-    void processDeviceDisConnect(UUID sessionId,String deviceId);
+    void processDeviceDisConnect(UUID sessionId,String deviceId,String hostName);
+
+
+    /**
+     * 记录设备信息
+     * @param sessionId session 信息
+     * @param hostName 连接地址
+     * @param deviceId 设备id
+     */
+    void processLogDevice(UUID sessionId,String deviceId,String hostName);
 
 
     /**

@@ -336,7 +336,8 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
      */
     private void  processDisConnectMsg(ChannelHandlerContext channelHandlerContext){
         channelHandlerContext.close();
-        transportService.processDeviceDisConnect(deviceSessionCtx.getSessionId(), deviceSessionCtx.getDeviceId());
+        String hostName = address.getHostString();
+        transportService.processDeviceDisConnect(deviceSessionCtx.getSessionId(), deviceSessionCtx.getDeviceId(),hostName);
     }
 
 
@@ -368,15 +369,13 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
     private void doDisconnect() {
         if (deviceSessionCtx.isConnected()) {
             log.debug("MqttTransportHandler.doDisconnect >> [{}] Client disconnected!", sessionId);
-            transportService.processDeviceDisConnect(deviceSessionCtx.getSessionId(), deviceSessionCtx.getDeviceId());
+            String hostName = address.getHostString();
+            transportService.processDeviceDisConnect(deviceSessionCtx.getSessionId(), deviceSessionCtx.getDeviceId(),hostName);
+            transportService.processLogDevice(sessionId, deviceSessionCtx.getDeviceId(),hostName);
             transportService.deregisterSession(deviceSessionCtx.getSessionId(), deviceSessionCtx.getDeviceId());
             deviceSessionCtx.setDisconnected();
         }
     }
-
-
-
-
 
 
 }

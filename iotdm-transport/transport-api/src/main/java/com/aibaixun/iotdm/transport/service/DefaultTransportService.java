@@ -15,6 +15,8 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +38,8 @@ public class DefaultTransportService implements TransportService {
 
     private SessionCacheService sessionCacheService;
 
+
+    private final Logger log  = LoggerFactory.getLogger(DefaultTransportService.class);
 
 
     /**
@@ -69,9 +73,18 @@ public class DefaultTransportService implements TransportService {
     }
 
     @Override
-    public void processDeviceDisConnect(UUID sessionId, String deviceId) {
-        Futures.transform(deviceInfoService.setDeviceStatus2OffOnLine(deviceId),
+    public void processDeviceDisConnect(UUID sessionId, String deviceId,String hostName) {
+        TransportSessionInfo sessionFromCache = sessionCacheService.getSessionFromCache(sessionId, deviceId);
+        var  lastConnect = Objects.nonNull(sessionFromCache)?sessionFromCache.getLastConnectTime():null;
+        var  lastCActivity = Objects.nonNull(sessionFromCache)?sessionFromCache.getLastActivityTime():null;
+        Futures.transform(deviceInfoService.setDeviceStatus2OffOnLine(deviceId,lastConnect,lastCActivity,hostName),
                 status -> null, MoreExecutors.directExecutor());
+    }
+
+
+    @Override
+    public void processLogDevice(UUID sessionId, String deviceId,String hostName) {
+        log.info("DefaultTransportService.processLogDevice >> sessionId:{},deviceId:{},hostName:{}",sessionId,deviceId,hostName);
     }
 
     @Override

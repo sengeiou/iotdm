@@ -32,9 +32,12 @@ public interface DeviceInfoService   {
     /**
      * 修改设备装改为 离线
      * @param deviceId 设别id
+     * @param lastConnectTime 连接时间
+     * @param lastActivityTime 活跃时间
+     * @param hostName 活跃地址
      * @return 修改后结果
      */
-    ListenableFuture<Boolean> setDeviceStatus2OffOnLine(String deviceId);
+    ListenableFuture<Boolean> setDeviceStatus2OffOnLine(String deviceId,Long lastConnectTime,Long lastActivityTime,String hostName);
 
 
 

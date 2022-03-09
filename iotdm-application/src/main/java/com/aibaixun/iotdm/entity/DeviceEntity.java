@@ -67,6 +67,15 @@ public class DeviceEntity extends BaseEntity {
      */
     private Long lastConnectTs;
 
+    /**
+     * 最后活跃时间
+     */
+    private Long lastActivityTs;
+
+    /**
+     * 最后连接地址
+     */
+    private String lastRemoteAddress;
 
     /**
      * 是否删除
@@ -177,9 +186,26 @@ public class DeviceEntity extends BaseEntity {
         return invented;
     }
 
+
+    public Long getLastActivityTs() {
+        return lastActivityTs;
+    }
+
+    public void setLastActivityTs(Long lastActivityTs) {
+        this.lastActivityTs = lastActivityTs;
+    }
+
+    public String getLastRemoteAddress() {
+        return lastRemoteAddress;
+    }
+
+    public void setLastRemoteAddress(String lastRemoteAddress) {
+        this.lastRemoteAddress = lastRemoteAddress;
+    }
+
     @Override
     public String toString() {
-        return "Device{" +
+        return "DeviceEntity{" +
                 "productId='" + productId + '\'' +
                 ", deviceCode='" + deviceCode + '\'' +
                 ", deviceLabel='" + deviceLabel + '\'' +
@@ -190,6 +216,8 @@ public class DeviceEntity extends BaseEntity {
                 ", authType=" + authType +
                 ", deviceSecret='" + deviceSecret + '\'' +
                 ", lastConnectTs=" + lastConnectTs +
+                ", lastActivityTs=" + lastActivityTs +
+                ", lastRemoteAddress='" + lastRemoteAddress + '\'' +
                 ", deleted=" + deleted +
                 ", invented=" + invented +
                 '}';

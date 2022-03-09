@@ -7,7 +7,6 @@ import io.netty.channel.ChannelHandlerContext;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.aibaixun.iotdm.constants.DataConstants.IOT_SESSION_CACHE_KEY_PREFIX;
 
 /**
  * 设备 连接 session 信息

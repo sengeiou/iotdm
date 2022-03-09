@@ -111,8 +111,11 @@ public interface IDeviceService extends IService<DeviceEntity> {
      * 修改设备状态
      * @param id 设备id
      * @param targetStatus 目标状态
+     * @param lastConnect 连接之间
+     * @param lastActivity 活跃时间
+     * @param host 地址
      * @return 修改结果
      */
-    Boolean updateDeviceStatus(String id,DeviceStatus targetStatus);
+    Boolean updateDeviceStatus(String id,DeviceStatus targetStatus,Long lastConnect,Long lastActivity,String host);
 
 }

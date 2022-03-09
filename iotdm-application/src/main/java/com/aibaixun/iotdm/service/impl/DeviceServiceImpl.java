@@ -17,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>
@@ -106,12 +107,23 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, DeviceEntity> i
 
 
     @Override
-    public Boolean updateDeviceStatus(String id, DeviceStatus targetStatus) {
+    public Boolean updateDeviceStatus(String id, DeviceStatus targetStatus, Long lastConnect, Long lastActivity, String host) {
         if (StringUtils.isEmpty(id)){
             return false;
         }
         LambdaUpdateWrapper<DeviceEntity> updateWrapper = Wrappers.lambdaUpdate();
         updateWrapper.eq(DeviceEntity::getId,id).set(DeviceEntity::getDeviceStatus,targetStatus);
+        if (Objects.nonNull(lastActivity)){
+            updateWrapper.set(DeviceEntity::getLastActivityTs,lastActivity);
+        }
+        if (Objects.nonNull(lastConnect)){
+            updateWrapper.set(DeviceEntity::getLastConnectTs,lastConnect);
+        }
+        if (Objects.nonNull(host)){
+            updateWrapper.set(DeviceEntity::getLastRemoteAddress,host);
+        }
         return update(updateWrapper);
     }
+
+
 }
