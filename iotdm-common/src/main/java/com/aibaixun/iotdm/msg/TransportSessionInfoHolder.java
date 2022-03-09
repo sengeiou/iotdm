@@ -1,5 +1,6 @@
 package com.aibaixun.iotdm.msg;
 
+import java.time.Instant;
 import java.util.UUID;
 
 /**
@@ -7,7 +8,9 @@ import java.util.UUID;
  * @author wangxiao@aibaixun.com
  * @date 2022/3/8
  */
-public class TransportSessionInfoCreator {
+public class TransportSessionInfoHolder {
+
+    private TransportSessionInfoHolder () {}
 
     /**
      * 创建session 信息
@@ -25,6 +28,13 @@ public class TransportSessionInfoCreator {
         sessionInfo.setNodeType(deviceInfo.getNodeType());
         sessionInfo.setDataFormat(deviceInfo.getDataFormat());
         sessionInfo.setTenantId(deviceInfo.getTenantId());
+        sessionInfo.setLastConnectTime(Instant.now().toEpochMilli());
+        return sessionInfo;
+    }
+
+
+    public static TransportSessionInfo activity (TransportSessionInfo sessionInfo){
+        sessionInfo.setLastActivityTime(Instant.now().toEpochMilli());
         return sessionInfo;
     }
 }

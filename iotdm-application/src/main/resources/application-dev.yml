@@ -5,6 +5,11 @@ spring:
     url: jdbc:mysql://${DATASOURCE_HOST:172.16.9.1}:${DATASOURCE_PORT:3306}/iotdm
     username: ${DATASOURCE_USERNAME:root}
     password: ${DATASOURCE_PASSWORD:bxzh123456!}
+    hikari:
+      maximumPoolSize: "${SPRING_DATASOURCE_MAXIMUM_POOL_SIZE:16}"
+      connection-timeout: 60000
+      idle-timeout: 600000
+      minimum-idle: 1
 
   redis:
     timeout: 6000
@@ -17,10 +22,13 @@ spring:
       shutdown-timeout: 100
     cluster:
       nodes:
-        - 172.16.8.2:6379
-        - 172.16.8.3:6379
-        - 172.16.8.4:6379
+        - 172.16.9.2:6379
+        - 172.16.9.3:6379
+        - 172.16.9.4:6379
       max-redirects: 3
+    database: 0
+    sub:
+      cluster: redis://172.16.9.2:6379
 bx:
   swagger:
     applicationName: IOTdmApplication

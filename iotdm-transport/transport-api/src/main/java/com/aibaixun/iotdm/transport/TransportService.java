@@ -5,6 +5,8 @@ import com.aibaixun.iotdm.msg.DeviceAuthRespMsg;
 import com.aibaixun.iotdm.msg.DeviceAuthSecretReqMsg;
 import com.aibaixun.iotdm.msg.TransportSessionInfo;
 
+import java.util.UUID;
+
 /**
  * 数据传输 service
  * @author wangxiao@aibaixun.com
@@ -26,15 +28,15 @@ public interface TransportService {
      * @param sessionInfo 会话信息
      * @param callback 回调函数
      */
-    void processDeviceConnectSuccess(TransportSessionInfo sessionInfo,TransportServiceCallback<Void> callback);
+    void processDeviceConnectSuccess(TransportSessionInfo sessionInfo,TransportServiceCallback<Boolean> callback);
 
 
     /**
      * 设备断开连接
-     * @param sessionInfo 会话信息
-     * @param callback 回调函数
+     * @param sessionId 会话信息
+     * @param deviceId 设备id  [主要防止缓存移除 但tcp 未断开]
      */
-    void processDeviceDisConnect(TransportSessionInfo sessionInfo,TransportServiceCallback<Void> callback);
+    void processDeviceDisConnect(UUID sessionId,String deviceId);
 
 
     /**
@@ -47,15 +49,17 @@ public interface TransportService {
 
     /**
      * 移除 session
-     * @param transportSessionInfo session 信息
+     * @param deviceId 设备id
+     * @param sessionId session 信息
      */
-    void deregisterSession(TransportSessionInfo transportSessionInfo);
+    void deregisterSession(UUID sessionId,String deviceId);
 
 
     /**
      * 记录活跃时间
-     * @param sessionInfo session 信息
+     * @param deviceId 设备id
+     * @param sessionId session 信息
      */
-    void reportActivity(TransportSessionInfo sessionInfo);
+    void reportActivity(UUID sessionId,String deviceId);
 
 }

@@ -53,6 +53,14 @@
             <artifactId>common</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.aibaixun.iotdm.transport</groupId>
+            <artifactId>transport-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.aibaixun.iotdm.transport</groupId>
+            <artifactId>mqtt</artifactId>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>

@@ -1,5 +1,6 @@
 package com.aibaixun.iotdm.service;
 
+import com.aibaixun.iotdm.msg.DeviceAuthSecretReqMsg;
 import com.aibaixun.iotdm.msg.DeviceInfo;
 import com.google.common.util.concurrent.ListenableFuture;
 
@@ -8,16 +9,40 @@ import com.google.common.util.concurrent.ListenableFuture;
  * @author wangxiao@aibaixun.com
  * @date 2022/3/8
  */
-public interface DeviceInfoService {
+public interface DeviceInfoService   {
 
 
     /**
      * mqtt 密钥验证
-     * @param clientId 客户端id
-     * @param username 用户名
-     * @param password 密码
+     * @param deviceAuthSecretReqMsg 设备密钥请求
      * @return 设备信息
      */
-    ListenableFuture<DeviceInfo> mqttDeviceAuthBySecret(String clientId, String username, String password);
+    ListenableFuture<DeviceInfo> mqttDeviceAuthBySecret(DeviceAuthSecretReqMsg deviceAuthSecretReqMsg);
+
+
+    /**
+     * 修改设备装改为 在线
+     * @param deviceId 设别id
+     * @return 修改后结果
+     */
+    ListenableFuture<Boolean> setDeviceStatus2OnLine(String deviceId);
+
+
+
+    /**
+     * 修改设备装改为 离线
+     * @param deviceId 设别id
+     * @return 修改后结果
+     */
+    ListenableFuture<Boolean> setDeviceStatus2OffOnLine(String deviceId);
+
+
+
+    /**
+     * 修改设备装改为 warn
+     * @param deviceId 设别id
+     * @return 修改后结果
+     */
+    ListenableFuture<Boolean> setDeviceStatus2Warn(String deviceId);
 }
 

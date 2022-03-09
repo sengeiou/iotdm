@@ -43,7 +43,7 @@ public class MqttTransportContext extends TransportContext {
         return maxPayloadSize;
     }
 
-    @Autowired
+
     public void setSslHandlerProvider(MqttSslHandlerProvider sslHandlerProvider) {
         this.sslHandlerProvider = sslHandlerProvider;
     }

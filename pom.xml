@@ -87,6 +87,11 @@
                 <artifactId>transport-api</artifactId>
                 <version>${iotdm.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.aibaixun.iotdm.transport</groupId>
+                <artifactId>mqtt</artifactId>
+                <version>${iotdm.version}</version>
+            </dependency>
             <!--IOTdm  end-->
         </dependencies>
     </dependencyManagement>

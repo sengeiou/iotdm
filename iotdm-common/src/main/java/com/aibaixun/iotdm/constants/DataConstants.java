@@ -20,6 +20,19 @@ public class DataConstants {
      */
     public static String NULL_STR = "NULL";
 
-
+    /**
+     * mqtt 服务名称
+     */
     public static final String MQTT_TRANSPORT_NAME = "MQTT";
+
+
+    /**
+     * iotdm 会话缓存session
+     */
+    public static final String IOT_SESSION_CACHE_KEY_PREFIX = "IOTDM:SESSION:";
+
+    /**
+     * 集群订阅 redis key 过期
+     */
+    public static final String EXPIRED_CHANNEL = "__keyevent@0__:expired";
 }

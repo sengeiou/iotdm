@@ -1,6 +1,6 @@
 package com.aibaixun.iotdm.transport.service;
 
-import com.aibaixun.iotdm.msg.TransportSessionInfo;
+
 import com.aibaixun.iotdm.transport.TransportSessionListener;
 
 /**
@@ -10,22 +10,22 @@ import com.aibaixun.iotdm.transport.TransportSessionListener;
  */
 public class TransportSessionMetaData {
 
-    private TransportSessionInfo transportSessionInfo;
+    private String  deviceId;
 
     private TransportSessionListener listener;
 
 
-    public TransportSessionMetaData(TransportSessionInfo transportSessionInfo, TransportSessionListener listener) {
-        this.transportSessionInfo = transportSessionInfo;
+    public TransportSessionMetaData(String deviceId, TransportSessionListener listener) {
+        this.deviceId = deviceId;
         this.listener = listener;
     }
 
-    public TransportSessionInfo getTransportSessionInfo() {
-        return transportSessionInfo;
+    public String getDeviceId() {
+        return deviceId;
     }
 
-    public void setTransportSessionInfo(TransportSessionInfo transportSessionInfo) {
-        this.transportSessionInfo = transportSessionInfo;
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
     }
 
     public TransportSessionListener getListener() {

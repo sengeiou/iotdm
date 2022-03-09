@@ -1,6 +1,7 @@
 package com.aibaixun.iotdm.service.impl;
 
 import com.aibaixun.iotdm.entity.DeviceEntity;
+import com.aibaixun.iotdm.enums.DeviceAuthType;
 import com.aibaixun.iotdm.enums.DeviceStatus;
 import com.aibaixun.iotdm.mapper.DeviceMapper;
 import com.aibaixun.iotdm.service.IDeviceService;
@@ -91,5 +92,26 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, DeviceEntity> i
     @Override
     public Long countDeviceByDeviceCodeAndProductId(String deviceCode, String productId) {
         return count(Wrappers.<DeviceEntity>lambdaQuery().eq(DeviceEntity::getDeviceCode,deviceCode).eq(DeviceEntity::getProductId,productId));
+    }
+
+    @Override
+    public DeviceEntity queryBy3Param(String clientId, String username, String password) {
+        LambdaQueryWrapper<DeviceEntity> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(DeviceEntity::getId,clientId)
+                .eq(DeviceEntity::getDeviceCode,username)
+                .eq(DeviceEntity::getDeviceSecret,password)
+                .eq(DeviceEntity::getAuthType, DeviceAuthType.SECRET);
+        return getOne(queryWrapper, false);
+    }
+
+
+    @Override
+    public Boolean updateDeviceStatus(String id, DeviceStatus targetStatus) {
+        if (StringUtils.isEmpty(id)){
+            return false;
+        }
+        LambdaUpdateWrapper<DeviceEntity> updateWrapper = Wrappers.lambdaUpdate();
+        updateWrapper.eq(DeviceEntity::getId,id).set(DeviceEntity::getDeviceStatus,targetStatus);
+        return update(updateWrapper);
     }
 }

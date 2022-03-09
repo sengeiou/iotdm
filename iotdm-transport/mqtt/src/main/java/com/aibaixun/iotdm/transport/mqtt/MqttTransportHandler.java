@@ -4,7 +4,8 @@ import com.aibaixun.iotdm.enums.ProtocolType;
 import com.aibaixun.iotdm.msg.DeviceAuthRespMsg;
 import com.aibaixun.iotdm.msg.DeviceAuthSecretReqMsg;
 import com.aibaixun.iotdm.msg.TransportSessionInfo;
-import com.aibaixun.iotdm.msg.TransportSessionInfoCreator;
+import com.aibaixun.iotdm.msg.TransportSessionInfoHolder;
+import com.aibaixun.iotdm.transport.MqttTransportException;
 import com.aibaixun.iotdm.transport.TransportService;
 import com.aibaixun.iotdm.transport.TransportServiceCallback;
 import com.aibaixun.iotdm.transport.TransportSessionListener;
@@ -19,8 +20,8 @@ import io.netty.util.concurrent.GenericFutureListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.net.InetSocketAddress;
+import java.util.Objects;
 import java.util.UUID;
-
 import static io.netty.handler.codec.mqtt.MqttConnectReturnCode.CONNECTION_ACCEPTED;
 import static io.netty.handler.codec.mqtt.MqttConnectReturnCode.CONNECTION_REFUSED_NOT_AUTHORIZED;
 import static io.netty.handler.codec.mqtt.MqttMessageType.*;
@@ -183,7 +184,7 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
     private void processAuthSecretConnect(ChannelHandlerContext channelHandlerContext,String clientId, MqttConnectMessage connectMessage) {
         String userName = connectMessage.payload().userName();
         byte[] passwordBytes = connectMessage.payload().passwordInBytes();
-        String password = new String(passwordBytes, CharsetUtil.UTF_8);
+        String password = Objects.nonNull(passwordBytes)?new String(passwordBytes, CharsetUtil.UTF_8):"";
         log.debug("MqttTransportHandler.processAuthSecretConnect >> [{}][{}] Processing connect msg for client with clientId: {} ,username: {} ,password:{}!", address, sessionId, clientId,userName,password);
         transportService.processDeviceAuthBySecret(ProtocolType.MQTT, new DeviceAuthSecretReqMsg(clientId, userName, password), new TransportServiceCallback<>() {
             @Override
@@ -192,8 +193,12 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
             }
             @Override
             public void onError(Throwable e) {
+                MqttConnectReturnCode mqttConnectReturnCode = MqttConnectReturnCode.CONNECTION_REFUSED_SERVER_UNAVAILABLE;
+                if (e instanceof MqttTransportException){
+                    mqttConnectReturnCode = MqttConnectReturnCode.valueOf(((MqttTransportException) e).getReturnCode());
+                }
                 log.trace("MqttTransportHandler.processAuthSecretConnect [{}] [{}] Failed to process with clientId: {} ,username: {} ,password:{},error msg :{}", address, sessionId, clientId, userName, password, e.getMessage());
-                channelHandlerContext.writeAndFlush(createMqttConnAckMsg(MqttConnectReturnCode.CONNECTION_REFUSED_SERVER_UNAVAILABLE, connectMessage));
+                channelHandlerContext.writeAndFlush(createMqttConnAckMsg(mqttConnectReturnCode, connectMessage));
                 channelHandlerContext.close();
             }
         });
@@ -220,24 +225,33 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
             ctx.close();
         } else {
             context.onDeviceAuthSuccess(address);
-            TransportSessionInfo transportSessionInfo = TransportSessionInfoCreator.create(respMsg.getDeviceInfo(), sessionId);
-            deviceSessionCtx.setSessionInfo(transportSessionInfo);
+            TransportSessionInfo transportSessionInfo = TransportSessionInfoHolder.create(respMsg.getDeviceInfo(), sessionId);
             ctx.writeAndFlush(createMqttConnAckMsg(CONNECTION_ACCEPTED, connectMessage));
-            deviceSessionCtx.setConnected();
+            initDeviceSessionCtx(transportSessionInfo);
             transportService.processDeviceConnectSuccess(transportSessionInfo, new TransportServiceCallback<>() {
                 @Override
-                public void onSuccess(Void msg) {
-                    transportService.registerSession(deviceSessionCtx.getSessionInfo(), MqttTransportHandler.this);
+                public void onSuccess(Boolean msg) {
+                    transportService.registerSession(transportSessionInfo, MqttTransportHandler.this);
                 }
 
                 @Override
                 public void onError(Throwable e) {
-                    log.warn("[{}] Failed to submit session event", sessionId, e);
+                    log.warn("MqttTransportHandler.processDeviceAuthResponse >> [{}] [{}] Failed to submit session event", address, sessionId, e);
                     ctx.writeAndFlush(createMqttConnAckMsg(MqttConnectReturnCode.CONNECTION_REFUSED_SERVER_UNAVAILABLE, connectMessage));
                     ctx.close();
                 }
             });
         }
+    }
+
+    /**
+     * 设置设备上下文 信息
+     * @param transportSessionInfo session 信息
+     */
+    private void initDeviceSessionCtx(TransportSessionInfo transportSessionInfo) {
+        deviceSessionCtx.setConnected();
+        deviceSessionCtx.setDeviceId(transportSessionInfo.getDeviceId());
+        deviceSessionCtx.setProductId(transportSessionInfo.getProductId());
     }
 
     /**
@@ -278,6 +292,11 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
      * @param mqttPublishMessage 发布消息
      */
    private void  processPublishMsg (ChannelHandlerContext channelHandlerContext,MqttPublishMessage mqttPublishMessage) {
+       if (!checkConnected()) {
+           return;
+       }
+       String topicName = mqttPublishMessage.variableHeader().topicName();
+       int msgId = mqttPublishMessage.variableHeader().packetId();
 
     }
 
@@ -307,7 +326,7 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
     private void processPingMsg(ChannelHandlerContext channelHandlerContext){
         if (checkConnected()) {
             channelHandlerContext.writeAndFlush(new MqttMessage(new MqttFixedHeader(PINGRESP, false, AT_MOST_ONCE, false, 0)));
-            transportService.reportActivity(deviceSessionCtx.getSessionInfo());
+            transportService.reportActivity(deviceSessionCtx.getSessionId(), deviceSessionCtx.getDeviceId());
         }
     }
 
@@ -317,6 +336,7 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
      */
     private void  processDisConnectMsg(ChannelHandlerContext channelHandlerContext){
         channelHandlerContext.close();
+        transportService.processDeviceDisConnect(deviceSessionCtx.getSessionId(), deviceSessionCtx.getDeviceId());
     }
 
 
@@ -341,11 +361,15 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
         }
     }
 
+
+    /**
+     * 处理断开连接
+     */
     private void doDisconnect() {
         if (deviceSessionCtx.isConnected()) {
             log.debug("MqttTransportHandler.doDisconnect >> [{}] Client disconnected!", sessionId);
-            transportService.processDeviceDisConnect(deviceSessionCtx.getSessionInfo(), null);
-            transportService.deregisterSession(deviceSessionCtx.getSessionInfo());
+            transportService.processDeviceDisConnect(deviceSessionCtx.getSessionId(), deviceSessionCtx.getDeviceId());
+            transportService.deregisterSession(deviceSessionCtx.getSessionId(), deviceSessionCtx.getDeviceId());
             deviceSessionCtx.setDisconnected();
         }
     }

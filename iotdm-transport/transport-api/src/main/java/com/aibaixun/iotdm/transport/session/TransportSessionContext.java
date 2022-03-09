@@ -1,7 +1,5 @@
 package com.aibaixun.iotdm.transport.session;
 
-import com.aibaixun.iotdm.msg.DeviceInfo;
-import com.aibaixun.iotdm.msg.TransportSessionInfo;
 
 import java.util.UUID;
 
@@ -25,11 +23,16 @@ public interface TransportSessionContext {
      */
     int nextMsgId();
 
+    /**
+     * 设备id
+     * @return String
+     */
+    String getDeviceId();
+
 
     /**
-     * 设备更新
-     * @param sessionInfo session 信息
-     * @param deviceInfo 设备信息
+     * 产品id
+     * @return String
      */
-    void onDeviceUpdate(TransportSessionInfo sessionInfo, DeviceInfo deviceInfo);
+    String getProductId();
 }

@@ -1,7 +1,6 @@
 package com.aibaixun.iotdm.transport.session;
 
-import com.aibaixun.iotdm.msg.DeviceInfo;
-import com.aibaixun.iotdm.msg.TransportSessionInfo;
+
 
 import java.util.UUID;
 
@@ -17,7 +16,6 @@ public abstract class DeviceAwareSessionContext implements TransportSessionConte
 
     private volatile boolean connected;
 
-    private TransportSessionInfo sessionInfo;
 
     protected DeviceAwareSessionContext(UUID sessionId) {
         this.sessionId = sessionId;
@@ -43,16 +41,4 @@ public abstract class DeviceAwareSessionContext implements TransportSessionConte
     }
 
 
-    @Override
-    public void onDeviceUpdate(TransportSessionInfo sessionInfo, DeviceInfo deviceInfo) {
-        this.sessionInfo = sessionInfo;
-    }
-
-    public TransportSessionInfo getSessionInfo() {
-        return sessionInfo;
-    }
-
-    public void setSessionInfo(TransportSessionInfo sessionInfo) {
-        this.sessionInfo = sessionInfo;
-    }
 }

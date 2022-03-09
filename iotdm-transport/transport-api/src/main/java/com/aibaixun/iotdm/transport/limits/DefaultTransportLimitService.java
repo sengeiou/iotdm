@@ -3,6 +3,7 @@ package com.aibaixun.iotdm.transport.limits;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -14,6 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author wangxiao@aibaixun.com
  * @date 2022/3/8
  */
+@Service
 public class DefaultTransportLimitService implements TransportLimitService {
 
     private final Logger log  = LoggerFactory.getLogger(DefaultTransportLimitService.class);

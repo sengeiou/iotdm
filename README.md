@@ -26,3 +26,9 @@ iotdm
 ```
 ## 说明 
 - 未使用百讯模版中db与redis，需要一些定制化开发
+- redis 开启订阅通知
+1. 修改redis.conf 配置文件
+```
+# 原来是""空
+notify-keyspace-events "Ex"
+```

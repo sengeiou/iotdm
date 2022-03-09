@@ -96,4 +96,23 @@ public interface IDeviceService extends IService<DeviceEntity> {
      */
     Long countDeviceByDeviceCodeAndProductId(String deviceCode,String productId);
 
+
+    /**
+     * 通过三元素查询设备
+     * @param clientId 客户端id
+     * @param username 用户名
+     * @param password 密码
+     * @return 设备实体
+     */
+    DeviceEntity queryBy3Param(String clientId,String username,String password);
+
+
+    /**
+     * 修改设备状态
+     * @param id 设备id
+     * @param targetStatus 目标状态
+     * @return 修改结果
+     */
+    Boolean updateDeviceStatus(String id,DeviceStatus targetStatus);
+
 }

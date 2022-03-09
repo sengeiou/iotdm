@@ -29,6 +29,12 @@ public class TransportSessionInfo {
 
     private String tenantId;
 
+
+    private long lastConnectTime;
+
+
+    private long  lastActivityTime;
+
     protected TransportSessionInfo() {}
 
     public UUID getSessionId() {
@@ -93,5 +99,21 @@ public class TransportSessionInfo {
 
     public void setDeviceCode(String deviceCode) {
         this.deviceCode = deviceCode;
+    }
+
+    public long getLastConnectTime() {
+        return lastConnectTime;
+    }
+
+    public void setLastConnectTime(long lastConnectTime) {
+        this.lastConnectTime = lastConnectTime;
+    }
+
+    public long getLastActivityTime() {
+        return lastActivityTime;
+    }
+
+    public void setLastActivityTime(long lastActivityTime) {
+        this.lastActivityTime = lastActivityTime;
     }
 }
