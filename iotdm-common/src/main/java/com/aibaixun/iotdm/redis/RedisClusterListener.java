@@ -21,14 +21,14 @@ import javax.annotation.PostConstruct;
 @ConditionalOnExpression("!'${spring.redis.sub.cluster:}'.isEmpty()")
 public class RedisClusterListener extends RedisClusterPubSubAdapter<String,String> implements RedisKeyExpirationListener {
 
-    private final Logger log  = LoggerFactory.getLogger(RedisClusterListener.class);
+    private final Logger log = LoggerFactory.getLogger(RedisClusterListener.class);
 
     private DeviceInfoService deviceInfoService;
 
     @Override
     public void message(RedisClusterNode node, String pattern, String channel, String message) {
-        log.info("RedisClusterListener.message >> receive redis key expire message ,node:{},channel:{},message:{}",node,channel,message);
-        if (checkChannelAndKey(channel,channel)){
+        log.info("RedisClusterListener.message >> receive redis key expire message ,node:{},channel:{},message:{}", node, channel, message);
+        if (checkChannelAndKey(channel, channel)) {
             doExpirationMessage(message);
         }
     }
@@ -43,10 +43,5 @@ public class RedisClusterListener extends RedisClusterPubSubAdapter<String,Strin
     @Override
     public DeviceInfoService getDeviceInfoService() {
         return deviceInfoService;
-    }
-
-    @PostConstruct
-   public void init (){
-        System.out.println("111");
     }
 }

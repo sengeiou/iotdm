@@ -58,10 +58,4 @@ public class RedisStandAloneListener extends KeyExpirationEventMessageListener i
         return deviceInfoService;
     }
 
-
-
-    @PostConstruct
-    public void initOverss (){
-        System.out.println("222");
-    }
 }
