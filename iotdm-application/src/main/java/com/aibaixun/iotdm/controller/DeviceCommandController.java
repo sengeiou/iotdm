@@ -2,6 +2,7 @@ package com.aibaixun.iotdm.controller;
 
 import com.aibaixun.basic.result.JsonResult;
 import com.aibaixun.iotdm.entity.DeviceCommandSendEntity;
+import com.aibaixun.iotdm.entity.ModelCommandEntity;
 import com.aibaixun.iotdm.service.IDeviceCommandSendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,6 +36,7 @@ public class DeviceCommandController extends BaseController{
         List<DeviceCommandSendEntity> deviceCommandSendEntities = deviceCommandSendService.queryDeviceCommandSend(deviceId,commandLabel, commandId, startTs, endTs, limit);
         return JsonResult.success(deviceCommandSendEntities);
     }
+
 
     @Autowired
     public void setDeviceCommandSendService(IDeviceCommandSendService deviceCommandSendService) {

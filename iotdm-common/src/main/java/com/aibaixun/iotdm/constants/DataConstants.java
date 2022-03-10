@@ -31,6 +31,12 @@ public class DataConstants {
      */
     public static final String IOT_SESSION_CACHE_KEY_PREFIX = "IOTDM:SESSION:";
 
+
+    /**
+     * iotdm debug 信息 缓存
+     */
+    public static final String IOT_DEVICE_DEBUG_CACHE_KEY = "IOTDM:DEVICE:DEBUG:";
+
     /**
      * 集群订阅 redis key 过期
      */

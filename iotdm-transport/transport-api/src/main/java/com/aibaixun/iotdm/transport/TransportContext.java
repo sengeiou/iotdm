@@ -1,7 +1,6 @@
 package com.aibaixun.iotdm.transport;
 
 import com.aibaixun.iotdm.transport.limits.TransportLimitService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
@@ -16,7 +15,7 @@ public abstract class TransportContext {
 
     protected TransportLimitService transportRateLimitService;
 
-    protected final ObjectMapper mapper = new ObjectMapper();
+
 
     @Autowired
     public void setTransportService(TransportService transportService) {
@@ -37,8 +36,6 @@ public abstract class TransportContext {
         return transportRateLimitService;
     }
 
-    public ObjectMapper getMapper() {
-        return mapper;
-    }
+
 
 }

@@ -1,6 +1,7 @@
 package com.aibaixun.iotdm.entity;
 
 
+import com.aibaixun.iotdm.enums.ResourceType;
 import com.aibaixun.iotdm.support.BaseResourceConfig;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -21,10 +22,14 @@ public class RuleResourceEntity extends BaseEntity {
 
 
     /**
-     *
+     * 资源名称
      */
     private String resourceLabel;
 
+    /**
+     * 资源类型
+     */
+    private ResourceType resourceType;
 
     /**
      * 资源参数
@@ -66,11 +71,20 @@ public class RuleResourceEntity extends BaseEntity {
     }
 
 
+    public ResourceType getResourceType() {
+        return resourceType;
+    }
+
+    public void setResourceType(ResourceType resourceType) {
+        this.resourceType = resourceType;
+    }
+
 
     @Override
     public String toString() {
-        return "RuleResource{" +
+        return "RuleResourceEntity{" +
                 "resourceLabel='" + resourceLabel + '\'' +
+                ", resourceType=" + resourceType +
                 ", configuration=" + configuration +
                 ", deleted=" + deleted +
                 '}';

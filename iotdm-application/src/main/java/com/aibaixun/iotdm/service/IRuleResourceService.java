@@ -1,6 +1,7 @@
 package com.aibaixun.iotdm.service;
 
 import com.aibaixun.iotdm.entity.RuleResourceEntity;
+import com.aibaixun.iotdm.enums.ResourceType;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -31,8 +32,9 @@ public interface IRuleResourceService extends IService<RuleResourceEntity> {
      * 查询 资源列表
      * @param limit 限制数目
      * @param resourceLabel 资源名称
+     * @param resourceType 资源类型
      * @return 资源列表
      */
-    List<RuleResourceEntity> listQueryRuleResource (Integer limit, String resourceLabel);
+    List<RuleResourceEntity> listQueryRuleResource (Integer limit, String resourceLabel, ResourceType resourceType);
 
 }

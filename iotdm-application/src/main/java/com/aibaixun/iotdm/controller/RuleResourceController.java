@@ -4,6 +4,7 @@ import com.aibaixun.basic.exception.BaseException;
 import com.aibaixun.basic.result.BaseResultCode;
 import com.aibaixun.basic.result.JsonResult;
 import com.aibaixun.iotdm.entity.RuleResourceEntity;
+import com.aibaixun.iotdm.enums.ResourceType;
 import com.aibaixun.iotdm.service.IForwardTargetService;
 import com.aibaixun.iotdm.service.IRuleResourceService;
 import com.aibaixun.iotdm.util.UserInfoUtil;
@@ -46,17 +47,25 @@ public class RuleResourceController extends BaseController{
 
     @GetMapping("/list")
     public JsonResult<List<RuleResourceEntity>> listQueryRuleResourceEntity (@RequestParam(required = false) Integer limit,
-                                                                 @RequestParam(required = false) String resourceLabel) {
+                                                                 @RequestParam(required = false) String resourceLabel,
+                                                                 @RequestParam(required = false) ResourceType resourceType) {
         if (Objects.isNull(limit)){
             limit =50;
         }
-        List<RuleResourceEntity> ruleResourceEntities = ruleResourceService.listQueryRuleResource(limit, resourceLabel);
+        List<RuleResourceEntity> ruleResourceEntities = ruleResourceService.listQueryRuleResource(limit, resourceLabel,resourceType);
         return JsonResult.success(ruleResourceEntities);
     }
 
 
     @PostMapping
-    public JsonResult<Boolean> createRuleResourceEntity (@RequestBody @Valid RuleResourceEntity ruleResourceEntity) {
+    public JsonResult<Boolean> createRuleResourceEntity (@RequestBody @Valid RuleResourceEntity ruleResourceEntity) throws BaseException {
+
+        if (Objects.isNull(ruleResourceEntity.getConfiguration())){
+            throw new BaseException("资源id配置项不允许为空", BaseResultCode.BAD_PARAMS);
+        }
+        if (Objects.isNull(ruleResourceEntity.getResourceType())){
+            ruleResourceEntity.setResourceType(ruleResourceEntity.getConfiguration().getResourceType());
+        }
         boolean save = ruleResourceService.save(ruleResourceEntity);
         return JsonResult.success(save);
     }

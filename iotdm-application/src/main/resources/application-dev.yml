@@ -29,6 +29,7 @@ spring:
     database: 0
     sub:
       cluster: redis://172.16.9.2:6379
+
 bx:
   swagger:
     applicationName: IOTdmApplication

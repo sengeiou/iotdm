@@ -1,6 +1,7 @@
 package com.aibaixun.iotdm.service.impl;
 
 import com.aibaixun.iotdm.entity.RuleResourceEntity;
+import com.aibaixun.iotdm.enums.ResourceType;
 import com.aibaixun.iotdm.mapper.RuleResourceMapper;
 import com.aibaixun.iotdm.service.IRuleResourceService;
 import com.aibaixun.iotdm.util.UserInfoUtil;
@@ -8,6 +9,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -39,11 +41,14 @@ public class RuleResourceServiceImpl extends ServiceImpl<RuleResourceMapper, Rul
 
 
     @Override
-    public List<RuleResourceEntity> listQueryRuleResource(Integer limit, String resourceLabel) {
+    public List<RuleResourceEntity> listQueryRuleResource(Integer limit, String resourceLabel, ResourceType resourceType) {
         LambdaQueryWrapper<RuleResourceEntity> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(RuleResourceEntity::getTenantId, UserInfoUtil.getTenantIdOfNull());
-        if (Objects.nonNull(resourceLabel)){
+        if (StringUtils.isNotBlank(resourceLabel)){
             queryWrapper.likeRight(RuleResourceEntity::getResourceLabel,resourceLabel);
+        }
+        if (Objects.nonNull(resourceType)){
+            queryWrapper.eq(RuleResourceEntity::getResourceType,resourceType);
         }
         queryWrapper.orderByDesc(RuleResourceEntity::getCreateTime);
         queryWrapper.last(" LIMIT "+ limit);

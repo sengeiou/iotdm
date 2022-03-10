@@ -3,11 +3,11 @@ package com.aibaixun.iotdm.controller;
 import com.aibaixun.basic.exception.BaseException;
 import com.aibaixun.basic.result.BaseResultCode;
 import com.aibaixun.basic.result.JsonResult;
+import com.aibaixun.common.redis.util.RedisRepository;
+import com.aibaixun.iotdm.constants.DataConstants;
 import com.aibaixun.iotdm.entity.DeviceEntity;
-import com.aibaixun.iotdm.entity.DeviceTraceEntity;
 import com.aibaixun.iotdm.entity.MessageTraceEntity;
 import com.aibaixun.iotdm.service.IDeviceService;
-import com.aibaixun.iotdm.service.IDeviceTraceService;
 import com.aibaixun.iotdm.service.IMessageTraceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,36 +24,46 @@ import java.util.Objects;
 @RequestMapping("/device-trace")
 public class DeviceTraceController extends BaseController{
 
-
-
-    private IDeviceTraceService deviceTraceService;
-
+    private RedisRepository redisRepository;
 
     private IDeviceService deviceService;
 
     private IMessageTraceService messageTraceService;
 
-    @PostMapping("/debug")
-    public JsonResult<Boolean>  debugDevice(@RequestBody @Valid DeviceTraceEntity deviceTraceEntity) throws BaseException {
-        String deviceId = deviceTraceEntity.getDeviceId();
-        Boolean traceDebug = deviceTraceEntity.getTraceDebug();
+    @GetMapping("/debug/{deviceId}")
+    public JsonResult<Boolean>  debugDevice(@PathVariable String deviceId) throws BaseException {
+
         DeviceEntity deviceEntity = deviceService.getById(deviceId);
         if (Objects.isNull(deviceEntity)){
             throw new BaseException("设备信息不存在，无法在线调试", BaseResultCode.GENERAL_ERROR);
         }
-        Boolean aBoolean = deviceTraceService.debugDevice(deviceId, traceDebug);
-        return JsonResult.success(aBoolean);
+        redisRepository.setExpire(DataConstants.IOT_DEVICE_DEBUG_CACHE_KEY+deviceId,60,60 );
+        return JsonResult.success(true);
     }
 
-    @PostMapping
-    public JsonResult<Boolean> traceDevice(@RequestBody @Valid DeviceTraceEntity deviceTraceEntity) throws BaseException {
-        String deviceId = deviceTraceEntity.getDeviceId();
+    @GetMapping("/{deviceId}")
+    public JsonResult<Boolean> traceDevice(@PathVariable String deviceId,@RequestParam Long ttl) throws BaseException {
+
         DeviceEntity deviceEntity = deviceService.getById(deviceId);
         if (Objects.isNull(deviceEntity)){
             throw new BaseException("设备信息不存在，无法在线调试", BaseResultCode.GENERAL_ERROR);
         }
-        Boolean aBoolean = deviceTraceService.traceDevice(deviceTraceEntity);
-        return JsonResult.success(aBoolean);
+        long threeDay = 259200;
+        if (ttl> threeDay){
+            throw new BaseException("最多可以追踪3天消息", BaseResultCode.GENERAL_ERROR);
+        }
+        redisRepository.setExpire(DataConstants.IOT_DEVICE_DEBUG_CACHE_KEY+deviceId,ttl,ttl );
+        return JsonResult.success(true);
+    }
+
+
+    @GetMapping
+    public JsonResult<Long> tranceDevice (@RequestParam String deviceId){
+        Long ttl = ((Long) redisRepository.get(DataConstants.IOT_DEVICE_DEBUG_CACHE_KEY + deviceId));
+        if (ttl >60){
+            return JsonResult.success(ttl);
+        }
+        return JsonResult.success(null);
     }
 
 
@@ -63,14 +73,15 @@ public class DeviceTraceController extends BaseController{
     public JsonResult<List<MessageTraceEntity>> getDeviceTrace (@PathVariable String deviceId,
                                                                 @PathVariable Long ts){
         List<MessageTraceEntity> messageTraceEntities = messageTraceService.queryMessageTrace(deviceId, ts);
+        Long ttl = ((Long) redisRepository.get(DataConstants.IOT_DEVICE_DEBUG_CACHE_KEY + deviceId));
+        if (Objects.isNull(ttl)){
+            redisRepository.setExpire(DataConstants.IOT_DEVICE_DEBUG_CACHE_KEY+deviceId,60,60 );
+        }
         return JsonResult.success(messageTraceEntities);
     }
 
 
-    @Autowired
-    public void setDeviceTraceService(IDeviceTraceService deviceTraceService) {
-        this.deviceTraceService = deviceTraceService;
-    }
+
 
     @Autowired
     public void setDeviceService(IDeviceService deviceService) {
@@ -80,5 +91,10 @@ public class DeviceTraceController extends BaseController{
     @Autowired
     public void setMessageTraceService(IMessageTraceService messageTraceService) {
         this.messageTraceService = messageTraceService;
+    }
+
+    @Autowired
+    public void setRedisRepository(RedisRepository redisRepository) {
+        this.redisRepository = redisRepository;
     }
 }

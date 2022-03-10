@@ -16,6 +16,6 @@ public class SqlExecutorService extends AbstractListeningExecutor{
 
     @Override
     protected int getThreadPollSize() {
-        return poolSize;
+        return poolSize/2;
     }
 }
