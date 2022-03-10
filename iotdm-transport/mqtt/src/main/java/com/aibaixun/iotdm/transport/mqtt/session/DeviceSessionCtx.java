@@ -1,5 +1,6 @@
 package com.aibaixun.iotdm.transport.mqtt.session;
 
+import com.aibaixun.iotdm.enums.DataFormat;
 import com.aibaixun.iotdm.transport.mqtt.MqttTransportContext;
 import com.aibaixun.iotdm.transport.session.DeviceAwareSessionContext;
 import io.netty.channel.ChannelHandlerContext;
@@ -29,6 +30,9 @@ public class DeviceSessionCtx extends DeviceAwareSessionContext {
 
 
     private volatile String productId;
+
+
+    private volatile DataFormat dataFormat;
 
 
     public DeviceSessionCtx(UUID sessionId, MqttTransportContext context) {
@@ -74,4 +78,16 @@ public class DeviceSessionCtx extends DeviceAwareSessionContext {
         this.productId = productId;
     }
 
+
+    public AtomicInteger getMsgIdSeq() {
+        return msgIdSeq;
+    }
+
+    public DataFormat getDataFormat() {
+        return dataFormat;
+    }
+
+    public void setDataFormat(DataFormat dataFormat) {
+        this.dataFormat = dataFormat;
+    }
 }

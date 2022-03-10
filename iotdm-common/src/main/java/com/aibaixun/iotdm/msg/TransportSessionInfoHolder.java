@@ -33,8 +33,9 @@ public class TransportSessionInfoHolder {
     }
 
 
-    public static TransportSessionInfo activity (TransportSessionInfo sessionInfo){
-        sessionInfo.setLastActivityTime(Instant.now().toEpochMilli());
-        return sessionInfo;
+    public static void activity (TransportSessionInfo sessionInfo){
+        if (sessionInfo != null){
+            sessionInfo.setLastActivityTime(Instant.now().toEpochMilli());
+        }
     }
 }

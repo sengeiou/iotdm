@@ -1,5 +1,6 @@
 package com.aibaixun.iotdm.transport;
 
+import com.aibaixun.iotdm.enums.DataFormat;
 import com.aibaixun.iotdm.enums.ProtocolType;
 import com.aibaixun.iotdm.msg.DeviceAuthRespMsg;
 import com.aibaixun.iotdm.msg.DeviceAuthSecretReqMsg;
@@ -34,10 +35,11 @@ public interface TransportService {
     /**
      * 设备断开连接
      * @param sessionId 会话信息
+     * @param productId 产品id  [主要防止缓存移除 但tcp 未断开]
      * @param deviceId 设备id  [主要防止缓存移除 但tcp 未断开]
      * @param hostName 连接地址
      */
-    void processDeviceDisConnect(UUID sessionId,String deviceId,String hostName);
+    void processDeviceDisConnect(UUID sessionId,String productId,String deviceId,String hostName);
 
 
     /**
@@ -71,5 +73,29 @@ public interface TransportService {
      * @param sessionId session 信息
      */
     void reportActivity(UUID sessionId,String deviceId);
+
+
+    /**
+     * 发布 设备上报属性
+     * @param sessionId session 信息
+     * @param payload 负载内容
+     * @param deviceId 设备id
+     * @param productId 产品id
+     * @param dataFormat 数据格式
+     * @param callback 回调函数
+     */
+    void  processPropertyUp(UUID sessionId, String deviceId, String productId, DataFormat dataFormat,String payload,TransportServiceCallback<Void> callback);
+
+
+    /**
+     * 发布 设备上报消息
+     * @param sessionId session 信息
+     * @param payload 负载内容
+     * @param deviceId 设备id
+     * @param productId 产品id
+     * @param dataFormat 数据格式
+     * @param callback 回调函数
+     */
+    void  processMessageUp(UUID sessionId, String deviceId, String productId,String payload,TransportServiceCallback<Void> callback);
 
 }

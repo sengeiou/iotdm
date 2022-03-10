@@ -1,16 +1,20 @@
 package com.aibaixun.iotdm.transport.service;
 
+import com.aibaixun.iotdm.enums.DataFormat;
 import com.aibaixun.iotdm.enums.ProtocolType;
 import com.aibaixun.iotdm.msg.DeviceAuthRespMsg;
 import com.aibaixun.iotdm.msg.DeviceAuthSecretReqMsg;
+import com.aibaixun.iotdm.msg.SessionEventType;
 import com.aibaixun.iotdm.msg.TransportSessionInfo;
 import com.aibaixun.iotdm.service.DeviceInfoService;
+import com.aibaixun.iotdm.service.IotDmEventPublisher;
 import com.aibaixun.iotdm.service.SessionCacheService;
 import com.aibaixun.iotdm.transport.MqttTransportException;
 import com.aibaixun.iotdm.transport.TransportService;
 import com.aibaixun.iotdm.transport.TransportServiceCallback;
 import com.aibaixun.iotdm.transport.TransportSessionListener;
 import com.aibaixun.iotdm.util.AsyncCallbackTemplate;
+import com.google.common.util.concurrent.AsyncCallable;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
@@ -37,6 +41,9 @@ public class DefaultTransportService implements TransportService {
 
 
     private SessionCacheService sessionCacheService;
+
+
+    private IotDmEventPublisher iotDmEventPublisher;
 
 
     private final Logger log  = LoggerFactory.getLogger(DefaultTransportService.class);
@@ -70,15 +77,18 @@ public class DefaultTransportService implements TransportService {
         ListenableFuture<Boolean> setDeviceStatus = Futures.transform(deviceInfoService.setDeviceStatus2OnLine(sessionInfo.getDeviceId()),
                 status -> status, MoreExecutors.directExecutor());
         AsyncCallbackTemplate.withCallback(setDeviceStatus,callback::onSuccess,callback::onError,MoreExecutors.directExecutor());
+        Futures.submit(()->iotDmEventPublisher.publishDeviceSessionEvent(sessionInfo.getProductId(),sessionInfo.getDeviceId(), SessionEventType.CONNECT),MoreExecutors.directExecutor());
     }
 
     @Override
-    public void processDeviceDisConnect(UUID sessionId, String deviceId,String hostName) {
+    public void processDeviceDisConnect(UUID sessionId, String productId,String deviceId,String hostName) {
         TransportSessionInfo sessionFromCache = sessionCacheService.getSessionFromCache(sessionId, deviceId);
         var  lastConnect = Objects.nonNull(sessionFromCache)?sessionFromCache.getLastConnectTime():null;
-        var  lastCActivity = Objects.nonNull(sessionFromCache)?sessionFromCache.getLastActivityTime():null;
-        Futures.transform(deviceInfoService.setDeviceStatus2OffOnLine(deviceId,lastConnect,lastCActivity,hostName),
+        var  lastActivity = Objects.nonNull(sessionFromCache)?sessionFromCache.getLastActivityTime():null;
+        Futures.transform(deviceInfoService.setDeviceStatus2OffOnLine(deviceId,lastConnect,lastActivity,hostName),
                 status -> null, MoreExecutors.directExecutor());
+
+        Futures.submit(()->iotDmEventPublisher.publishDeviceSessionEvent(productId,deviceId, SessionEventType.DISCONNECT),MoreExecutors.directExecutor());
     }
 
 
@@ -106,6 +116,31 @@ public class DefaultTransportService implements TransportService {
         sessionCacheService.activitySessionCache(sessionId,deviceId,90);
     }
 
+
+
+
+
+    @Override
+    public void processPropertyUp(UUID sessionId, String deviceId, String productId, DataFormat dataFormat, String payload, TransportServiceCallback<Void> callback) {
+        if (checkSessionAndLimit(sessionId,deviceId)){
+            ListenableFuture<Void> listenableFuture = Futures.submit(() -> iotDmEventPublisher.publishPropertyUpEvent(productId, deviceId, dataFormat, payload), MoreExecutors.directExecutor());
+            AsyncCallbackTemplate.withCallback(listenableFuture,callback::onSuccess,callback::onError,MoreExecutors.directExecutor());
+        }
+    }
+
+
+    @Override
+    public void processMessageUp(UUID sessionId, String deviceId, String productId, String payload, TransportServiceCallback<Void> callback) {
+        if (checkSessionAndLimit(sessionId,deviceId)){
+            ListenableFuture<Void> listenableFuture = Futures.submit(() -> iotDmEventPublisher.publishMessageUpEvent(productId, deviceId, payload), MoreExecutors.directExecutor());
+            AsyncCallbackTemplate.withCallback(listenableFuture,callback::onSuccess,callback::onError,MoreExecutors.directExecutor());
+        }
+    }
+
+    private boolean  checkSessionAndLimit(UUID sessionId, String deviceId){
+        return true;
+    }
+
     @Autowired
     public void setDeviceInfoService(DeviceInfoService deviceInfoService) {
         this.deviceInfoService = deviceInfoService;
@@ -114,5 +149,11 @@ public class DefaultTransportService implements TransportService {
     @Autowired
     public void setSessionCacheService(SessionCacheService sessionCacheService) {
         this.sessionCacheService = sessionCacheService;
+    }
+
+
+    @Autowired
+    public void setIotDmEventPublisher(IotDmEventPublisher iotDmEventPublisher) {
+        this.iotDmEventPublisher = iotDmEventPublisher;
     }
 }
