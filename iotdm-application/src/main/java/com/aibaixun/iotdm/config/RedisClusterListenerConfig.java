@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Configuration;
  * @date 2022/3/9
  */
 @Configuration
-//@ConditionalOnExpression("!'${spring.redis.sub.cluster:}'.isEmpty()")
+@ConditionalOnExpression("!'${spring.redis.sub.cluster:}'.isEmpty()")
 public class RedisClusterListenerConfig {
 
     @Value("${spring.redis.sub.cluster}")

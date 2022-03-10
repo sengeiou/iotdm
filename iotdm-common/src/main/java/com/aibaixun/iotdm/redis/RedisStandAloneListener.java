@@ -1,7 +1,6 @@
 package com.aibaixun.iotdm.redis;
 
 import com.aibaixun.iotdm.service.DeviceInfoService;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +10,7 @@ import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.listener.KeyExpirationEventMessageListener;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
 import java.nio.charset.StandardCharsets;
-import java.time.Instant;
 
 
 
