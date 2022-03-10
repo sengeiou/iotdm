@@ -35,6 +35,14 @@ public class DeviceSessionCtx extends DeviceAwareSessionContext {
     private volatile DataFormat dataFormat;
 
 
+    private volatile boolean subscribeControl;
+
+    private volatile boolean subscribeConfig;
+
+
+    private volatile boolean subscribeOta;
+
+
     public DeviceSessionCtx(UUID sessionId, MqttTransportContext context) {
         super(sessionId);
         this.context = context;
@@ -89,5 +97,30 @@ public class DeviceSessionCtx extends DeviceAwareSessionContext {
 
     public void setDataFormat(DataFormat dataFormat) {
         this.dataFormat = dataFormat;
+    }
+
+
+    public boolean isSubscribeControl() {
+        return subscribeControl;
+    }
+
+    public void setSubscribeControl(boolean subscribeControl) {
+        this.subscribeControl = subscribeControl;
+    }
+
+    public boolean isSubscribeConfig() {
+        return subscribeConfig;
+    }
+
+    public void setSubscribeConfig(boolean subscribeConfig) {
+        this.subscribeConfig = subscribeConfig;
+    }
+
+    public boolean isSubscribeOta() {
+        return subscribeOta;
+    }
+
+    public void setSubscribeOta(boolean subscribeOta) {
+        this.subscribeOta = subscribeOta;
     }
 }

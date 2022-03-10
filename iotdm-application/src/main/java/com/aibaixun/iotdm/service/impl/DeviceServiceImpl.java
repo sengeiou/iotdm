@@ -125,5 +125,4 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, DeviceEntity> i
         return update(updateWrapper);
     }
 
-
 }

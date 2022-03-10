@@ -29,9 +29,7 @@ public class TransportSessionInfo {
 
     private String tenantId;
 
-
     private long lastConnectTime;
-
 
     private long  lastActivityTime;
 

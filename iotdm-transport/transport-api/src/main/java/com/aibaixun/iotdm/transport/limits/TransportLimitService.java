@@ -31,5 +31,11 @@ public interface TransportLimitService {
     void onDeviceAuthFailure(InetSocketAddress address);
 
 
+    /**
+     * 租户连接数限制
+     * @param tenantId 租户id
+     * @return 是否到达定点
+     */
+    boolean checkTenantLimit(String tenantId);
 
 }

@@ -118,4 +118,7 @@ public interface IDeviceService extends IService<DeviceEntity> {
      */
     Boolean updateDeviceStatus(String id,DeviceStatus targetStatus,Long lastConnect,Long lastActivity,String host);
 
+
+
+
 }

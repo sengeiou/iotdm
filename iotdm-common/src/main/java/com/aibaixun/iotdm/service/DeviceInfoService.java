@@ -47,5 +47,15 @@ public interface DeviceInfoService   {
      * @return 修改后结果
      */
     ListenableFuture<Boolean> setDeviceStatus2Warn(String deviceId);
+
+
+    /**
+     * 命令 已经到达设备
+     * @param deviceId 设备id
+     * @param msgId 消息id
+     * @return 修改后结果
+     */
+    ListenableFuture<Boolean> toDeviceMessageIsReceived(String deviceId,int msgId);
+
 }
 

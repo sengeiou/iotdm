@@ -1,16 +1,18 @@
 package com.aibaixun.iotdm.service.impl;
 
 import com.aibaixun.iotdm.entity.DeviceCommandSendEntity;
+import com.aibaixun.iotdm.enums.CommandSendStatus;
 import com.aibaixun.iotdm.mapper.DeviceCommandSendMapper;
 import com.aibaixun.iotdm.service.IDeviceCommandSendService;
 import com.aibaixun.iotdm.util.UserInfoUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
+import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 
@@ -50,5 +52,14 @@ public class DeviceCommandSendServiceImpl extends ServiceImpl<DeviceCommandSendM
         queryWrapper.orderByDesc(DeviceCommandSendEntity::getRespTs);
         queryWrapper.last(" LIMIT "+limit);
         return list(queryWrapper);
+    }
+
+
+    @Override
+    public Boolean updateDeviceCommandStatus2Received(String deviceId, Integer msgId) {
+        LambdaUpdateWrapper<DeviceCommandSendEntity> updateWrapper = Wrappers.lambdaUpdate();
+        updateWrapper.eq(DeviceCommandSendEntity::getDeviceId,deviceId).eq(DeviceCommandSendEntity::getMsgId,msgId).eq(DeviceCommandSendEntity::getSendStatus, CommandSendStatus.SEND);
+        updateWrapper.set(DeviceCommandSendEntity::getSendStatus,CommandSendStatus.SEND_ARRIVE).set(DeviceCommandSendEntity::getRespTs, Instant.now().toEpochMilli());
+        return update(updateWrapper);
     }
 }

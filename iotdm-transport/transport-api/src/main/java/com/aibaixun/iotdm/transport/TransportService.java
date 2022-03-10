@@ -76,7 +76,7 @@ public interface TransportService {
 
 
     /**
-     * 发布 设备上报属性
+     * 设备上报属性信息
      * @param sessionId session 信息
      * @param payload 负载内容
      * @param deviceId 设备id
@@ -88,7 +88,36 @@ public interface TransportService {
 
 
     /**
-     * 发布 设备上报消息
+     * 设备上报消息信息
+     * @param sessionId session 信息
+     * @param payload 负载内容
+     * @param deviceId 设备id
+     * @param productId 产品id
+     * @param callback 回调函数
+     */
+    void  processMessageUp(UUID sessionId, String deviceId, String productId,String payload,TransportServiceCallback<Void> callback);
+
+
+    /**
+     * 设备上报预警信息
+     * @param sessionId session 信息
+     * @param deviceId 设备id
+     * @param productId 产品id
+     * @param callback 回调函数
+     */
+    void  processWarnUp(UUID sessionId, String deviceId, String productId,TransportServiceCallback<Void> callback);
+
+    /**
+     * 设备上报消息收到消息
+     * @param sessionId session 信息
+     * @param deviceId 设备id
+     * @param msgId 消息id
+     */
+    void  processPubAck(UUID sessionId,String deviceId,int msgId);
+
+
+    /**
+     * 设备上报配置更改反馈
      * @param sessionId session 信息
      * @param payload 负载内容
      * @param deviceId 设备id
@@ -96,6 +125,40 @@ public interface TransportService {
      * @param dataFormat 数据格式
      * @param callback 回调函数
      */
-    void  processMessageUp(UUID sessionId, String deviceId, String productId,String payload,TransportServiceCallback<Void> callback);
+    void  processConfigRespUp(UUID sessionId, String deviceId, String productId, DataFormat dataFormat,String payload,TransportServiceCallback<Void> callback);
+
+    /**
+     * 设备上报OTA更改反馈
+     * @param sessionId session 信息
+     * @param payload 负载内容
+     * @param deviceId 设备id
+     * @param productId 产品id
+     * @param dataFormat 数据格式
+     * @param callback 回调函数
+     */
+    void  processOtaRespUp(UUID sessionId, String deviceId, String productId, DataFormat dataFormat,String payload,TransportServiceCallback<Void> callback);
+
+    /**
+     * 设备上报命令执行反馈
+     * @param sessionId session 信息
+     * @param payload 负载内容
+     * @param deviceId 设备id
+     * @param productId 产品id
+     * @param dataFormat 数据格式
+     * @param callback 回调函数
+     */
+    void  processControlRespUp(UUID sessionId, String deviceId, String productId, DataFormat dataFormat,String payload,TransportServiceCallback<Void> callback);
+
+
+    /**
+     * 设备上报命令请求
+     * @param sessionId session 信息
+     * @param payload 负载内容
+     * @param deviceId 设备id
+     * @param productId 产品id
+     * @param dataFormat 数据格式
+     * @param callback 回调函数
+     */
+    void  processControlReqUp(UUID sessionId, String deviceId, String productId, DataFormat dataFormat,String payload,TransportServiceCallback<Void> callback);
 
 }

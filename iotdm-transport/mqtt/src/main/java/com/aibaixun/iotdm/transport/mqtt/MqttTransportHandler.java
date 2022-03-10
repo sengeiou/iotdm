@@ -21,15 +21,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-import static com.aibaixun.iotdm.constants.TopicConstants.MESSAGE_UP;
-import static com.aibaixun.iotdm.constants.TopicConstants.PROPERTIES_UP;
+import static com.aibaixun.iotdm.constants.TopicConstants.*;
 import static io.netty.handler.codec.mqtt.MqttConnectReturnCode.CONNECTION_ACCEPTED;
 import static io.netty.handler.codec.mqtt.MqttConnectReturnCode.CONNECTION_REFUSED_NOT_AUTHORIZED;
 import static io.netty.handler.codec.mqtt.MqttMessageType.*;
 import static io.netty.handler.codec.mqtt.MqttQoS.AT_MOST_ONCE;
+import static io.netty.handler.codec.mqtt.MqttQoS.FAILURE;
 
 
 /**
@@ -283,7 +285,7 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
                 processDisConnectMsg(channelHandlerContext);
                 break;
             case PUBACK:
-                processPubAckMsg(channelHandlerContext, (MqttPubAckMessage) mqttMessage);
+                processPubAckMsg((MqttPubAckMessage) mqttMessage);
                 break;
             default:
                 break;
@@ -310,6 +312,21 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
                case MESSAGE_UP:
                    processMessageUp(channelHandlerContext,mqttPublishMessage,msgId);
                    break;
+               case CONFIG_RESP:
+                   processConfigRespUp(channelHandlerContext,mqttPublishMessage,msgId);
+                   break;
+               case OTA_RESP:
+                   processOtaRespUp(channelHandlerContext,mqttPublishMessage,msgId);
+                   break;
+               case CONTROL_RESP:
+                   processControlRespUp(channelHandlerContext,mqttPublishMessage,msgId);
+                   break;
+               case CONTROL_REQ:
+                   processControlReqUp(channelHandlerContext,mqttPublishMessage,msgId);
+                   break;
+               case WARN:
+                   processWarnUp(channelHandlerContext, msgId);
+                   break;
                default:
                    log.warn("MqttTransportHandler.processPublishMsg >> [{}] [{}] Failed topic is error,topic:{}", address, sessionId, topicName);
                    channelHandlerContext.close();
@@ -318,8 +335,6 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
            log.warn("MqttTransportHandler.processPublishMsg >> [{}] [{}] error,topic:{},msgId:{}", address, sessionId, topicName,msgId);
            channelHandlerContext.close();
        }
-
-
     }
 
 
@@ -330,7 +345,50 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
      * @param mqttSubscribeMessage 订阅消息
      */
     private void processSubscribeMsg(ChannelHandlerContext channelHandlerContext,MqttSubscribeMessage mqttSubscribeMessage){
-
+        if (!checkConnected()){
+            return;
+        }
+        var msgId = mqttSubscribeMessage.variableHeader().messageId();
+        log.trace("MqttTransportHandler.processSubscribeMsg >> [{}][{}] Processing subscription [{}]!", sessionId,address, msgId);
+        List<Integer> qosList = new ArrayList<>();
+        boolean activityReported = false;
+        for (MqttTopicSubscription subscription : mqttSubscribeMessage.payload().topicSubscriptions()) {
+            String topic = subscription.topicName();
+            MqttQoS reqQoS = subscription.qualityOfService();
+            try {
+                switch (topic) {
+                    case PROPERTIES_GET: {
+                        deviceSessionCtx.setSubscribeConfig(true);
+                        activityReported = true;
+                        qosList.add(AT_MOST_ONCE.value());
+                        break;
+                    }
+                    case OTA_REQ: {
+                        deviceSessionCtx.setSubscribeOta(true);
+                        activityReported = true;
+                        qosList.add(AT_MOST_ONCE.value());
+                        break;
+                    }
+                    case CONTROL_REQ: {
+                        deviceSessionCtx.setSubscribeControl(true);
+                        activityReported = true;
+                        qosList.add(AT_MOST_ONCE.value());
+                        break;
+                    }
+                    default:
+                        log.warn("MqttTransportHandler.processSubscribeMsg >> [{}][{}] Failed to subscribe to [{}][{}]", sessionId,address, topic, reqQoS);
+                        qosList.add(FAILURE.value());
+                        break;
+                }
+            } catch (Exception e) {
+                log.warn("MqttTransportHandler.processSubscribeMsg >> [{}][{}] Failed to subscribe to [{}][{}],error:{}", sessionId,address, topic, reqQoS,e.getMessage());
+                qosList.add(FAILURE.value());
+            }
+        }
+        if (!activityReported) {
+            transportService.reportActivity(deviceSessionCtx.getSessionId(), deviceSessionCtx.getDeviceId());
+        }
+        channelHandlerContext.writeAndFlush(createSubAckMessage(msgId, qosList));
     }
 
     /**
@@ -339,7 +397,43 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
      * @param mqttUnsubscribeMessage 取消订阅消息
      */
     private void processUnsubscribeMsg(ChannelHandlerContext channelHandlerContext, MqttUnsubscribeMessage mqttUnsubscribeMessage){
-
+        if (!checkConnected()) {
+            return;
+        }
+        boolean activityReported = false;
+        int msgId = mqttUnsubscribeMessage.variableHeader().messageId();
+        log.trace("MqttTransportHandler.processUnsubscribeMsg >> [{}][{}] Processing subscription [{}]!", sessionId,address,msgId );
+        var topics = mqttUnsubscribeMessage.payload().topics();
+        for (String topic : topics) {
+            try {
+                switch (topic) {
+                    case PROPERTIES_GET: {
+                        deviceSessionCtx.setSubscribeConfig(false);
+                        activityReported = true;
+                        break;
+                    }
+                    case OTA_REQ: {
+                        deviceSessionCtx.setSubscribeOta(false);
+                        activityReported = true;
+                        break;
+                    }
+                    case CONTROL_REQ: {
+                        deviceSessionCtx.setSubscribeControl(false);
+                        activityReported = true;
+                        break;
+                    }
+                    default:
+                        log.warn("MqttTransportHandler.processUnsubscribeMsg >> [{}][{}] Failed to unsubscribe to [{}]", sessionId,address, topic);
+                        break;
+                }
+            } catch (Exception e) {
+                log.warn("MqttTransportHandler.processUnsubscribeMsg >> [{}][{}] Failed to unsubscribe to [{}],error:{}", sessionId,address, topic,e.getMessage());
+            }
+        }
+        if (!activityReported) {
+            transportService.reportActivity(deviceSessionCtx.getSessionId(), deviceSessionCtx.getDeviceId());
+        }
+        channelHandlerContext.writeAndFlush(createUnSubAckMessage(msgId));
     }
 
 
@@ -367,10 +461,12 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
 
     /**
      * 处理 发布 ack
-     * @param channelHandlerContext ctx
      * @param mqttPubAckMessage 发布消息
      */
-    private void  processPubAckMsg(ChannelHandlerContext channelHandlerContext,MqttPubAckMessage mqttPubAckMessage){}
+    private void  processPubAckMsg(MqttPubAckMessage mqttPubAckMessage){
+        int msgId = mqttPubAckMessage.variableHeader().messageId();
+        transportService.processPubAck(sessionId, deviceSessionCtx.getDeviceId(), msgId);
+    }
 
 
     /**
@@ -380,15 +476,21 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
      * @param msgId 消息id
      */
     private void  processPropertiesUp(ChannelHandlerContext channelHandlerContext,MqttPublishMessage mqttPublishMessage,int msgId) {
-        String payload;
-        if (deviceSessionCtx.getDataFormat().equals(DataFormat.JSON)){
-            payload = getJsonPayload(mqttPublishMessage.payload());
-        }else {
-            payload = getHexPayload(mqttPublishMessage.payload());
-        }
+        String payload = getPayload(mqttPublishMessage);
         transportService.processPropertyUp(sessionId, deviceSessionCtx.getDeviceId(), deviceSessionCtx.getProductId(), deviceSessionCtx.getDataFormat(),payload,
                 pubAckCallback(channelHandlerContext,msgId));
         transportService.reportActivity(sessionId, deviceSessionCtx.getDeviceId());
+    }
+
+    /**
+     * 告警消息
+     * @param channelHandlerContext  ctx
+     * @param msgId 消息id
+     */
+    private void  processWarnUp(ChannelHandlerContext channelHandlerContext, int msgId) {
+        transportService.processWarnUp(sessionId, deviceSessionCtx.getDeviceId(), deviceSessionCtx.getProductId(),
+                pubAckCallback(channelHandlerContext,msgId));
+        channelHandlerContext.close();
     }
 
     /**
@@ -404,6 +506,69 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
         transportService.reportActivity(sessionId, deviceSessionCtx.getDeviceId());
     }
 
+    /**
+     * 配置上报反馈
+     * @param channelHandlerContext ctx
+     * @param mqttPublishMessage mqtt 消息发布
+     * @param msgId 消息 id
+     */
+    public void processConfigRespUp(ChannelHandlerContext channelHandlerContext,MqttPublishMessage mqttPublishMessage,int msgId){
+        String payload = getPayload(mqttPublishMessage);
+        transportService.processConfigRespUp(sessionId, deviceSessionCtx.getDeviceId(), deviceSessionCtx.getProductId(),deviceSessionCtx.getDataFormat(), payload,
+                pubAckCallback(channelHandlerContext,msgId));
+    }
+
+    /**
+     * OTA 升级
+     * @param channelHandlerContext ctx
+     * @param mqttPublishMessage mqtt 消息发布
+     * @param msgId 消息 id
+     */
+    public void processOtaRespUp(ChannelHandlerContext channelHandlerContext,MqttPublishMessage mqttPublishMessage,int msgId){
+        String payload = getPayload(mqttPublishMessage);
+        transportService.processOtaRespUp(sessionId, deviceSessionCtx.getDeviceId(), deviceSessionCtx.getProductId(),deviceSessionCtx.getDataFormat(), payload,
+                pubAckCallback(channelHandlerContext,msgId));
+    }
+
+    /**
+     * 命令下发反馈
+     * @param channelHandlerContext ctx
+     * @param mqttPublishMessage mqtt 消息发布
+     * @param msgId 消息 id
+     */
+    public void processControlRespUp(ChannelHandlerContext channelHandlerContext,MqttPublishMessage mqttPublishMessage,int msgId){
+        String payload = getPayload(mqttPublishMessage);
+        transportService.processControlRespUp(sessionId, deviceSessionCtx.getDeviceId(), deviceSessionCtx.getProductId(), deviceSessionCtx.getDataFormat(),payload,
+                pubAckCallback(channelHandlerContext,msgId));
+    }
+
+
+    /**
+     * 命令请求
+     * @param channelHandlerContext ctx
+     * @param mqttPublishMessage mqtt 消息发布
+     * @param msgId 消息 id
+     */
+    public void processControlReqUp(ChannelHandlerContext channelHandlerContext,MqttPublishMessage mqttPublishMessage,int msgId){
+        String payload = getPayload(mqttPublishMessage);
+        transportService.processControlReqUp(sessionId, deviceSessionCtx.getDeviceId(), deviceSessionCtx.getProductId(), deviceSessionCtx.getDataFormat(),payload,
+                pubAckCallback(channelHandlerContext,msgId));
+    }
+
+    /**
+     * 获取负载内容
+     * @param mqttPublishMessage 发布消息
+     * @return 负载字符串
+     */
+    private String getPayload(MqttPublishMessage mqttPublishMessage) {
+        String payload;
+        if (deviceSessionCtx.getDataFormat().equals(DataFormat.JSON)){
+            payload = getJsonPayload(mqttPublishMessage.payload());
+        }else {
+            payload = getHexPayload(mqttPublishMessage.payload());
+        }
+        return payload;
+    }
 
 
     /**
@@ -442,6 +607,21 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
         MqttMessageIdVariableHeader mqttMsgIdVariableHeader =
                 MqttMessageIdVariableHeader.from(msgId);
         return new MqttPubAckMessage(mqttFixedHeader, mqttMsgIdVariableHeader);
+    }
+
+    private static MqttSubAckMessage createSubAckMessage(Integer msgId, List<Integer> grantedQoSList) {
+        MqttFixedHeader mqttFixedHeader =
+                new MqttFixedHeader(SUBACK, false, AT_MOST_ONCE, false, 0);
+        MqttMessageIdVariableHeader mqttMessageIdVariableHeader = MqttMessageIdVariableHeader.from(msgId);
+        MqttSubAckPayload mqttSubAckPayload = new MqttSubAckPayload(grantedQoSList);
+        return new MqttSubAckMessage(mqttFixedHeader, mqttMessageIdVariableHeader, mqttSubAckPayload);
+    }
+
+    private MqttMessage createUnSubAckMessage(int msgId) {
+        MqttFixedHeader mqttFixedHeader =
+                new MqttFixedHeader(UNSUBACK, false, AT_MOST_ONCE, false, 0);
+        MqttMessageIdVariableHeader mqttMessageIdVariableHeader = MqttMessageIdVariableHeader.from(msgId);
+        return new MqttMessage(mqttFixedHeader, mqttMessageIdVariableHeader);
     }
 
     private <T> TransportServiceCallback<Void> pubAckCallback(final ChannelHandlerContext ctx, final int msgId) {

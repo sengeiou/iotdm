@@ -38,6 +38,7 @@ bx:
     enable: true
 
 transport:
+  default-keepalive: "${DEFAULT_KEEPALIVE:90}"
   mqtt:
     # mqtt 开关
     enabled: "${MQTT_ENABLED:true}"
@@ -69,3 +70,7 @@ transport:
     ip_block_timeout: "${TRANSPORT_IP_BLOCK_TIMEOUT:60000}"
     # 错误次数
     max_wrong_credentials_per_ip: "${TRANSPORT_MAX_WRONG_CREDENTIALS_PER_IP:10}"
+    # 租户限制 速率限制
+    tenant_rate_limit: "${TENANT_RATE_LIMIT:}"
+    # 租户限制
+    tenant_num_limit: "${TENANT_RATE_LIMIT:90}"

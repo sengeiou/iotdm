@@ -37,4 +37,45 @@ public interface IotDmEventPublisher {
      * @param payload 负载
      */
     void publishMessageUpEvent(String productId,String deviceId, String payload);
+
+
+    /**
+     * 发布设备配置更改修改反馈事件
+     * @param productId 产品id
+     * @param deviceId 设备id
+     * @param dataFormat 数据格式
+     * @param payload 负载
+     */
+    void  publishConfigRespUpEvent(String productId,String deviceId,  DataFormat dataFormat, String payload);
+
+
+
+    /**
+     * 发布设备ota反馈事件
+     * @param productId 产品id
+     * @param deviceId 设备id
+     * @param dataFormat 数据格式
+     * @param payload 负载
+     */
+    void  publishConfigOtaRespUpEvent(String productId,String deviceId,  DataFormat dataFormat, String payload);
+
+
+
+    /**
+     * 发布设备命令反馈事件
+     * @param productId 产品id
+     * @param deviceId 设备id
+     * @param dataFormat 数据格式
+     * @param payload 负载
+     */
+    void  publishControlRespEvent(String productId,String deviceId,  DataFormat dataFormat, String payload);
+
+    /**
+     * 发布设备命令请求
+     * @param productId 产品id
+     * @param deviceId 设备id
+     * @param dataFormat 数据格式
+     * @param payload 负载
+     */
+    void  publishControlReqEvent(String productId,String deviceId,  DataFormat dataFormat, String payload);
 }

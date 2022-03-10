@@ -1,10 +1,11 @@
 package com.aibaixun.iotdm.transport.limits;
 
+import com.aibaixun.iotdm.util.FixedLengthHashMap;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.Map;
@@ -27,8 +28,17 @@ public class DefaultTransportLimitService implements TransportLimitService {
     @Value("${transport.limit.ip_block_timeout:60000}")
     private long ipBlockTimeout;
 
+    @Value("${transport.limit.tenant_rate_limit:}")
+    private String tenantRateLimit;
+
+
+    @Value("${transport.limit.tenant_num_limit:100}")
+    private int tenantNumLimit;
 
     private final Map<InetAddress, RemoteAddressLimitStats> remoteAddressMap= new ConcurrentHashMap<>();
+
+    private final FixedLengthHashMap<String,TransportRateLimit> tenantLimitMap = new FixedLengthHashMap<>(tenantNumLimit);
+
 
     @Override
     public boolean checkAddress(InetSocketAddress address) {
@@ -78,5 +88,16 @@ public class DefaultTransportLimitService implements TransportLimitService {
         } finally {
             stats.getLock().unlock();
         }
+    }
+
+
+
+    @Override
+    public boolean checkTenantLimit(String tenantId) {
+        if (StringUtils.isEmpty(tenantRateLimit)){
+            return true;
+        }
+        var rateLimit = tenantLimitMap.computeIfAbsent(tenantId, a -> new SimpleTransportRateLimit(tenantRateLimit));
+        return rateLimit.tryConsume();
     }
 }

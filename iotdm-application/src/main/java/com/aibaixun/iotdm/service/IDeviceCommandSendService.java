@@ -28,4 +28,14 @@ public interface IDeviceCommandSendService extends IService<DeviceCommandSendEnt
      */
     List<DeviceCommandSendEntity> queryDeviceCommandSend(String deviceId, String commandLabel, String commandId, Long startTs, Long endTs, Integer limit);
 
+
+
+    /**
+     * 修改设备 命令
+     * @param deviceId 设备id
+     * @param msgId 消息id
+     * @return 状态
+     */
+    Boolean updateDeviceCommandStatus2Received(String deviceId,Integer msgId);
+
 }

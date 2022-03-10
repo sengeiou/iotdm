@@ -40,4 +40,26 @@ public class DefaultIotDmEventPublisher implements IotDmEventPublisher {
     public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
         this.applicationEventPublisher = applicationEventPublisher;
     }
+
+
+    @Override
+    public void publishConfigRespUpEvent(String productId,String deviceId,  DataFormat dataFormat, String payload) {
+
+    }
+
+    @Override
+    public void publishConfigOtaRespUpEvent(String productId,String deviceId,  DataFormat dataFormat, String payload) {
+
+    }
+
+
+    @Override
+    public void publishControlRespEvent(String productId, String deviceId, DataFormat dataFormat, String payload) {
+
+    }
+
+    @Override
+    public void publishControlReqEvent(String productId, String deviceId, DataFormat dataFormat, String payload) {
+
+    }
 }

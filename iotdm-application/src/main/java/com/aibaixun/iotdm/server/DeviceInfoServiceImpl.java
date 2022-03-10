@@ -5,10 +5,7 @@ import com.aibaixun.iotdm.entity.ProductEntity;
 import com.aibaixun.iotdm.enums.DeviceStatus;
 import com.aibaixun.iotdm.msg.DeviceAuthSecretReqMsg;
 import com.aibaixun.iotdm.msg.DeviceInfo;
-import com.aibaixun.iotdm.service.BaseSqlInfoService;
-import com.aibaixun.iotdm.service.DeviceInfoService;
-import com.aibaixun.iotdm.service.IDeviceService;
-import com.aibaixun.iotdm.service.IProductService;
+import com.aibaixun.iotdm.service.*;
 import com.aibaixun.iotdm.transport.MqttTransportException;
 import com.google.common.util.concurrent.ListenableFuture;
 import org.apache.commons.lang3.StringUtils;
@@ -29,6 +26,8 @@ public class DeviceInfoServiceImpl extends BaseSqlInfoService implements DeviceI
     private IDeviceService deviceService;
 
     private IProductService productService;
+
+    private IDeviceCommandSendService deviceCommandSendService;
 
     @Override
     public ListenableFuture<DeviceInfo> mqttDeviceAuthBySecret(DeviceAuthSecretReqMsg deviceAuthSecretReqMsg) {
@@ -77,6 +76,12 @@ public class DeviceInfoServiceImpl extends BaseSqlInfoService implements DeviceI
         return sqlExecutorService.submit(()->deviceService.updateDeviceStatus(deviceId, DeviceStatus.WARN,null,null,null));
     }
 
+
+    @Override
+    public ListenableFuture<Boolean> toDeviceMessageIsReceived(String deviceId, int msgId) {
+        return sqlExecutorService.submit(()->deviceCommandSendService.updateDeviceCommandStatus2Received(deviceId, msgId));
+    }
+
     @Autowired
     public void setDeviceService(IDeviceService deviceService) {
         this.deviceService = deviceService;
@@ -86,5 +91,11 @@ public class DeviceInfoServiceImpl extends BaseSqlInfoService implements DeviceI
     @Autowired
     public void setProductService(IProductService productService) {
         this.productService = productService;
+    }
+
+
+    @Autowired
+    public void setDeviceCommandSendService(IDeviceCommandSendService deviceCommandSendService) {
+        this.deviceCommandSendService = deviceCommandSendService;
     }
 }

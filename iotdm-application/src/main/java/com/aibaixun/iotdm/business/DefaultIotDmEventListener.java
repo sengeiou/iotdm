@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
  * @date 2022/3/10
  */
 @Component
-public class DefaultIotDmEventListener implements IotDmEventListener{
+public class DefaultIotDmEventListener {
 
     private final Logger log = LoggerFactory.getLogger(DefaultIotDmEventListener.class);
 
@@ -23,7 +23,6 @@ public class DefaultIotDmEventListener implements IotDmEventListener{
     @Async("taskExecutor")
     public void onDeviceSessionEvent(DeviceSessionEvent deviceSessionEvent){
         log.info(String.valueOf(deviceSessionEvent));
-
     }
 
 
