@@ -8,6 +8,7 @@ import io.lettuce.core.pubsub.RedisPubSubAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.stereotype.Component;
 
 import static com.aibaixun.iotdm.constants.DataConstants.EXPIRED_CHANNEL;
@@ -17,6 +18,7 @@ import static com.aibaixun.iotdm.constants.DataConstants.EXPIRED_CHANNEL;
  * @date 2022/3/9
  */
 @Component
+@ConditionalOnExpression("!'${spring.redis.sub.cluster:}'.isEmpty()")
 public class RedisSubscriber extends RedisPubSubAdapter<String,String> implements ApplicationRunner {
 
 

@@ -8,5 +8,8 @@ package com.aibaixun.iotdm;
 public interface IotDmEventPublisher {
 
 
+    void  publishConnectEvent();
 
+
+    void  publishDisConnectEvent();
 }
