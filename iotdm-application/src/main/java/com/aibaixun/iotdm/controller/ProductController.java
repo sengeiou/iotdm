@@ -4,6 +4,7 @@ package com.aibaixun.iotdm.controller;
 import com.aibaixun.basic.exception.BaseException;
 import com.aibaixun.basic.result.BaseResultCode;
 import com.aibaixun.basic.result.JsonResult;
+import com.aibaixun.iotdm.data.UpdateProductParam;
 import com.aibaixun.iotdm.entity.ProductEntity;
 import com.aibaixun.iotdm.service.IProductService;
 import com.aibaixun.iotdm.data.ProductEntityInfo;
@@ -82,6 +83,20 @@ public class ProductController extends BaseController{
         return JsonResult.success(remove);
     }
 
+
+    @PutMapping
+    public JsonResult<Boolean> updateProduct (@RequestBody @Valid UpdateProductParam updateProductParam) throws BaseException {
+        ProductEntity pr = productService.getById(updateProductParam.getId());
+        if (Objects.isNull(pr)){
+            throw new BaseException("产品不存在无法更改",BaseResultCode.GENERAL_ERROR);
+        }
+        ProductEntity checkProductEntity = productService.queryProductByLabel(updateProductParam.getProductLabel());
+        if (Objects.nonNull(checkProductEntity)){
+            throw new BaseException("当前租户下已有同名产品", BaseResultCode.BAD_PARAMS);
+        }
+        Boolean aBoolean = productService.updateProduct(updateProductParam.getId(), updateProductParam.getProductLabel(), updateProductParam.getDescription());
+        return JsonResult.success(aBoolean);
+    }
 
     @Autowired
     public void setProductService(IProductService productService) {

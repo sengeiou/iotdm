@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 
@@ -22,11 +23,13 @@ public class ModelCommandEntity extends BaseEntity {
     /**
      * 产品模型id
      */
+    @NotBlank(message = "产品模型不允许为空")
     private String productModelId;
 
     /**
      * 命令名称，单个模型不唯一
      */
+    @NotBlank(message = "命令名称不允许为空")
     private String commandLabel;
 
     /**

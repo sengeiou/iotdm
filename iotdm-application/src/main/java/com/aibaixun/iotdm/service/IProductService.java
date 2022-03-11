@@ -60,6 +60,15 @@ public interface IProductService extends IService<ProductEntity> {
     List<ProductEntity> queryProducts (Integer limit);
 
 
+    /**
+     * 修改产品
+     * @param productId 产品id
+     * @param productLabel 名称
+     * @param description 描述
+     * @return 是否修改成功
+     */
+    Boolean updateProduct(String productId,String productLabel,String description);
+
 
 
 }

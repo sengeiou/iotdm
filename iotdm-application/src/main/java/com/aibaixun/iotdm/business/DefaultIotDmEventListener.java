@@ -1,14 +1,16 @@
 package com.aibaixun.iotdm.business;
 
 import com.aibaixun.common.util.JsonUtil;
+import com.aibaixun.iotdm.constants.TopicConstants;
+import com.aibaixun.iotdm.enums.BusinessStep;
+import com.aibaixun.iotdm.enums.BusinessType;
 import com.aibaixun.iotdm.enums.DataFormat;
 import com.aibaixun.iotdm.event.DeviceMessageUpEvent;
 import com.aibaixun.iotdm.event.DevicePropertyUpEvent;
 import com.aibaixun.iotdm.event.DeviceSessionEvent;
 import com.aibaixun.iotdm.script.JsInvokeService;
+import com.aibaixun.toolkit.coomon.util.HexUtil;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,8 @@ public class DefaultIotDmEventListener {
 
     private JsInvokeService jsInvokeService;
 
+    private BusinessReportProcessor<PrePropertyBusinessMsg,MessageBusinessMsg> matchProcessor;
+
 
     @EventListener
     @Async("taskExecutor")
@@ -44,16 +48,23 @@ public class DefaultIotDmEventListener {
         String payload = devicePropertyUpEvent.getPayload();
         DataFormat dataFormat = devicePropertyUpEvent.getDataFormat();
         JsonNode jsonNode = null;
-        if (DataFormat.JSON.equals(dataFormat)){
-             jsonNode = JsonUtil.parse(payload);
-        }else {
-            JsonUtil.parse(jsInvokeService.eval("",""));
+        matchProcessor.doLog(devicePropertyUpEvent.getDeviceId(), BusinessType.DEVICE2PLATFORM, BusinessStep.DEVICE_REPORT_DATA,payload);
+        try {
+            if (DataFormat.JSON.equals(dataFormat)){
+                jsonNode = JsonUtil.parse(payload);
+            }else if (DataFormat.BINARY.equals(dataFormat)){
+                // fixme  在传输层全部使用16进制字符串保存 这里需要转换成字节数组
+                byte [] messageBytes = HexUtil.decodeHex(payload);
+                String jsResult = (String)jsInvokeService.invokeDecodeFunction(devicePropertyUpEvent.getProductId(), messageBytes, TopicConstants.PROPERTIES_UP);
+                jsonNode = JsonUtil.parse(jsResult);
+            }
+            PrePropertyBusinessMsg prePropertyBusinessMsg = new PrePropertyBusinessMsg(new MetaData(devicePropertyUpEvent.getDeviceId(), devicePropertyUpEvent.getProductId()), jsonNode);
+            matchProcessor.doProcessProperty(prePropertyBusinessMsg);
+            matchProcessor.doLog(devicePropertyUpEvent.getDeviceId(), BusinessType.DEVICE2PLATFORM, BusinessStep.PLATFORM_RESOLVING_DATA,jsonNode !=null?jsonNode.toString():"{}");
+        }catch (Exception e){
+            log.error("DefaultIotDmEventListener.onDevicePropertyUpEvent >> is error ,message is:{},error is:{}",devicePropertyUpEvent,e.getMessage());
+            matchProcessor.doLog(devicePropertyUpEvent.getDeviceId(), BusinessType.DEVICE2PLATFORM, BusinessStep.PLATFORM_RESOLVING_DATA_ERROR,e.getMessage());
         }
-
-        ObjectNode objectNode = JsonUtil.createObjNode();
-        objectNode.set("data",jsonNode);
-        objectNode.set("metaData",devicePropertyUpEvent.getMetaData());
-
     }
 
 
@@ -62,11 +73,29 @@ public class DefaultIotDmEventListener {
     @Async("taskExecutor")
     public void onDeviceMessageUpEvent(DeviceMessageUpEvent deviceMessageUpEvent){
         log.info(String.valueOf(deviceMessageUpEvent));
+        String payload = deviceMessageUpEvent.getPayload();
+        matchProcessor.doLog(deviceMessageUpEvent.getDeviceId(), BusinessType.DEVICE2PLATFORM, BusinessStep.DEVICE_REPORT_DATA,payload);
+        try {
+            byte [] messageBytes = HexUtil.decodeHex(payload);
+            String jsResult = (String)jsInvokeService.invokeDecodeFunction(deviceMessageUpEvent.getProductId(), messageBytes, TopicConstants.PROPERTIES_UP);
+            JsonNode jsonNode = JsonUtil.parse(jsResult);
+            matchProcessor.doProcessMessage(new MessageBusinessMsg(new MetaData(deviceMessageUpEvent.getDeviceId(), deviceMessageUpEvent.getProductId()),jsonNode));
+            matchProcessor.doLog(deviceMessageUpEvent.getDeviceId(), BusinessType.DEVICE2PLATFORM, BusinessStep.PLATFORM_RESOLVING_DATA,jsonNode !=null?jsonNode.toString():"{}");
+        }catch (Exception e){
+            matchProcessor.doProcessMessage(new MessageBusinessMsg(new MetaData(deviceMessageUpEvent.getDeviceId(), deviceMessageUpEvent.getProductId()),payload));
+            matchProcessor.doLog(deviceMessageUpEvent.getDeviceId(), BusinessType.DEVICE2PLATFORM, BusinessStep.PLATFORM_RESOLVING_DATA,payload);
+        }
     }
 
 
     @Autowired
     public void setJsInvokeService(JsInvokeService jsInvokeService) {
         this.jsInvokeService = jsInvokeService;
+    }
+
+
+    @Autowired
+    public void setMatchProcessor(BusinessReportProcessor<PrePropertyBusinessMsg, MessageBusinessMsg> matchProcessor) {
+        this.matchProcessor = matchProcessor;
     }
 }

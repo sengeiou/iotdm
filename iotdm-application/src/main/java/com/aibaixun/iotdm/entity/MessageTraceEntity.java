@@ -1,5 +1,6 @@
 package com.aibaixun.iotdm.entity;
 
+import com.aibaixun.iotdm.enums.BusinessStep;
 import com.aibaixun.iotdm.enums.BusinessType;
 import com.baomidou.mybatisplus.annotation.TableName;
 
@@ -28,7 +29,7 @@ public class MessageTraceEntity extends BaseEntity {
     /**
      * 业务步骤
      */
-    private String businessStep;
+    private BusinessStep businessStep;
 
     /**
      * 业务详情
@@ -52,11 +53,11 @@ public class MessageTraceEntity extends BaseEntity {
         this.businessType = businessType;
     }
 
-    public String getBusinessStep() {
+    public BusinessStep getBusinessStep() {
         return businessStep;
     }
 
-    public void setBusinessStep(String businessStep) {
+    public void setBusinessStep(BusinessStep businessStep) {
         this.businessStep = businessStep;
     }
 

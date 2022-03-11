@@ -1,8 +1,5 @@
 package com.aibaixun.iotdm.event;
 
-import com.aibaixun.common.util.JsonUtil;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * @author wangxiao@aibaixun.com
@@ -21,12 +18,6 @@ public abstract class BaseDataEvent implements DataEvent{
         this.productId = productId;
     }
 
-   public JsonNode getMetaData () {
-       ObjectNode objectNode = JsonUtil.createObjNode();
-       objectNode.put("deviceId",deviceId);
-       objectNode.put("productId",productId);
-       return objectNode;
-   }
 
     public String getDeviceId() {
         return deviceId;

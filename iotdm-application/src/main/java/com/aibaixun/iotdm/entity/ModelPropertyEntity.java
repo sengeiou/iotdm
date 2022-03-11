@@ -4,6 +4,7 @@ import com.aibaixun.iotdm.enums.DataType;
 import com.aibaixun.iotdm.enums.ParamScope;
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 
 /**
@@ -21,16 +22,19 @@ public class ModelPropertyEntity extends BaseEntity {
     /**
      * 产品模型id
      */
+    @NotBlank(message = "产品模型id不允许为空")
     private String productModelId;
 
     /**
      * 属性名称,在单个模型内唯一
      */
+    @NotBlank(message = "属性名称不允许为空")
     private String propertyLabel;
 
     /**
      * 数据类型
      */
+    @NotBlank(message = "数据类型不允许为空")
     private DataType dataType;
 
     /**

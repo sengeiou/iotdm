@@ -3,8 +3,12 @@ package com.aibaixun.iotdm.service.impl;
 import com.aibaixun.iotdm.entity.ModelPropertyEntity;
 import com.aibaixun.iotdm.mapper.ModelPropertyMapper;
 import com.aibaixun.iotdm.service.IModelPropertyService;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * <p>
@@ -17,4 +21,17 @@ import org.springframework.stereotype.Service;
 @Service
 public class ModelPropertyServiceImpl extends ServiceImpl<ModelPropertyMapper, ModelPropertyEntity> implements IModelPropertyService {
 
+
+    @Override
+    public Long countModelPropertyByLabel(String propertyLabel, String modelId) {
+        LambdaQueryWrapper<ModelPropertyEntity> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(ModelPropertyEntity::getPropertyLabel,propertyLabel).eq(ModelPropertyEntity::getProductModelId,modelId);
+        return count(queryWrapper);
+    }
+
+
+    @Override
+    public List<ModelPropertyEntity> listQueryByModelId(String modelId) {
+        return list(Wrappers.<ModelPropertyEntity>lambdaQuery().eq(ModelPropertyEntity::getProductModelId,modelId));
+    }
 }

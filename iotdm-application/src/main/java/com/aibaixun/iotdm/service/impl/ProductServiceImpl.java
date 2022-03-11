@@ -7,6 +7,7 @@ import com.aibaixun.iotdm.service.IProductService;
 import com.aibaixun.iotdm.data.ProductEntityInfo;
 import com.aibaixun.iotdm.util.UserInfoUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -86,8 +87,18 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, ProductEntity
         }
         queryWrapper.last(" LIMIT "+limit);
         queryWrapper.orderByDesc(ProductEntity::getCreateTime);
-
-
         return list(queryWrapper);
+    }
+
+
+    @Override
+    public Boolean updateProduct(String productId, String productLabel, String description) {
+        LambdaUpdateWrapper<ProductEntity> updateWrapper = Wrappers.lambdaUpdate();
+        updateWrapper.set(ProductEntity::getProductLabel,productLabel);
+        if (StringUtils.isNotBlank(description)){
+            updateWrapper.set(ProductEntity::getDescription,description);
+        }
+        updateWrapper.eq(ProductEntity::getId,productId);
+        return update(updateWrapper);
     }
 }
