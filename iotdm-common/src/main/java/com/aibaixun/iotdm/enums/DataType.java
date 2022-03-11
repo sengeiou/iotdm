@@ -12,4 +12,5 @@ public enum DataType {
     DECIMAL,
     STR_LIST,
     INT_LIST,
+    JSON;
 }

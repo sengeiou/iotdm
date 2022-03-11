@@ -1,6 +1,7 @@
 package com.aibaixun.iotdm.data;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
  * js 插件 debug 参数
@@ -17,6 +18,9 @@ public class JsDebugParam {
 
     @NotBlank(message = "主题不允许为空")
     private String topic;
+
+    @NotNull
+    private boolean decode;
 
     public String getInput() {
         return input;
@@ -42,6 +46,14 @@ public class JsDebugParam {
         this.topic = topic;
     }
 
+
+    public void setDecode(boolean decode) {
+        this.decode = decode;
+    }
+
+    public boolean isDecode() {
+        return decode;
+    }
 
     @Override
     public String toString() {

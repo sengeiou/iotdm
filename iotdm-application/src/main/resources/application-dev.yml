@@ -1,5 +1,7 @@
 ## spring 配置
 spring:
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://${DATASOURCE_HOST:172.16.9.1}:${DATASOURCE_PORT:3306}/iotdm
@@ -29,6 +31,50 @@ spring:
     database: 0
     sub:
       cluster: redis://172.16.9.2:6379
+
+
+  cloud:
+    stream:
+      binders:
+        defaultRabbit:
+          type: rabbit
+          environment:
+            spring:
+              rabbitmq:
+                host: 172.16.7.77
+                username: iotdm
+                password: bxzh123456!
+                virtual-host: /
+#          defaultKafka:
+#            type: kafka
+#            environment:
+#              spring:
+#                cloud:
+#                  stream:
+#                    kafka:
+#                      binder:
+#                        brokers: 172.16.20.220:9092,172.16.20.221:9092,172.16.20.222:9092
+#                        zkNodes: 172.16.20.220:2181,172.16.20.221:2181,172.16.20.222:2181
+#                        auto-create-topics: true
+
+      bindings:
+        out_session_data:
+          destination: session_data
+          content-type: application/json
+        out_property_ts_data:
+          destination: property_ts_data
+          content-type: application/json
+        out_message_ts_data:
+          destination: message_ts_data
+          content-type: application/json
+        input_property_data:
+          destination: property_ts_data
+          content-type: application/json
+          binder: defaultRabbit
+          group: ${spring.application.name}
+          consumer:
+            concurrency: 2 # 初始/最少/空闲时 消费者数量,默认1
+
 
 bx:
   swagger:

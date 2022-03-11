@@ -1,8 +1,8 @@
 package com.aibaixun.iotdm.business;
 
 import com.aibaixun.iotdm.event.DeviceSessionEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.aibaixun.iotdm.queue.QueueSendService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -12,10 +12,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class SessionProcessor {
 
-    private final Logger log = LoggerFactory.getLogger(SessionProcessor.class);
 
+    private QueueSendService queueSendService;
 
     public void doProcessDeviceSessionEvent(DeviceSessionEvent deviceSessionEvent){
-        log.info(String.valueOf(deviceSessionEvent));
+        queueSendService.sendSessionData(deviceSessionEvent);
+    }
+
+    @Autowired
+    public void setQueueSendService(QueueSendService queueSendService) {
+        this.queueSendService = queueSendService;
     }
 }

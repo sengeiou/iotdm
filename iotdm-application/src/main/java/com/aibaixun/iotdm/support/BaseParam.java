@@ -25,6 +25,8 @@ public class BaseParam {
 
     private ParamScope scope;
 
+    private String description;
+
 
     public String getParamLabel() {
         return paramLabel;
@@ -82,6 +84,15 @@ public class BaseParam {
         this.scope = scope;
     }
 
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     @Override
     public String toString() {
         return "BaseParam{" +
@@ -94,4 +105,6 @@ public class BaseParam {
                 ", scope=" + scope +
                 '}';
     }
+
+
 }

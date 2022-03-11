@@ -54,7 +54,6 @@ public class DefaultEventListener {
             if (DataFormat.JSON.equals(dataFormat)){
                 jsonNode = JsonUtil.parse(payload);
             }else if (DataFormat.BINARY.equals(dataFormat)){
-                // fixme  在传输层全部使用16进制字符串保存 这里需要转换成字节数组
                 byte [] messageBytes = HexUtil.decodeHex(payload);
                 String jsResult = (String)jsInvokeService.invokeDecodeFunction(devicePropertyUpEvent.getProductId(), messageBytes, TopicConstants.PROPERTIES_UP);
                 jsonNode = JsonUtil.parse(jsResult);
@@ -78,7 +77,7 @@ public class DefaultEventListener {
         matchProcessor.doLog(deviceMessageUpEvent.getDeviceId(), BusinessType.DEVICE2PLATFORM, BusinessStep.DEVICE_REPORT_DATA,payload);
         try {
             byte [] messageBytes = HexUtil.decodeHex(payload);
-            String jsResult = (String)jsInvokeService.invokeDecodeFunction(deviceMessageUpEvent.getProductId(), messageBytes, TopicConstants.PROPERTIES_UP);
+            String jsResult = (String)jsInvokeService.invokeDecodeFunction(deviceMessageUpEvent.getProductId(), messageBytes, TopicConstants.MESSAGE_UP);
             JsonNode jsonNode = JsonUtil.parse(jsResult);
             matchProcessor.doProcessMessage(new MessageBusinessMsg(new MetaData(deviceMessageUpEvent.getDeviceId(), deviceMessageUpEvent.getProductId()),jsonNode));
             matchProcessor.doLog(deviceMessageUpEvent.getDeviceId(), BusinessType.DEVICE2PLATFORM, BusinessStep.PLATFORM_RESOLVING_DATA,jsonNode !=null?jsonNode.toString():"{}");

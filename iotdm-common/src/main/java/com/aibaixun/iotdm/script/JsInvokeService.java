@@ -1,6 +1,8 @@
 package com.aibaixun.iotdm.script;
 
 
+import javax.script.ScriptException;
+
 /**
  * js 执行
  * @author wangxiao@aibaixun.com
@@ -10,12 +12,20 @@ public interface JsInvokeService {
 
     /**
      * 执行js body 返回 函数名称
-     * @param productId 产品id
      * @param scriptBody 函数题
      * @param argNames 参数名称
      * @return 函数名称
      */
-    String testEval(String productId, String scriptBody, String... argNames);
+    String testEncode(String scriptBody, Object... argNames) throws ScriptException, NoSuchMethodException;
+
+
+    /**
+     * 执行js body 返回 函数名称
+     * @param scriptBody 函数题
+     * @param argNames 参数名称
+     * @return 函数名称
+     */
+    String testdecode(String scriptBody, Object... argNames) throws ScriptException, NoSuchMethodException;
 
     /**
      * 执行js body 返回 函数名称
@@ -23,7 +33,7 @@ public interface JsInvokeService {
      * @param scriptBody 函数题
      * @return 函数名称
      */
-    String eval(String productId,String scriptBody);
+    Object eval(String productId,String scriptBody) throws ScriptException;
 
 
     /**
@@ -32,7 +42,7 @@ public interface JsInvokeService {
      * @param args 参数
      * @return 结果
      */
-    Object invokeEncodeFunction(String productId, Object... args);
+    Object invokeEncodeFunction(String productId, Object... args) throws ScriptException, NoSuchMethodException;
 
 
 
@@ -42,12 +52,12 @@ public interface JsInvokeService {
      * @param args 参数
      * @return 结果
      */
-    Object invokeDecodeFunction(String productId, Object... args);
+    Object invokeDecodeFunction(String productId, Object... args) throws ScriptException, NoSuchMethodException;
 
 
     /**
      * 释放
      * @param productId 产品id
      */
-    void release(String productId);
+    void release(String productId) throws ScriptException;
 }

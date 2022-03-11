@@ -3,9 +3,12 @@ package com.aibaixun.iotdm.controller;
 import com.aibaixun.basic.exception.BaseException;
 import com.aibaixun.basic.result.BaseResultCode;
 import com.aibaixun.basic.result.JsonResult;
+import com.aibaixun.common.util.JsonUtil;
 import com.aibaixun.iotdm.entity.ProductPluginJsEntity;
+import com.aibaixun.iotdm.script.DefaultJsInvokeService;
 import com.aibaixun.iotdm.service.IProductPluginJsService;
 import com.aibaixun.iotdm.data.JsDebugParam;
+import com.aibaixun.toolkit.coomon.util.HexUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +25,9 @@ import javax.validation.Valid;
 public class ProductPluginJsController extends BaseController{
 
     private IProductPluginJsService productPluginJsService;
+
+
+    private DefaultJsInvokeService defaultJsInvokeService;
 
     @GetMapping
     public JsonResult<ProductPluginJsEntity> queryJsPlugin (@RequestParam String productId) throws BaseException {
@@ -56,8 +62,19 @@ public class ProductPluginJsController extends BaseController{
 
     @PostMapping("/debug")
     public JsonResult<String> debugJsPlugin(@RequestBody @Valid JsDebugParam jsDebugParam) {
-        // todo  js 执行函数逻辑
-        return JsonResult.success("{}");
+        String input = jsDebugParam.getInput();
+        Object result = null;
+        try {
+            if (jsDebugParam.isDecode()){
+                byte[] bytes = HexUtil.decodeHex(input);
+                result = defaultJsInvokeService.testEncode(jsDebugParam.getJsScriptBody(),bytes,jsDebugParam.getTopic());
+            }else {
+                result = defaultJsInvokeService.testEncode(jsDebugParam.getJsScriptBody(),jsDebugParam.getInput(),jsDebugParam.getTopic());
+            }
+            return JsonResult.success(JsonUtil.toJSONString(result));
+        }catch (Exception e){
+            return JsonResult.failed(e.getMessage());
+        }
     }
 
 
@@ -66,5 +83,10 @@ public class ProductPluginJsController extends BaseController{
     @Autowired
     public void setProductPluginJsService(IProductPluginJsService productPluginJsService) {
         this.productPluginJsService = productPluginJsService;
+    }
+
+    @Autowired
+    public void setDefaultJsInvokeService(DefaultJsInvokeService defaultJsInvokeService) {
+        this.defaultJsInvokeService = defaultJsInvokeService;
     }
 }

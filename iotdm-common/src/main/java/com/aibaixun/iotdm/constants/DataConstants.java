@@ -41,4 +41,9 @@ public class DataConstants {
      * 集群订阅 redis key 过期
      */
     public static final String EXPIRED_CHANNEL = "__keyevent@0__:expired";
+
+
+    public static final String PROPERTY_TS_DATA = "property_ts_data";
+
+
 }
