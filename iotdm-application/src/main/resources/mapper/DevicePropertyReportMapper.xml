@@ -8,15 +8,13 @@
                      pr.device_id,
                      pr.property_value,
                      pr.ts ,
-                     mp.property_label,
+                     pr.property_label,
                      pm.model_label
         FROM
             t_device_property_report pr
-                LEFT JOIN t_model_property mp ON mp.id = pr.property_id ,t_product_model pm
         WHERE
             pr.device_id = #{deviceId}
-          AND
-            pm.product_id = mp.product_model_id
+
     </select>
 
 

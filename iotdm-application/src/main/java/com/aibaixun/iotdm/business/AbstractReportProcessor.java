@@ -4,9 +4,7 @@ import com.aibaixun.common.redis.util.RedisRepository;
 import com.aibaixun.iotdm.constants.DataConstants;
 import com.aibaixun.iotdm.enums.BusinessStep;
 import com.aibaixun.iotdm.enums.BusinessType;
-import com.aibaixun.iotdm.service.IDeviceService;
-import com.aibaixun.iotdm.service.IMessageTraceService;
-import com.aibaixun.iotdm.service.IProductService;
+import com.aibaixun.iotdm.service.*;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.MoreExecutors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +26,12 @@ public abstract class AbstractReportProcessor<P extends AbstractBusinessMsg,M ex
 
 
     private IMessageTraceService messageTraceService;
+
+
+    protected IDevicePropertyReportService propertyReportService;
+
+
+    protected IDeviceMessageReportService messageReportService;
 
     @Override
     public void doProcessProperty(P propertyBusinessMsg) {
@@ -76,5 +80,15 @@ public abstract class AbstractReportProcessor<P extends AbstractBusinessMsg,M ex
     @Autowired
     public void setMessageTraceService(IMessageTraceService messageTraceService) {
         this.messageTraceService = messageTraceService;
+    }
+
+    @Autowired
+    public void setPropertyReportService(IDevicePropertyReportService propertyReportService) {
+        this.propertyReportService = propertyReportService;
+    }
+
+    @Autowired
+    public void setMessageReportService(IDeviceMessageReportService messageReportService) {
+        this.messageReportService = messageReportService;
     }
 }

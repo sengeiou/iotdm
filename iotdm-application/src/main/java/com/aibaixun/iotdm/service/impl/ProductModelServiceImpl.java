@@ -15,6 +15,8 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -38,11 +40,13 @@ public class ProductModelServiceImpl extends ServiceImpl<ProductModelMapper, Pro
     private IModelCommandService modelCommandService;
 
     @Override
+    @Cacheable(cacheNames = "IOTDM:PRODUCT_MODEl:",key = "#productId",unless = "#result == null ")
     public List<ProductModelEntityInfo> queryProductModelInfoByProductId(String productId) {
         return baseMapper.selectProductModelInfoByProductId(productId);
     }
 
     @Override
+    @CacheEvict(cacheNames = "IOTDM:PRODUCT_MODEl:",key = "#productModelEntity.productId")
     public Boolean updateProductModel(ProductModelEntity productModelEntity) {
         if (Objects.isNull(productModelEntity)){
             return false;
@@ -65,6 +69,7 @@ public class ProductModelServiceImpl extends ServiceImpl<ProductModelMapper, Pro
 
 
     @Override
+    @CacheEvict(cacheNames = "IOTDM:PRODUCT_MODEl:",key = "#productId")
     public Boolean saveModelProperty(String productId, ModelPropertyEntity modelPropertyEntity) throws BaseException {
         String propertyLabel = modelPropertyEntity.getPropertyLabel();
         String productModelId = modelPropertyEntity.getProductModelId();
@@ -76,6 +81,7 @@ public class ProductModelServiceImpl extends ServiceImpl<ProductModelMapper, Pro
     }
 
     @Override
+    @CacheEvict(cacheNames = "IOTDM:PRODUCT_MODEl:",key = "#productId")
     public Boolean updateModelProperty(String productId, ModelPropertyEntity modelPropertyEntity) throws BaseException {
         String propertyLabel = modelPropertyEntity.getPropertyLabel();
         String productModelId = modelPropertyEntity.getProductModelId();
@@ -87,11 +93,13 @@ public class ProductModelServiceImpl extends ServiceImpl<ProductModelMapper, Pro
     }
 
     @Override
+    @CacheEvict(cacheNames = "IOTDM:PRODUCT_MODEl:",key = "#productId")
     public Boolean removeModelProperty(String productId, String propertyId) {
         return modelPropertyService.removeById(propertyId);
     }
 
     @Override
+    @CacheEvict(cacheNames = "IOTDM:PRODUCT_MODEl:",key = "#productId")
     public Boolean saveModelCommand(String productId, ModelCommandEntity modelCommandEntity) throws BaseException {
         String commandLabel = modelCommandEntity.getCommandLabel();
         String productModelId = modelCommandEntity.getProductModelId();
@@ -103,6 +111,7 @@ public class ProductModelServiceImpl extends ServiceImpl<ProductModelMapper, Pro
     }
 
     @Override
+    @CacheEvict(cacheNames = "IOTDM:PRODUCT_MODEl:",key = "#productId")
     public Boolean updateModelCommand(String productId, ModelCommandEntity modelCommandEntity) throws BaseException {
         String commandLabel = modelCommandEntity.getCommandLabel();
         String productModelId = modelCommandEntity.getProductModelId();
@@ -114,6 +123,7 @@ public class ProductModelServiceImpl extends ServiceImpl<ProductModelMapper, Pro
     }
 
     @Override
+    @CacheEvict(cacheNames = "IOTDM:PRODUCT_MODEl:",key = "#productId")
     public Boolean removeModelCommand(String productId, String commandId) {
         return modelCommandService.removeById(commandId);
     }

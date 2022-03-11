@@ -3,6 +3,7 @@ package com.aibaixun.iotdm.entity;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
+import java.time.Instant;
 
 
 /**
@@ -34,6 +35,11 @@ public class DevicePropertyReportEntity implements Serializable {
     private String propertyId;
 
     /**
+     * 冗余字段
+     */
+    private String propertyLabel;
+
+    /**
      * 属性值
      */
     private String propertyValue;
@@ -43,6 +49,26 @@ public class DevicePropertyReportEntity implements Serializable {
      */
     private Long ts;
 
+
+    public DevicePropertyReportEntity() {
+    }
+
+
+    public DevicePropertyReportEntity(String deviceId, String propertyId, String propertyValue,String propertyLabel) {
+        this.deviceId = deviceId;
+        this.propertyId = propertyId;
+        this.propertyValue = propertyValue;
+        this.propertyLabel = propertyLabel;
+        this.ts = Instant.now().toEpochMilli();
+    }
+
+    public String getPropertyLabel() {
+        return propertyLabel;
+    }
+
+    public void setPropertyLabel(String propertyLabel) {
+        this.propertyLabel = propertyLabel;
+    }
 
     public String getId() {
         return id;

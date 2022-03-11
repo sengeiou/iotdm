@@ -25,19 +25,20 @@ import org.springframework.stereotype.Component;
  * @date 2022/3/10
  */
 @Component
-public class DefaultIotDmEventListener {
+public class DefaultEventListener {
 
-    private final Logger log = LoggerFactory.getLogger(DefaultIotDmEventListener.class);
+    private final Logger log = LoggerFactory.getLogger(DefaultEventListener.class);
 
     private JsInvokeService jsInvokeService;
 
     private BusinessReportProcessor<PrePropertyBusinessMsg,MessageBusinessMsg> matchProcessor;
 
+    private SessionProcessor sessionProcessor;
 
     @EventListener
     @Async("taskExecutor")
     public void onDeviceSessionEvent(DeviceSessionEvent deviceSessionEvent){
-        log.info(String.valueOf(deviceSessionEvent));
+        sessionProcessor.doProcessDeviceSessionEvent(deviceSessionEvent);
     }
 
 
@@ -97,5 +98,11 @@ public class DefaultIotDmEventListener {
     @Autowired
     public void setMatchProcessor(BusinessReportProcessor<PrePropertyBusinessMsg, MessageBusinessMsg> matchProcessor) {
         this.matchProcessor = matchProcessor;
+    }
+
+
+    @Autowired
+    public void setSessionProcessor(SessionProcessor sessionProcessor) {
+        this.sessionProcessor = sessionProcessor;
     }
 }

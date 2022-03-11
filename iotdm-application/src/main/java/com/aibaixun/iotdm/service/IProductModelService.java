@@ -27,7 +27,6 @@ public interface IProductModelService extends IService<ProductModelEntity> {
      * @param productId 产品id
      * @return 产品模型集合
      */
-    @Cacheable(cacheNames = "IOTDM:PRODUCT_MODEl:",key = "#id")
     List<ProductModelEntityInfo> queryProductModelInfoByProductId(String productId);
 
 
@@ -36,7 +35,6 @@ public interface IProductModelService extends IService<ProductModelEntity> {
      * @param productModelEntity  产品模型
      * @return 更改结果
      */
-    @CacheEvict(cacheNames = "IOTDM:PRODUCT_MODEl:",key = "#productModelEntity.productId")
     Boolean updateProductModel (ProductModelEntity productModelEntity);
 
     /**
@@ -46,7 +44,6 @@ public interface IProductModelService extends IService<ProductModelEntity> {
      * @return 更改结果
      * @throws BaseException
      */
-    @CacheEvict(cacheNames = "IOTDM:PRODUCT_MODEl:",key = "#productId")
     Boolean saveModelProperty(String productId, ModelPropertyEntity modelPropertyEntity) throws BaseException;
 
 
@@ -57,7 +54,6 @@ public interface IProductModelService extends IService<ProductModelEntity> {
      * @return 更改结果
      * @throws BaseException
      */
-    @CacheEvict(cacheNames = "IOTDM:PRODUCT_MODEl:",key = "#productId")
     Boolean updateModelProperty(String productId, ModelPropertyEntity modelPropertyEntity) throws BaseException;
 
 
@@ -67,7 +63,6 @@ public interface IProductModelService extends IService<ProductModelEntity> {
      * @param propertyId 模型属性id
      * @return 更改结果
      */
-    @CacheEvict(cacheNames = "IOTDM:PRODUCT_MODEl:",key = "#productId")
     Boolean removeModelProperty(String productId, String propertyId) ;
 
 
@@ -79,7 +74,6 @@ public interface IProductModelService extends IService<ProductModelEntity> {
      * @return 更改结果
      * @throws BaseException
      */
-    @CacheEvict(cacheNames = "IOTDM:PRODUCT_MODEl:",key = "#productId")
     Boolean saveModelCommand(String productId, ModelCommandEntity modelCommandEntity) throws BaseException;
 
 
@@ -90,7 +84,6 @@ public interface IProductModelService extends IService<ProductModelEntity> {
      * @return 更改结果
      * @throws BaseException
      */
-    @CacheEvict(cacheNames = "IOTDM:PRODUCT_MODEl:",key = "#productId")
     Boolean updateModelCommand(String productId, ModelCommandEntity modelCommandEntity) throws BaseException;
 
 
@@ -100,7 +93,6 @@ public interface IProductModelService extends IService<ProductModelEntity> {
      * @param commandId 模型命令id
      * @return 更改结果
      */
-    @CacheEvict(cacheNames = "IOTDM:PRODUCT_MODEl:",key = "#productId")
     Boolean removeModelCommand(String productId, String commandId);
 
 
