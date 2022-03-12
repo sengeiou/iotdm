@@ -17,6 +17,8 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Objects;
 
+import static com.aibaixun.iotdm.constants.DataConstants.IOT_TENANT_FORWARD_KEY;
+
 /**
  * 规则资源 web api
  * @author wangxiao@aibaixun.com
@@ -76,6 +78,10 @@ public class RuleResourceController extends BaseController{
         String id = ruleResourceEntity.getId();
         if (StringUtils.isBlank(id)){
             throw new BaseException("资源id不允许为空", BaseResultCode.BAD_PARAMS);
+        }
+        Long resourceUseNum = forwardTargetService.countTargetByResourceId(id);
+        if (resourceUseNum > 0){
+            throw new BaseException("资源正在被使用，无法修改",BaseResultCode.GENERAL_ERROR);
         }
         boolean update = ruleResourceService.updateById(ruleResourceEntity);
         return JsonResult.success(update);

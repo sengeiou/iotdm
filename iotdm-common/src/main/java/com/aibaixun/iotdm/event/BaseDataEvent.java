@@ -12,7 +12,6 @@ public abstract class BaseDataEvent implements DataEvent{
     private String productId;
 
 
-
     public BaseDataEvent(String deviceId, String productId) {
         this.deviceId = deviceId;
         this.productId = productId;

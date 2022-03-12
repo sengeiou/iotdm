@@ -1,4 +1,4 @@
-package com.aibaixun.iotdm.support;
+package com.aibaixun.iotdm.data;
 
 import com.aibaixun.iotdm.enums.DataType;
 import com.aibaixun.iotdm.enums.ParamScope;

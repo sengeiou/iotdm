@@ -1,7 +1,11 @@
 package com.aibaixun.iotdm.mapper;
 
 import com.aibaixun.iotdm.entity.ForwardRuleEntity;
+import com.aibaixun.iotdm.msg.ForwardRuleInfo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +17,10 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface ForwardRuleMapper extends BaseMapper<ForwardRuleEntity> {
 
+    /**
+     *  查询租户 转发规则
+     * @param tenantId 租户id
+     * @return 转发规则
+     */
+    List<ForwardRuleInfo> selectForwardRuleByTenantId(@Param("tenantId") String tenantId);
 }

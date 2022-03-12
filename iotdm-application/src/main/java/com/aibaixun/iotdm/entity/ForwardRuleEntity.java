@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
  * @author baixun
  * @since 2022-03-03
  */
-@TableName("t_forward_rule")
+@TableName(value = "t_forward_rule",autoResultMap = true)
 public class ForwardRuleEntity extends BaseEntity {
 
     /**

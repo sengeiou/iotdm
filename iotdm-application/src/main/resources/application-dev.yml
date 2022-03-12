@@ -73,7 +73,21 @@ spring:
           binder: defaultRabbit
           group: ${spring.application.name}
           consumer:
-            concurrency: 2 # 初始/最少/空闲时 消费者数量,默认1
+            concurrency: 2
+        input_message_data:
+          destination: message_ts_data
+          content-type: application/json
+          binder: defaultRabbit
+          group: ${spring.application.name}
+          consumer:
+            concurrency: 2
+        input_session_data:
+          destination: session_data
+          content-type: application/json
+          binder: defaultRabbit
+          group: ${spring.application.name}
+          consumer:
+            concurrency: 2
 
 
 bx:

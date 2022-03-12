@@ -2,6 +2,7 @@ package com.aibaixun.iotdm.service.impl;
 
 import com.aibaixun.iotdm.entity.ForwardRuleEntity;
 import com.aibaixun.iotdm.mapper.ForwardRuleMapper;
+import com.aibaixun.iotdm.msg.ForwardRuleInfo;
 import com.aibaixun.iotdm.service.IForwardRuleService;
 import com.aibaixun.iotdm.util.UserInfoUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -10,6 +11,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * <p>
@@ -39,5 +42,11 @@ public class ForwardRuleServiceImpl extends ServiceImpl<ForwardRuleMapper, Forwa
     @Override
     public Boolean updateRuleStatus(String id, Boolean status) {
         return update(Wrappers.<ForwardRuleEntity>lambdaUpdate().set(ForwardRuleEntity::getRuleStatus,status).eq(ForwardRuleEntity::getId,id));
+    }
+
+
+    @Override
+    public List<ForwardRuleInfo> queryForwardRuleByTenantId(String tenantId) {
+        return baseMapper.selectForwardRuleByTenantId(tenantId);
     }
 }

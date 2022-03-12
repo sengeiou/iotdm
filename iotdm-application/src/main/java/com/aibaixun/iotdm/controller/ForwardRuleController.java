@@ -3,6 +3,7 @@ package com.aibaixun.iotdm.controller;
 import com.aibaixun.basic.exception.BaseException;
 import com.aibaixun.basic.result.BaseResultCode;
 import com.aibaixun.basic.result.JsonResult;
+import com.aibaixun.common.redis.util.RedisRepository;
 import com.aibaixun.iotdm.entity.ForwardRuleEntity;
 import com.aibaixun.iotdm.service.IForwardRuleService;
 import com.aibaixun.iotdm.service.IForwardTargetService;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Objects;
+
+import static com.aibaixun.iotdm.constants.DataConstants.IOT_TENANT_FORWARD_KEY;
 
 /**
  * 转发规则 web api
@@ -31,6 +34,8 @@ public class ForwardRuleController extends BaseController{
 
 
     private IForwardTargetService forwardTargetService;
+
+    private RedisRepository redisRepository;
 
     @GetMapping("/page")
     public JsonResult<Page<ForwardRuleEntity>> pageQueryForwardRule (@RequestParam Integer page,
@@ -73,6 +78,7 @@ public class ForwardRuleController extends BaseController{
         if (status && forwardTargetService.countTargetByRuleId(forwardRuleId)<=0){
             throw new BaseException("当前规则没有设置转发目标，无法激活", BaseResultCode.GENERAL_ERROR);
         }
+        redisRepository.delHashValues(IOT_TENANT_FORWARD_KEY, UserInfoUtil.getTenantIdOfNull());
         Boolean updateRuleStatus = forwardRuleService.updateRuleStatus(forwardRuleId, status);
         return JsonResult.success(updateRuleStatus);
     }
@@ -90,6 +96,7 @@ public class ForwardRuleController extends BaseController{
         if (!StringUtils.equals(forwardRuleEntity.getCreator(), UserInfoUtil.getUserIdOfNull())){
             throw new BaseException("转发规则必须由创建人删除", BaseResultCode.GENERAL_ERROR);
         }
+        redisRepository.delHashValues(IOT_TENANT_FORWARD_KEY, UserInfoUtil.getTenantIdOfNull());
         boolean remove = forwardRuleService.removeById(forwardRuleEntity);
         return  JsonResult.success(remove);
     }
@@ -107,5 +114,11 @@ public class ForwardRuleController extends BaseController{
     @Autowired
     public void setForwardTargetService(IForwardTargetService forwardTargetService) {
         this.forwardTargetService = forwardTargetService;
+    }
+
+
+    @Autowired
+    public void setRedisRepository(RedisRepository redisRepository) {
+        this.redisRepository = redisRepository;
     }
 }

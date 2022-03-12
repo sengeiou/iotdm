@@ -9,6 +9,7 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.MoreExecutors;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.Instant;
 import java.util.Objects;
 
 /**
@@ -46,9 +47,11 @@ public abstract class AbstractReportProcessor<P extends AbstractBusinessMsg,M ex
 
     @Override
     public void doLog(String deviceId, BusinessType businessType, BusinessStep businessStep, String businessDetails) {
-        Long ttl = ((Long) redisRepository.get(DataConstants.IOT_DEVICE_DEBUG_CACHE_KEY + deviceId));
-        if (Objects.nonNull(ttl) && ttl >0){
+        Long ttl = ((Long) redisRepository.getHashValues(DataConstants.IOT_DEVICE_DEBUG_CACHE_KEY , deviceId));
+        if (Objects.nonNull(ttl) && ttl < Instant.now().toEpochMilli()){
             Futures.submit(()->messageTraceService.logDeviceMessageTrace(deviceId,businessType,businessStep,businessDetails), MoreExecutors.directExecutor());
+        }else {
+            redisRepository.delHashValues(DataConstants.IOT_DEVICE_DEBUG_CACHE_KEY , deviceId);
         }
     }
 

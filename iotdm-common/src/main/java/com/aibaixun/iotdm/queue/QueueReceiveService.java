@@ -9,8 +9,23 @@ import org.springframework.messaging.support.GenericMessage;
 public interface QueueReceiveService {
 
     /**
-     * 接受 消息队列数据
+     * 接受 消息队列的时序数据
      * @param tsData 数据
      */
-    <T> void receiveTsData(GenericMessage<T> tsData);
+    <T> void receivePropertyTsData(GenericMessage<T> tsData);
+
+
+    /**
+     * 接受 消息队列的时序数据
+     * @param tsData 数据
+     */
+    <T> void receiveMessageTsData(GenericMessage<T> tsData);
+
+
+
+    /**
+     * 接受 消息队列session数据
+     * @param sessionData 数据
+     */
+    <T> void receiveSessionData(GenericMessage<T> sessionData);
 }

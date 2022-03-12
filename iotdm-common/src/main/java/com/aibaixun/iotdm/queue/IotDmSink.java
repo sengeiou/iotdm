@@ -10,13 +10,31 @@ import org.springframework.messaging.SubscribableChannel;
 public interface IotDmSink {
 
 
-    String INPUT_TS_DATA = "input_property_data";
+    String INPUT_PROPERTY_TS_DATA = "input_property_data";
+    String INPUT_MESSAGE_TS_DATA = "input_message_data";
+    String INPUT_SESSION_DATA = "input_session_data";
 
 
     /**
      * ts 时序数据 输入通道
      * @return 通道
      */
-    @Input(INPUT_TS_DATA)
-    SubscribableChannel inputTsData();
+    @Input(INPUT_PROPERTY_TS_DATA)
+    SubscribableChannel inputPropertyTsData();
+
+
+
+    /**
+     * ts 时序数据 输入通道
+     * @return 通道
+     */
+    @Input(INPUT_MESSAGE_TS_DATA)
+    SubscribableChannel inputMessageTsData();
+
+    /**
+     * session 数据输入通道
+     * @return 通道
+     */
+    @Input(INPUT_SESSION_DATA)
+    SubscribableChannel inputSessionData();
 }

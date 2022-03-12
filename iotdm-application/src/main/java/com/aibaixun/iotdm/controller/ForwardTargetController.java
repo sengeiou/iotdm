@@ -3,6 +3,7 @@ package com.aibaixun.iotdm.controller;
 import com.aibaixun.basic.exception.BaseException;
 import com.aibaixun.basic.result.BaseResultCode;
 import com.aibaixun.basic.result.JsonResult;
+import com.aibaixun.common.redis.util.RedisRepository;
 import com.aibaixun.iotdm.entity.ForwardRuleEntity;
 import com.aibaixun.iotdm.entity.ForwardTargetEntity;
 import com.aibaixun.iotdm.entity.RuleResourceEntity;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Objects;
+
+import static com.aibaixun.iotdm.constants.DataConstants.IOT_TENANT_FORWARD_KEY;
 
 /**
  * 转发目标 web api
@@ -37,6 +40,8 @@ public class ForwardTargetController extends BaseController{
 
     private IRuleResourceService ruleResourceService;
 
+    private RedisRepository redisRepository;
+
 
     @GetMapping("/list")
     public JsonResult<List<RuleTargetEntityResource>> listQueryByRuleId(@RequestParam String ruleId) {
@@ -49,6 +54,7 @@ public class ForwardTargetController extends BaseController{
     @PostMapping
     public JsonResult<Boolean> createRuleForwardTarget (@RequestBody @Valid ForwardTargetEntity forwardTargetEntity) throws BaseException {
         checkResourceAndRule(forwardTargetEntity);
+        redisRepository.delHashValues(IOT_TENANT_FORWARD_KEY, UserInfoUtil.getTenantIdOfNull());
         boolean save = forwardTargetService.save(forwardTargetEntity);
         return JsonResult.success(save);
     }
@@ -62,6 +68,7 @@ public class ForwardTargetController extends BaseController{
             throw new BaseException("更改转发目标id不允许为空", BaseResultCode.BAD_PARAMS);
         }
         checkResourceAndRule(forwardTargetEntity);
+        redisRepository.delHashValues(IOT_TENANT_FORWARD_KEY, UserInfoUtil.getTenantIdOfNull());
         boolean save = forwardTargetService.save(forwardTargetEntity);
         return JsonResult.success(save);
     }
@@ -110,4 +117,9 @@ public class ForwardTargetController extends BaseController{
         this.forwardTargetService = forwardTargetService;
     }
 
+
+    @Autowired
+    public void setRedisRepository(RedisRepository redisRepository) {
+        this.redisRepository = redisRepository;
+    }
 }

@@ -13,8 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
+
+import static com.aibaixun.iotdm.constants.DataConstants.DEFAULT_DEVICE_DEBUG_TTL;
 
 /**
  * @author wangxiao@aibaixun.com
@@ -30,6 +33,8 @@ public class DeviceTraceController extends BaseController{
 
     private IMessageTraceService messageTraceService;
 
+
+
     @GetMapping("/debug/{deviceId}")
     public JsonResult<Boolean>  debugDevice(@PathVariable String deviceId) throws BaseException {
 
@@ -37,7 +42,8 @@ public class DeviceTraceController extends BaseController{
         if (Objects.isNull(deviceEntity)){
             throw new BaseException("设备信息不存在，无法在线调试", BaseResultCode.GENERAL_ERROR);
         }
-        redisRepository.setExpire(DataConstants.IOT_DEVICE_DEBUG_CACHE_KEY+deviceId,60,60 );
+        long ttl = Instant.now().toEpochMilli() + DEFAULT_DEVICE_DEBUG_TTL;
+        redisRepository.putHashValue(DataConstants.IOT_DEVICE_DEBUG_CACHE_KEY,deviceId,ttl );
         return JsonResult.success(true);
     }
 
@@ -52,7 +58,9 @@ public class DeviceTraceController extends BaseController{
         if (ttl> threeDay){
             throw new BaseException("最多可以追踪3天消息", BaseResultCode.GENERAL_ERROR);
         }
-        redisRepository.setExpire(DataConstants.IOT_DEVICE_DEBUG_CACHE_KEY+deviceId,ttl,ttl );
+
+        long value = Instant.now().toEpochMilli() + ttl;
+        redisRepository.putHashValue(DataConstants.IOT_DEVICE_DEBUG_CACHE_KEY,deviceId,value );
         return JsonResult.success(true);
     }
 
@@ -73,9 +81,9 @@ public class DeviceTraceController extends BaseController{
     public JsonResult<List<MessageTraceEntity>> getDeviceTrace (@PathVariable String deviceId,
                                                                 @PathVariable Long ts){
         List<MessageTraceEntity> messageTraceEntities = messageTraceService.queryMessageTrace(deviceId, ts);
-        Long ttl = ((Long) redisRepository.get(DataConstants.IOT_DEVICE_DEBUG_CACHE_KEY + deviceId));
-        if (Objects.isNull(ttl)){
-            redisRepository.setExpire(DataConstants.IOT_DEVICE_DEBUG_CACHE_KEY+deviceId,60,60 );
+        Long ttl = ((Long) redisRepository.getHashValues(DataConstants.IOT_DEVICE_DEBUG_CACHE_KEY , deviceId));
+        if (Objects.isNull(ttl) || ttl < Instant.now().toEpochMilli()){
+            redisRepository.putHashValue(DataConstants.IOT_DEVICE_DEBUG_CACHE_KEY,deviceId,ttl );
         }
         return JsonResult.success(messageTraceEntities);
     }

@@ -35,7 +35,20 @@ public class DataConstants {
     /**
      * iotdm debug 信息 缓存
      */
-    public static final String IOT_DEVICE_DEBUG_CACHE_KEY = "IOTDM:DEVICE:DEBUG:";
+    public static final String IOT_DEVICE_DEBUG_CACHE_KEY = "IOTDM:DEVICE:DEBUG";
+
+
+
+    /**
+     * iotdm 产品与租户id
+     */
+    public static final String IOT_PRODUCT_TENANT_KEY = "IOTDM:PRODUCT:TENANT_ID";
+
+
+    /**
+     * 租户转发规则
+     */
+    public static final String IOT_TENANT_FORWARD_KEY = "IOTDM:TENANT:FORWARD_RULE";
 
     /**
      * 集群订阅 redis key 过期
@@ -43,7 +56,8 @@ public class DataConstants {
     public static final String EXPIRED_CHANNEL = "__keyevent@0__:expired";
 
 
-    public static final String PROPERTY_TS_DATA = "property_ts_data";
+
+    public static final long DEFAULT_DEVICE_DEBUG_TTL = 1000*60;
 
 
 }

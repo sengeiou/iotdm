@@ -4,6 +4,7 @@ package com.aibaixun.iotdm.controller;
 import com.aibaixun.basic.exception.BaseException;
 import com.aibaixun.basic.result.BaseResultCode;
 import com.aibaixun.basic.result.JsonResult;
+import com.aibaixun.common.redis.util.RedisRepository;
 import com.aibaixun.iotdm.data.UpdateProductParam;
 import com.aibaixun.iotdm.entity.ProductEntity;
 import com.aibaixun.iotdm.service.IProductService;
@@ -18,6 +19,8 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Objects;
 
+import static com.aibaixun.iotdm.constants.DataConstants.IOT_PRODUCT_TENANT_KEY;
+
 
 /**
  * 产品 Web Api
@@ -29,6 +32,8 @@ import java.util.Objects;
 public class ProductController extends BaseController{
 
     private  IProductService productService;
+
+    private RedisRepository redisRepository;
 
     public ProductController(IProductService productService) {
         this.productService = productService;
@@ -79,6 +84,7 @@ public class ProductController extends BaseController{
         if (!StringUtils.equals(pr.getCreator(), UserInfoUtil.getUserIdOfNull())){
             throw new BaseException("产品必须由创建人删除",BaseResultCode.GENERAL_ERROR);
         }
+        redisRepository.delHashValues(IOT_PRODUCT_TENANT_KEY, id);
         boolean remove = productService.removeById(id);
         return JsonResult.success(remove);
     }
@@ -101,5 +107,11 @@ public class ProductController extends BaseController{
     @Autowired
     public void setProductService(IProductService productService) {
         this.productService = productService;
+    }
+
+
+    @Autowired
+    public void setRedisRepository(RedisRepository redisRepository) {
+        this.redisRepository = redisRepository;
     }
 }

@@ -1,6 +1,6 @@
 package com.aibaixun.iotdm.entity;
 
-import com.aibaixun.iotdm.support.BaseParam;
+import com.aibaixun.iotdm.data.BaseParam;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;

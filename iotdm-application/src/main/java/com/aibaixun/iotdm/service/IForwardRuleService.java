@@ -1,8 +1,11 @@
 package com.aibaixun.iotdm.service;
 
 import com.aibaixun.iotdm.entity.ForwardRuleEntity;
+import com.aibaixun.iotdm.msg.ForwardRuleInfo;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
  * <p>
@@ -34,4 +37,12 @@ public interface IForwardRuleService extends IService<ForwardRuleEntity> {
      * @return 修改标识
      */
     Boolean updateRuleStatus (String id,Boolean status);
+
+
+    /**
+     *  查询租户 转发规则
+     * @param tenantId 租户id
+     * @return 转发规则
+     */
+    List<ForwardRuleInfo> queryForwardRuleByTenantId(String tenantId);
 }
