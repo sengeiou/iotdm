@@ -1,4 +1,4 @@
-package com.aibaixun.iotdm.rule.server;
+package com.aibaixun.iotdm.rule.send;
 
 /**
  * @author wangxiao@aibaixun.com
