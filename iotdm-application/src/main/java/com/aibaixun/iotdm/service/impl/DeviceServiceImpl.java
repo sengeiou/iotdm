@@ -8,6 +8,8 @@ import com.aibaixun.iotdm.service.IDeviceService;
 import com.aibaixun.iotdm.data.DeviceEntityInfo;
 import com.aibaixun.iotdm.data.KvData;
 import com.aibaixun.iotdm.util.UserInfoUtil;
+import com.aibaixun.toolkit.coomon.exception.BaiXunException;
+import com.aibaixun.toolkit.coomon.result.BaseResultCode;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -70,9 +72,29 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, DeviceEntity> i
 
 
     @Override
-    public Boolean updateDeviceLabel(String deviceId, String deviceLabel) {
+    public Boolean updateDeviceLabel(String deviceId, String deviceLabel) throws BaiXunException {
+        DeviceEntity deviceEntity = getById(deviceId);
+        if (Objects.isNull(deviceEntity)){
+            throw new BaiXunException("设备不存在无法更改", BaseResultCode.GENERAL_ERROR);
+        }
         LambdaUpdateWrapper<DeviceEntity> updateWrapper = Wrappers.lambdaUpdate();
         updateWrapper.set(DeviceEntity::getDeviceLabel,deviceLabel);
+        updateWrapper.eq(DeviceEntity::getId,deviceId);
+        return update(updateWrapper);
+    }
+
+
+    @Override
+    public Boolean updateDeviceStatus(String deviceId, DeviceStatus deviceStatus) throws BaiXunException {
+        DeviceEntity deviceEntity = getById(deviceId);
+        if (Objects.isNull(deviceEntity)){
+            throw new BaiXunException("设备不存在无法更改", BaseResultCode.GENERAL_ERROR);
+        }
+        if (Objects.equals(deviceEntity.getDeviceStatus(),deviceStatus)){
+            throw new BaiXunException("设备一致在无法更改", BaseResultCode.GENERAL_ERROR);
+        }
+        LambdaUpdateWrapper<DeviceEntity> updateWrapper = Wrappers.lambdaUpdate();
+        updateWrapper.set(DeviceEntity::getDeviceStatus,deviceStatus);
         updateWrapper.eq(DeviceEntity::getId,deviceId);
         return update(updateWrapper);
     }
