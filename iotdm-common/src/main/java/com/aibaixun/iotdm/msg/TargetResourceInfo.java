@@ -38,7 +38,6 @@ public class TargetResourceInfo {
     public String resourceLabel;
 
 
-
     public String getId() {
         return id;
     }
@@ -71,8 +70,16 @@ public class TargetResourceInfo {
         this.targetConfig = targetConfig;
     }
 
+    public String getRuleLabel() {
+        return ruleLabel;
+    }
+
     public void setRuleLabel(String ruleLabel) {
         this.ruleLabel = ruleLabel;
+    }
+
+    public String getResourceLabel() {
+        return resourceLabel;
     }
 
     public void setResourceLabel(String resourceLabel) {
