@@ -29,6 +29,7 @@ public class ProductPluginJsController extends BaseController{
 
     private DefaultJsInvokeService defaultJsInvokeService;
 
+
     @GetMapping
     public JsonResult<ProductPluginJsEntity> queryJsPlugin (@RequestParam String productId) throws BaseException {
         if (StringUtils.isBlank(productId)){
@@ -48,6 +49,11 @@ public class ProductPluginJsController extends BaseController{
         }else {
             result = productPluginJsService.updateById(productPluginJsEntity);
         }
+        try {
+            defaultJsInvokeService.eval(productPluginJsEntity.getProductId(), productPluginJsEntity.getJsScriptBody());
+        }catch (Exception e){
+            return JsonResult.failed(e.getMessage());
+        }
         return JsonResult.success(result);
     }
 
@@ -56,6 +62,12 @@ public class ProductPluginJsController extends BaseController{
     @PutMapping
     public JsonResult<Boolean> uninstallJsPlugin (@RequestParam String productId) {
         Boolean uninstallRes = productPluginJsService.uninstallJsPlugin(productId);
+        try {
+            defaultJsInvokeService.release(productId);
+        }catch (Exception e){
+            return JsonResult.failed(e.getMessage());
+        }
+
         return JsonResult.success(uninstallRes);
     }
 

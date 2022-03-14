@@ -38,6 +38,8 @@ public class ForwardRuleInfo implements Serializable {
     public List<TargetResourceInfo> targetResourceInfos;
 
 
+
+
     public String getRuleId() {
         return ruleId;
     }

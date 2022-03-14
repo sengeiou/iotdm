@@ -32,10 +32,10 @@
             mp.property_label,
             mp.data_type,
             mp.scope,
-            mp.mpdescription,
+            mp.description as mpdescription ,
             mc.id AS mcid,
             mc.command_label,
-            mc.mcdescription,
+            mc.description as mcdescription ,
             mc.params,
             mc.responses
         FROM

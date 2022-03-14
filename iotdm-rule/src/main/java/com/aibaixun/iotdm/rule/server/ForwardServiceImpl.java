@@ -25,6 +25,9 @@ public class ForwardServiceImpl implements ForwardService{
     private RuleExecutorService ruleExecutorService;
 
 
+
+
+
     @Override
     public void forwardPropertyReport(PostPropertyBusinessMsg propertyMessage, List<ForwardRuleInfo> forwardRuleInfos) {
 
