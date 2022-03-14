@@ -2,6 +2,8 @@ package com.aibaixun.iotdm.rule;
 
 import com.aibaixun.iotdm.business.MessageBusinessMsg;
 import com.aibaixun.iotdm.business.PostPropertyBusinessMsg;
+import com.aibaixun.iotdm.enums.SubjectEvent;
+import com.aibaixun.iotdm.enums.SubjectResource;
 import com.aibaixun.iotdm.event.DeviceSessionEvent;
 import com.aibaixun.iotdm.msg.ForwardRuleInfo;
 import com.aibaixun.iotdm.queue.IotDmSink;
@@ -37,12 +39,7 @@ public class QueueReceiveServiceImpl implements QueueReceiveService {
         try {
             PostPropertyBusinessMsg propertyTsData = (PostPropertyBusinessMsg) tsData.getPayload();
             String productId = propertyTsData.getMetaData().getProductId();
-            getForwardRule(productId);
-
-
-
-
-
+            List<ForwardRuleInfo> forwardRule = getForwardRule(productId);
 
         }catch (Exception e){
             log.info("QueueReceiveService receivePropertyTsData,error is:{}",e.getMessage());
@@ -62,7 +59,7 @@ public class QueueReceiveServiceImpl implements QueueReceiveService {
         try {
             MessageBusinessMsg messageTsData = (MessageBusinessMsg) tsData.getPayload();
             String productId = messageTsData.getMetaData().getProductId();
-            getForwardRule(productId);
+            List<ForwardRuleInfo> forwardRule = getForwardRule(productId);
         }catch (Exception e){
             log.info("QueueReceiveService receiveMessageTsData,error is:{}",e.getMessage());
         }
@@ -84,6 +81,11 @@ public class QueueReceiveServiceImpl implements QueueReceiveService {
     }
 
 
+
+
+    private List<ForwardRuleInfo> matchForwardRule (SubjectResource subjectResource, SubjectEvent subjectEvent) {
+        return null;
+    }
 
     @Autowired
     public void setRuleService(RuleService ruleService) {

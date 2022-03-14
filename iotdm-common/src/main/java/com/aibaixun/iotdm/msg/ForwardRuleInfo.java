@@ -1,6 +1,7 @@
 package com.aibaixun.iotdm.msg;
 
 import com.aibaixun.iotdm.enums.SubjectEvent;
+import com.aibaixun.iotdm.enums.SubjectResource;
 
 
 import java.io.Serializable;
@@ -26,7 +27,7 @@ public class ForwardRuleInfo implements Serializable {
     /**
      * 数据来源
      */
-    private String subjectResource;
+    private SubjectResource subjectResource;
 
     /**
      * 触发事件
@@ -61,11 +62,11 @@ public class ForwardRuleInfo implements Serializable {
         this.description = description;
     }
 
-    public String getSubjectResource() {
+    public SubjectResource getSubjectResource() {
         return subjectResource;
     }
 
-    public void setSubjectResource(String subjectResource) {
+    public void setSubjectResource(SubjectResource subjectResource) {
         this.subjectResource = subjectResource;
     }
 
