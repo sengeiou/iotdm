@@ -1,21 +1,23 @@
 package com.aibaixun.iotdm.rule.config;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * @author wangxiao@aibaixun.com
  * @date 2022/3/14
  */
+@Configuration
 public class KafkaClientConfig {
 
-    @Value("${bx.rule.rabbit.connect-timeout}")
+    @Value("${bx.rule.kafka.connect-timeout}")
     private Integer connectTimeout;
 
-    @Value("${bx.rule.rabbit.max-idle-connections}")
+    @Value("${bx.rule.kafka.max-idle-connections}")
     private Integer maxIdleConnections;
 
 
-    @Value("${bx.rule.rabbit.keep-alive-duration}")
+    @Value("${bx.rule.kafka.keep-alive-duration}")
     private Long keepAliveDuration;
 
 
