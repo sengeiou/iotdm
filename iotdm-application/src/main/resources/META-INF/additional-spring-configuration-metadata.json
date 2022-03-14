@@ -74,5 +74,55 @@
       "name": "transport.mqtt.ssl.bind_port",
       "type": "java.lang.String",
       "description": "Description for transport.mqtt.ssl.bind_port."
+    },
+    {
+      "name": "bx.swagger.title",
+      "type": "java.lang.String",
+      "description": "Description for bx.swagger.title."
+    },
+    {
+      "name": "bx.swagger.path",
+      "type": "java.lang.String",
+      "description": "Description for bx.swagger.path."
+    },
+    {
+      "name": "bx.swagger.enable",
+      "type": "java.lang.String",
+      "description": "Description for bx.swagger.enable."
+    },
+    {
+      "name": "bx.rule.poll_size",
+      "type": "java.lang.String",
+      "description": "Description for bx.rule.poll_size."
+    },
+    {
+      "name": "bx.rule.http.connect-timeout",
+      "type": "java.lang.String",
+      "description": "Description for bx.rule.http.connect-timeout."
+    },
+    {
+      "name": "bx.rule.http.read-timeout",
+      "type": "java.lang.String",
+      "description": "Description for bx.rule.http.read-timeout."
+    },
+    {
+      "name": "bx.rule.http.write-timeout",
+      "type": "java.lang.String",
+      "description": "Description for bx.rule.http.write-timeout."
+    },
+    {
+      "name": "bx.rule.http.max-idle-connections",
+      "type": "java.lang.String",
+      "description": "Description for bx.rule.http.max-idle-connections."
+    },
+    {
+      "name": "bx.rule.http.keep-alive-duration",
+      "type": "java.lang.String",
+      "description": "Description for bx.rule.http.keep-alive-duration."
+    },
+    {
+      "name": "transport.default-keepalive",
+      "type": "java.lang.String",
+      "description": "Description for transport.default-keepalive."
     }
   ] }

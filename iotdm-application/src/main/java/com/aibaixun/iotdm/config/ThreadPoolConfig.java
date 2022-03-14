@@ -1,12 +1,9 @@
 package com.aibaixun.iotdm.config;
 
-import com.aibaixun.toolkit.coomon.thread.BaiXunThreadFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadPoolExecutor;
 
 /**
@@ -31,8 +28,5 @@ public class ThreadPoolConfig {
         return threadPoolTaskExecutor;
     }
 
-    @Bean
-    public ScheduledThreadPoolExecutor scheduledExecutorService() {
-        return new ScheduledThreadPoolExecutor(2, BaiXunThreadFactory.forName("BaiXun-ScheduledThreadPoolExecutor"));
-    }
+
 }
