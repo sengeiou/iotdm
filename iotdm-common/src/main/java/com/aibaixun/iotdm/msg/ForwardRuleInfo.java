@@ -17,12 +17,6 @@ public class ForwardRuleInfo implements Serializable {
 
     private String ruleId;
 
-    private String ruleLabel;
-
-    /**
-     * 描述
-     */
-    private String description;
 
     /**
      * 数据来源
@@ -39,29 +33,12 @@ public class ForwardRuleInfo implements Serializable {
 
 
 
-
     public String getRuleId() {
         return ruleId;
     }
 
     public void setRuleId(String ruleId) {
         this.ruleId = ruleId;
-    }
-
-    public String getRuleLabel() {
-        return ruleLabel;
-    }
-
-    public void setRuleLabel(String ruleLabel) {
-        this.ruleLabel = ruleLabel;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public SubjectResource getSubjectResource() {

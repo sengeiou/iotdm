@@ -43,8 +43,12 @@ public class ForwardServiceImpl implements ForwardService{
             return;
         }
         List<TargetResourceInfo> allForwardTargetInfo = getAllForwardTargetInfo(forwardRuleInfos);
-
-
+        if (CollectionUtils.isEmpty(allForwardTargetInfo)){
+            return;
+        }
+        for (TargetResourceInfo targetResourceInfo : allForwardTargetInfo) {
+            log.info("ForwardServiceImpl.forwardPropertyReport >> ruleLabel:{},resourceLabel:{}",);
+        }
     }
 
     @Override
@@ -53,7 +57,9 @@ public class ForwardServiceImpl implements ForwardService{
             return;
         }
         List<TargetResourceInfo> allForwardTargetInfo = getAllForwardTargetInfo(forwardRuleInfos);
-
+        if (CollectionUtils.isEmpty(allForwardTargetInfo)){
+            return;
+        }
 
     }
 
@@ -63,6 +69,9 @@ public class ForwardServiceImpl implements ForwardService{
             return;
         }
         List<TargetResourceInfo> allForwardTargetInfo = getAllForwardTargetInfo(forwardRuleInfos);
+        if (CollectionUtils.isEmpty(allForwardTargetInfo)){
+            return;
+        }
 
 
     }

@@ -5,13 +5,15 @@
 
   <resultMap id="ForwardRuleInfoResultMap" type="com.aibaixun.iotdm.msg.ForwardRuleInfo">
     <id column="id" property="ruleId" />
-    <result column="rule_label" property="ruleLabel" />
     <result column="subject_resource" property="subjectResource" />
+    <result column="subject_event" property="subjectEvent" />
     <collection property="targetResourceInfos" ofType="com.aibaixun.iotdm.msg.TargetResourceInfo">
       <id column="tempid" property="id" />
       <result column="resource_type" property="resourceType"/>
       <result column="target_config" property="targetConfig" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler" />
       <result column="resource_config" property="resourceConfig" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler" />
+      <result column="rule_label" property="ruleLabel"/>
+      <result column="resource_label" property="resourceLabel"/>
     </collection>
   </resultMap>
 
@@ -23,6 +25,7 @@
       ft.id as tempid,
       ft.configuration AS target_config,
       rr.configuration as resource_config,
+      rr.resource_label,
       rr.resource_type
     FROM
       t_forward_rule fr

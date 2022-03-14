@@ -11,13 +11,33 @@ import com.aibaixun.iotdm.support.BaseTargetConfig;
  */
 public class TargetResourceInfo {
 
+
     public String id;
 
     public ResourceType resourceType;
 
+    /**
+     * 资源配置
+     */
     private BaseResourceConfig resourceConfig;
 
+    /**
+     * 目标配置
+     */
     private BaseTargetConfig targetConfig;
+
+
+    /**
+     * 规则名称
+     */
+    public String ruleLabel;
+
+    /**
+     * 资源名称
+     */
+    public String resourceLabel;
+
+
 
     public String getId() {
         return id;
@@ -49,5 +69,13 @@ public class TargetResourceInfo {
 
     public void setTargetConfig(BaseTargetConfig targetConfig) {
         this.targetConfig = targetConfig;
+    }
+
+    public void setRuleLabel(String ruleLabel) {
+        this.ruleLabel = ruleLabel;
+    }
+
+    public void setResourceLabel(String resourceLabel) {
+        this.resourceLabel = resourceLabel;
     }
 }
