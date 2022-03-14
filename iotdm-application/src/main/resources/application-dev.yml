@@ -114,6 +114,9 @@ bx:
       write-timeout: 30
       max-idle-connections: 200
       keep-alive-duration: 200
+    rabbit:
+      connect-timeout: 30
+      max-idle-connections:
 
 transport:
   default-keepalive: "${DEFAULT_KEEPALIVE:90}"
