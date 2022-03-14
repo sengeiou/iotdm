@@ -9,6 +9,7 @@ import com.aibaixun.iotdm.msg.ForwardRuleInfo;
 import java.util.List;
 
 /**
+ * 转发服务
  * @author wangxiao@aibaixun.com
  * @date 2022/3/14
  */

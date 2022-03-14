@@ -39,6 +39,7 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-stream</artifactId>
         </dependency>
+
     </dependencies>
 
 </project>
