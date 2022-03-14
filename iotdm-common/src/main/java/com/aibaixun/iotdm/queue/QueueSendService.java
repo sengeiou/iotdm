@@ -3,6 +3,7 @@ package com.aibaixun.iotdm.queue;
 import com.aibaixun.iotdm.business.MessageBusinessMsg;
 import com.aibaixun.iotdm.business.PostPropertyBusinessMsg;
 import com.aibaixun.iotdm.event.DeviceSessionEvent;
+import com.aibaixun.iotdm.event.EntityChangeEvent;
 
 /**
  * @author wangxiao@aibaixun.com
@@ -28,4 +29,10 @@ public interface QueueSendService {
      * @param messageBusinessMsg messageBusinessMsg
      */
     void sendMessageTsData(MessageBusinessMsg messageBusinessMsg);
+
+    /**
+     * 发送实体更改 数据
+     * @param entityChangeEvent EntityChangeEvent
+     */
+    void sendEntityChangeData(EntityChangeEvent entityChangeEvent);
 }

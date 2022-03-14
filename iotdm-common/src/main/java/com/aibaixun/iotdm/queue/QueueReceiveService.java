@@ -28,4 +28,12 @@ public interface QueueReceiveService {
      * @param sessionData 数据
      */
     <T> void receiveSessionData(GenericMessage<T> sessionData);
+
+
+
+    /**
+     * 接受 实体数据数据
+     * @param entityData 数据
+     */
+    <T> void receiveEntityData(GenericMessage<T> entityData);
 }

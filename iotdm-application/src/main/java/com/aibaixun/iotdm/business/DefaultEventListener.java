@@ -8,6 +8,7 @@ import com.aibaixun.iotdm.enums.DataFormat;
 import com.aibaixun.iotdm.event.DeviceMessageUpEvent;
 import com.aibaixun.iotdm.event.DevicePropertyUpEvent;
 import com.aibaixun.iotdm.event.DeviceSessionEvent;
+import com.aibaixun.iotdm.event.EntityChangeEvent;
 import com.aibaixun.iotdm.script.JsInvokeService;
 import com.aibaixun.toolkit.coomon.util.HexUtil;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -34,6 +35,8 @@ public class DefaultEventListener {
     private BusinessReportProcessor<PrePropertyBusinessMsg,MessageBusinessMsg> matchProcessor;
 
     private SessionProcessor sessionProcessor;
+
+    private EntityProcessor entityProcessor;
 
     @EventListener
     @Async("taskExecutor")
@@ -85,6 +88,16 @@ public class DefaultEventListener {
             matchProcessor.doProcessMessage(new MessageBusinessMsg(new MetaData(deviceMessageUpEvent.getDeviceId(), deviceMessageUpEvent.getProductId()),payload));
             matchProcessor.doLog(deviceMessageUpEvent.getDeviceId(), BusinessType.DEVICE2PLATFORM, BusinessStep.PLATFORM_RESOLVING_DATA,payload);
         }
+    }
+
+
+
+
+    @EventListener
+    @Async("taskExecutor")
+    public void onEntityChangeEvent(EntityChangeEvent entityChangeEvent){
+        log.info(String.valueOf(entityChangeEvent));
+        entityProcessor.doProcessEntityChangeEvent(entityChangeEvent);
     }
 
 

@@ -56,7 +56,7 @@ spring:
 #                        brokers: 172.16.20.220:9092,172.16.20.221:9092,172.16.20.222:9092
 #                        zkNodes: 172.16.20.220:2181,172.16.20.221:2181,172.16.20.222:2181
 #                        auto-create-topics: true
-
+  out_entity_data
       bindings:
         out_session_data:
           destination: session_data
@@ -66,6 +66,9 @@ spring:
           content-type: application/json
         out_message_ts_data:
           destination: message_ts_data
+          content-type: application/json
+        out_entity_data:
+          destination: entity_data
           content-type: application/json
         input_property_data:
           destination: property_ts_data
@@ -83,6 +86,13 @@ spring:
             concurrency: 2
         input_session_data:
           destination: session_data
+          content-type: application/json
+          binder: defaultRabbit
+          group: ${spring.application.name}
+          consumer:
+            concurrency: 2
+        input_entity_data:
+          destination: entity_data
           content-type: application/json
           binder: defaultRabbit
           group: ${spring.application.name}

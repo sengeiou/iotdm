@@ -13,6 +13,7 @@ public interface IotDmSource {
 
     String OUTPUT_PROPERTY_TS_DATA = "out_property_ts_data";
     String OUTPUT_MESSAGE_TS_DATA = "out_message_ts_data";
+    String OUTPUT_ENTITY__DATA = "out_entity_data";
 
     /**
      * session 信息输出通道
@@ -37,4 +38,12 @@ public interface IotDmSource {
      */
     @Output(OUTPUT_MESSAGE_TS_DATA)
     MessageChannel outputMessageData();
+
+
+    /**
+     * 时序数据通道
+     * @return 通道
+     */
+    @Output(OUTPUT_ENTITY__DATA)
+    MessageChannel outputEntityData();
 }

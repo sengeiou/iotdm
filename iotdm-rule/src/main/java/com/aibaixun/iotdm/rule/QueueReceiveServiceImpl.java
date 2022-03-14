@@ -16,8 +16,11 @@ import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.messaging.support.GenericMessage;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author wangxiao@aibaixun.com
@@ -40,6 +43,7 @@ public class QueueReceiveServiceImpl implements QueueReceiveService {
             PostPropertyBusinessMsg propertyTsData = (PostPropertyBusinessMsg) tsData.getPayload();
             String productId = propertyTsData.getMetaData().getProductId();
             List<ForwardRuleInfo> forwardRule = getForwardRule(productId);
+            List<ForwardRuleInfo> forwardRuleInfos = matchForwardRule(SubjectResource.DEVICE_PROPERTY, SubjectEvent.DEVICE_PROPERTY_REPORT, forwardRule);
 
         }catch (Exception e){
             log.info("QueueReceiveService receivePropertyTsData,error is:{}",e.getMessage());
@@ -47,10 +51,7 @@ public class QueueReceiveServiceImpl implements QueueReceiveService {
 
     }
 
-    private List<ForwardRuleInfo> getForwardRule(String productId) {
-        String currentProductTenantId = ruleService.getCurrentProductTenantId(productId);
-        return ruleService.queryForwardRule(currentProductTenantId);
-    }
+
 
     @Override
     @StreamListener(IotDmSink.INPUT_MESSAGE_TS_DATA)
@@ -60,6 +61,8 @@ public class QueueReceiveServiceImpl implements QueueReceiveService {
             MessageBusinessMsg messageTsData = (MessageBusinessMsg) tsData.getPayload();
             String productId = messageTsData.getMetaData().getProductId();
             List<ForwardRuleInfo> forwardRule = getForwardRule(productId);
+            List<ForwardRuleInfo> forwardRuleInfos = matchForwardRule(SubjectResource.DEVICE_MESSAGE, SubjectEvent.DEVICE_MESSAGE_REPORT, forwardRule);
+
         }catch (Exception e){
             log.info("QueueReceiveService receiveMessageTsData,error is:{}",e.getMessage());
         }
@@ -73,7 +76,9 @@ public class QueueReceiveServiceImpl implements QueueReceiveService {
         try {
             DeviceSessionEvent sessionEventData = (DeviceSessionEvent) sessionData.getPayload();
             String productId = sessionEventData.getProductId();
-            getForwardRule(productId);
+            List<ForwardRuleInfo> forwardRule = getForwardRule(productId);
+            List<ForwardRuleInfo> forwardRuleInfos = matchForwardRule(SubjectResource.DEVICE_STATUS, SubjectEvent.DEVICE_STATUS_UPDATE, forwardRule);
+
         }catch (Exception e){
             log.info("QueueReceiveService receiveSessionData,error is:{}",e.getMessage());
         }
@@ -81,10 +86,40 @@ public class QueueReceiveServiceImpl implements QueueReceiveService {
     }
 
 
+    @Override
+    @StreamListener(IotDmSink.INPUT_ENTITY_DATA)
+    public <T> void receiveEntityData(GenericMessage<T> entityData) {
+        log.info("QueueReceiveService receiveEntityData:{}",entityData);
+        try {
+            DeviceSessionEvent sessionEventData = (DeviceSessionEvent) sessionData.getPayload();
+            String productId = sessionEventData.getProductId();
+            List<ForwardRuleInfo> forwardRule = getForwardRule(productId);
+            List<ForwardRuleInfo> forwardRuleInfos = matchForwardRule(SubjectResource.DEVICE_STATUS, SubjectEvent.DEVICE_STATUS_UPDATE, forwardRule);
+
+        }catch (Exception e){
+            log.info("QueueReceiveService receiveSessionData,error is:{}",e.getMessage());
+        }
+    }
 
 
-    private List<ForwardRuleInfo> matchForwardRule (SubjectResource subjectResource, SubjectEvent subjectEvent) {
-        return null;
+
+    private List<ForwardRuleInfo> getForwardRule(String productId) {
+        String currentProductTenantId = ruleService.getCurrentProductTenantId(productId);
+        return ruleService.queryForwardRule(currentProductTenantId);
+    }
+
+    /**
+     * 匹配转发信息
+     * @param subjectResource 数据来源
+     * @param subjectEvent 触发事件
+     * @param forwardRuleInfos 转发规则信息
+     * @return 匹配到的转发规则
+     */
+    private List<ForwardRuleInfo> matchForwardRule (SubjectResource subjectResource, SubjectEvent subjectEvent,List<ForwardRuleInfo> forwardRuleInfos) {
+        if (CollectionUtils.isEmpty(forwardRuleInfos)){
+            return Collections.emptyList();
+        }
+        return forwardRuleInfos.stream().filter(e -> subjectResource.equals(e.getSubjectResource()) && subjectEvent.equals(e.getSubjectEvent())).collect(Collectors.toList());
     }
 
     @Autowired

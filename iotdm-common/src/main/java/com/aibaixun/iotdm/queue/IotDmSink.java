@@ -13,6 +13,7 @@ public interface IotDmSink {
     String INPUT_PROPERTY_TS_DATA = "input_property_data";
     String INPUT_MESSAGE_TS_DATA = "input_message_data";
     String INPUT_SESSION_DATA = "input_session_data";
+    String INPUT_ENTITY_DATA = "input_entity_data";
 
 
     /**
@@ -37,4 +38,13 @@ public interface IotDmSink {
      */
     @Input(INPUT_SESSION_DATA)
     SubscribableChannel inputSessionData();
+
+
+
+    /**
+     * 实体更改 数据输入通道
+     * @return 通道
+     */
+    @Input(INPUT_ENTITY_DATA)
+    SubscribableChannel inputEntityData();
 }

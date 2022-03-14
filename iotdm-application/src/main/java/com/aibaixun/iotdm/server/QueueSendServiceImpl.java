@@ -4,6 +4,7 @@ import com.aibaixun.common.util.JsonUtil;
 import com.aibaixun.iotdm.business.MessageBusinessMsg;
 import com.aibaixun.iotdm.business.PostPropertyBusinessMsg;
 import com.aibaixun.iotdm.event.DeviceSessionEvent;
+import com.aibaixun.iotdm.event.EntityChangeEvent;
 import com.aibaixun.iotdm.queue.IotDmSource;
 import com.aibaixun.iotdm.queue.QueueSendService;
 import org.springframework.cloud.stream.annotation.EnableBinding;
@@ -39,7 +40,10 @@ public class QueueSendServiceImpl implements QueueSendService {
     }
 
 
+    @Override
+    public void sendEntityChangeData(EntityChangeEvent entityChangeEvent) {
 
+    }
 
     public QueueSendServiceImpl(IotDmSource iotDmSource) {
         this.iotDmSource = iotDmSource;
