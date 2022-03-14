@@ -117,13 +117,10 @@ bx:
       max-idle-connections: 200
       keep-alive-duration: 200
     rabbit:
-      connect-timeout: 30
       max-idle-connections: 100
-      keep-alive-duration: 200
     kafka:
-      connect-timeout: 30
       max-idle-connections: 100
-      keep-alive-duration: 200
+
 
 transport:
   default-keepalive: "${DEFAULT_KEEPALIVE:90}"

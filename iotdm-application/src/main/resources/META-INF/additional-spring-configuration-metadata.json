@@ -124,5 +124,15 @@
       "name": "transport.default-keepalive",
       "type": "java.lang.String",
       "description": "Description for transport.default-keepalive."
+    },
+    {
+      "name": "bx.rule.rabbit.max-idle-connections",
+      "type": "java.lang.String",
+      "description": "Description for bx.rule.rabbit.max-idle-connections."
+    },
+    {
+      "name": "bx.rule.kafka.max-idle-connections",
+      "type": "java.lang.String",
+      "description": "Description for bx.rule.kafka.max-idle-connections."
     }
   ] }
