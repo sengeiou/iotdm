@@ -5,9 +5,11 @@ import com.aibaixun.iotdm.business.PostPropertyBusinessMsg;
 import com.aibaixun.iotdm.enums.SubjectEvent;
 import com.aibaixun.iotdm.enums.SubjectResource;
 import com.aibaixun.iotdm.event.DeviceSessionEvent;
+import com.aibaixun.iotdm.event.EntityChangeEvent;
 import com.aibaixun.iotdm.msg.ForwardRuleInfo;
 import com.aibaixun.iotdm.queue.IotDmSink;
 import com.aibaixun.iotdm.queue.QueueReceiveService;
+import com.aibaixun.iotdm.rule.server.ForwardService;
 import com.aibaixun.iotdm.rule.server.RuleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +36,8 @@ public class QueueReceiveServiceImpl implements QueueReceiveService {
 
 
     private RuleService ruleService;
+
+    private ForwardService forwardService;
 
     @Override
     @StreamListener(IotDmSink.INPUT_PROPERTY_TS_DATA)
@@ -91,10 +95,9 @@ public class QueueReceiveServiceImpl implements QueueReceiveService {
     public <T> void receiveEntityData(GenericMessage<T> entityData) {
         log.info("QueueReceiveService receiveEntityData:{}",entityData);
         try {
-            DeviceSessionEvent sessionEventData = (DeviceSessionEvent) sessionData.getPayload();
-            String productId = sessionEventData.getProductId();
-            List<ForwardRuleInfo> forwardRule = getForwardRule(productId);
-            List<ForwardRuleInfo> forwardRuleInfos = matchForwardRule(SubjectResource.DEVICE_STATUS, SubjectEvent.DEVICE_STATUS_UPDATE, forwardRule);
+            EntityChangeEvent entityChangeEvent = (EntityChangeEvent) entityData.getPayload();
+            List<ForwardRuleInfo> forwardRule = ruleService.queryForwardRule(entityChangeEvent.getTenantId());
+            List<ForwardRuleInfo> forwardRuleInfos = matchForwardRule(entityChangeEvent.getSubjectResource(), entityChangeEvent.getSubjectEvent(), forwardRule);
 
         }catch (Exception e){
             log.info("QueueReceiveService receiveSessionData,error is:{}",e.getMessage());
@@ -102,7 +105,11 @@ public class QueueReceiveServiceImpl implements QueueReceiveService {
     }
 
 
-
+    /**
+     * 查询 转发规则
+     * @param productId 产品id
+     * @return 转发规则
+     */
     private List<ForwardRuleInfo> getForwardRule(String productId) {
         String currentProductTenantId = ruleService.getCurrentProductTenantId(productId);
         return ruleService.queryForwardRule(currentProductTenantId);
@@ -122,8 +129,16 @@ public class QueueReceiveServiceImpl implements QueueReceiveService {
         return forwardRuleInfos.stream().filter(e -> subjectResource.equals(e.getSubjectResource()) && subjectEvent.equals(e.getSubjectEvent())).collect(Collectors.toList());
     }
 
+
+
     @Autowired
     public void setRuleService(RuleService ruleService) {
         this.ruleService = ruleService;
+    }
+
+
+    @Autowired
+    public void setForwardService(ForwardService forwardService) {
+        this.forwardService = forwardService;
     }
 }

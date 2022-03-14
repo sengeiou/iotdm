@@ -1,5 +1,6 @@
 package com.aibaixun.iotdm.scheduler;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
@@ -10,8 +11,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class RuleExecutorService extends AbstractListeningExecutor{
 
+    @Value("${bx.rule.poll_size:5}")
+    private int poolSize;
+
     @Override
     protected int getThreadPollSize() {
-        return 10;
+        return poolSize;
     }
 }

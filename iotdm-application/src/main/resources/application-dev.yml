@@ -56,7 +56,6 @@ spring:
 #                        brokers: 172.16.20.220:9092,172.16.20.221:9092,172.16.20.222:9092
 #                        zkNodes: 172.16.20.220:2181,172.16.20.221:2181,172.16.20.222:2181
 #                        auto-create-topics: true
-  out_entity_data
       bindings:
         out_session_data:
           destination: session_data
@@ -107,7 +106,8 @@ bx:
     title: IOTdm Web Api
     path: /**
     enable: true
-
+  rule:
+    poll_size: 10
 transport:
   default-keepalive: "${DEFAULT_KEEPALIVE:90}"
   mqtt:

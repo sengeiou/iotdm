@@ -16,6 +16,8 @@ public class EntityChangeEvent {
 
     public Long ts;
 
+    private String tenantId;
+
 
     public SubjectResource getSubjectResource() {
         return subjectResource;
@@ -39,5 +41,14 @@ public class EntityChangeEvent {
 
     public void setTs(Long ts) {
         this.ts = ts;
+    }
+
+
+    public String getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
 }
