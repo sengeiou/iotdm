@@ -17,19 +17,6 @@ public interface SendService {
 
      Map<ResourceType, SendService> SEND_SERVICE_MAP = new ConcurrentHashMap<>(8);
 
-    /**
-     * 默认发送方法
-     * @param message 消息
-     * @param resourceType 资源类型
-     * @param resourceConfig 资源配置
-     * @param targetConfig 发送目标配置
-     * @param <T> 消息类型
-     */
-    default <T> void  sendMessage(T message, ResourceType resourceType, BaseResourceConfig resourceConfig, BaseTargetConfig targetConfig){
-        SendService sendService = SEND_SERVICE_MAP.get(resourceType);
-        sendService.doSendMessage(message,resourceConfig,targetConfig);
-    }
-
 
     /**
      * 发送方法 需要子类实现
