@@ -17,6 +17,8 @@ public abstract class BaseDataEvent implements DataEvent{
         this.productId = productId;
     }
 
+    public BaseDataEvent() {
+    }
 
     public String getDeviceId() {
         return deviceId;

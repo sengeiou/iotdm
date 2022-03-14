@@ -5,12 +5,12 @@ import com.aibaixun.basic.result.BaseResultCode;
 import com.aibaixun.basic.result.JsonResult;
 import com.aibaixun.iotdm.entity.DeviceEntity;
 import com.aibaixun.iotdm.entity.ProductEntity;
-import com.aibaixun.iotdm.enums.DeviceAuthType;
-import com.aibaixun.iotdm.enums.DeviceStatus;
-import com.aibaixun.iotdm.enums.NodeType;
+import com.aibaixun.iotdm.enums.*;
+import com.aibaixun.iotdm.event.EntityChangeEvent;
 import com.aibaixun.iotdm.service.IDeviceService;
 import com.aibaixun.iotdm.service.IProductService;
 import com.aibaixun.iotdm.data.*;
+import com.aibaixun.iotdm.service.IotDmEventPublisher;
 import com.aibaixun.iotdm.util.Base64Util;
 import com.aibaixun.iotdm.util.UserInfoUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -43,6 +43,8 @@ public class DeviceController extends BaseController{
     private IDeviceService deviceService;
 
     private IProductService productService;
+
+    private IotDmEventPublisher iotDmEventPublisher;
 
     @GetMapping("/count")
     public JsonResult<Map<String,Long>> countDevice(@RequestParam(required = false)String productId) {
@@ -139,6 +141,9 @@ public class DeviceController extends BaseController{
         saveDeviceEntity.setInvented(false);
         saveDeviceEntity.setDeviceStatus(DeviceStatus.INACTIVE);
         boolean save = deviceService.save(saveDeviceEntity);
+        if (save){
+            iotDmEventPublisher.publishEntityChangeEvent(new EntityChangeEvent(SubjectResource.DEVICE, SubjectEvent.DEVICE_CREATE,UserInfoUtil.getTenantIdOfNull()));
+        }
         return JsonResult.success(save);
     }
 
@@ -154,6 +159,9 @@ public class DeviceController extends BaseController{
             throw new BaseException("设备必须由创建人删除",BaseResultCode.GENERAL_ERROR);
         }
         boolean remove = deviceService.removeById(id);
+        if (remove){
+            iotDmEventPublisher.publishEntityChangeEvent(new EntityChangeEvent(SubjectResource.DEVICE, SubjectEvent.DEVICE_DELETE,UserInfoUtil.getTenantIdOfNull()));
+        }
         return JsonResult.success(remove);
     }
 
@@ -208,6 +216,26 @@ public class DeviceController extends BaseController{
     }
 
 
+    @PostMapping("/invented/{productId}")
+    public JsonResult<Boolean> createInventedDevice(@PathVariable String productId) throws BaseException {
+        String deviceSecret = RandomStringUtils.randomAlphanumeric(20);
+        String deviceCode = RandomStringUtils.randomAlphanumeric(10);
+        String deviceLabel = "invented"+RandomStringUtils.randomAlphanumeric(10);
+        checkProductId(productId);
+        checkDeviceCode(deviceCode,productId);
+        DeviceEntity saveDeviceEntity = new DeviceEntity();
+        saveDeviceEntity.setDeviceCode(deviceCode);
+        saveDeviceEntity.setDeviceLabel(deviceLabel);
+        saveDeviceEntity.setDeviceSecret(deviceSecret);
+        saveDeviceEntity.setAuthType(DeviceAuthType.SECRET);
+        saveDeviceEntity.setProductId(productId);
+        saveDeviceEntity.setNodeType(NodeType.GATEWAY);
+        saveDeviceEntity.setInvented(true);
+        saveDeviceEntity.setDeviceStatus(DeviceStatus.ONLINE);
+        boolean save = deviceService.save(saveDeviceEntity);
+        return JsonResult.success(save);
+    }
+
 
     private void checkProductId(String productId) throws BaseException {
         ProductEntity productEntity = productService.getById(productId);
@@ -233,5 +261,11 @@ public class DeviceController extends BaseController{
     @Autowired
     public void setProductService(IProductService productService) {
         this.productService = productService;
+    }
+
+
+    @Autowired
+    public void setIotDmEventPublisher(IotDmEventPublisher iotDmEventPublisher) {
+        this.iotDmEventPublisher = iotDmEventPublisher;
     }
 }

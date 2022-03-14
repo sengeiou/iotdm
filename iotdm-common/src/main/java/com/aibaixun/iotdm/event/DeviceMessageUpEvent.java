@@ -14,6 +14,9 @@ public class DeviceMessageUpEvent extends BaseDataEvent{
         this.payload = payload;
     }
 
+    public DeviceMessageUpEvent() {
+    }
+
     public String getPayload() {
         return payload;
     }

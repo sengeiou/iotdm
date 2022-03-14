@@ -3,6 +3,8 @@ package com.aibaixun.iotdm.event;
 import com.aibaixun.iotdm.enums.SubjectEvent;
 import com.aibaixun.iotdm.enums.SubjectResource;
 
+import java.time.Instant;
+
 /**
  * 实体更改 目前只有 设备与 资产
  * @author wangxiao@aibaixun.com
@@ -50,5 +52,16 @@ public class EntityChangeEvent {
 
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
+    }
+
+
+    public EntityChangeEvent() {
+    }
+
+    public EntityChangeEvent(SubjectResource subjectResource, SubjectEvent subjectEvent, String tenantId) {
+        this.subjectResource = subjectResource;
+        this.subjectEvent = subjectEvent;
+        this.tenantId = tenantId;
+        this.ts= Instant.now().toEpochMilli();
     }
 }

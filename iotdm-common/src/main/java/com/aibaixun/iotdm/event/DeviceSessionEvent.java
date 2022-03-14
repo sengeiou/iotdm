@@ -14,6 +14,9 @@ public class DeviceSessionEvent extends BaseDataEvent{
         this.sessionEventType = sessionEventType;
     }
 
+    public DeviceSessionEvent() {
+    }
+
     private SessionEventType sessionEventType;
 
 

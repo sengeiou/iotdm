@@ -7,8 +7,12 @@ import com.aibaixun.basic.result.JsonResult;
 import com.aibaixun.common.redis.util.RedisRepository;
 import com.aibaixun.iotdm.data.UpdateProductParam;
 import com.aibaixun.iotdm.entity.ProductEntity;
+import com.aibaixun.iotdm.enums.SubjectEvent;
+import com.aibaixun.iotdm.enums.SubjectResource;
+import com.aibaixun.iotdm.event.EntityChangeEvent;
 import com.aibaixun.iotdm.service.IProductService;
 import com.aibaixun.iotdm.data.ProductEntityInfo;
+import com.aibaixun.iotdm.service.IotDmEventPublisher;
 import com.aibaixun.iotdm.util.UserInfoUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.commons.lang3.StringUtils;
@@ -35,9 +39,7 @@ public class ProductController extends BaseController{
 
     private RedisRepository redisRepository;
 
-    public ProductController(IProductService productService) {
-        this.productService = productService;
-    }
+    private IotDmEventPublisher iotDmEventPublisher;
 
     @GetMapping("/page")
     public JsonResult<Page<ProductEntity>> pageQueryProducts(@RequestParam Integer page,
@@ -72,6 +74,9 @@ public class ProductController extends BaseController{
             throw new BaseException("当前租户下已有同名产品", BaseResultCode.BAD_PARAMS);
         }
         boolean saveResult = productService.save(productEntity);
+        if (saveResult){
+            iotDmEventPublisher.publishEntityChangeEvent(new EntityChangeEvent(SubjectResource.PRODUCT, SubjectEvent.PRODUCT_CREATE,UserInfoUtil.getTenantIdOfNull()));
+        }
         return JsonResult.success(saveResult);
     }
 
@@ -86,6 +91,9 @@ public class ProductController extends BaseController{
         }
         redisRepository.delHashValues(IOT_PRODUCT_TENANT_KEY, id);
         boolean remove = productService.removeById(id);
+        if (remove){
+            iotDmEventPublisher.publishEntityChangeEvent(new EntityChangeEvent(SubjectResource.PRODUCT, SubjectEvent.PRODUCT_DELETE,UserInfoUtil.getTenantIdOfNull()));
+        }
         return JsonResult.success(remove);
     }
 

@@ -1,7 +1,10 @@
 package com.aibaixun.iotdm.service;
 
 import com.aibaixun.iotdm.enums.DataFormat;
+import com.aibaixun.iotdm.event.EntityChangeEvent;
 import com.aibaixun.iotdm.msg.SessionEventType;
+
+import javax.xml.stream.events.EntityDeclaration;
 
 /**
  * 事件发布者
@@ -78,4 +81,10 @@ public interface IotDmEventPublisher {
      * @param payload 负载
      */
     void  publishControlReqEvent(String productId,String deviceId,  DataFormat dataFormat, String payload);
+
+    /**
+     * 发布实体更改
+     * @param entityChangeEvent entityChangeEvent
+     */
+    void  publishEntityChangeEvent(EntityChangeEvent entityChangeEvent);
 }

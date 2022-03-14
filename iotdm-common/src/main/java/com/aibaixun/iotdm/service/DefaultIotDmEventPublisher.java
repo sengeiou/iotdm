@@ -4,6 +4,7 @@ import com.aibaixun.iotdm.enums.DataFormat;
 import com.aibaixun.iotdm.event.DeviceMessageUpEvent;
 import com.aibaixun.iotdm.event.DevicePropertyUpEvent;
 import com.aibaixun.iotdm.event.DeviceSessionEvent;
+import com.aibaixun.iotdm.event.EntityChangeEvent;
 import com.aibaixun.iotdm.msg.SessionEventType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -36,10 +37,13 @@ public class DefaultIotDmEventPublisher implements IotDmEventPublisher {
         applicationEventPublisher.publishEvent(new DeviceMessageUpEvent(deviceId,productId,payload));
     }
 
-    @Autowired
-    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
-        this.applicationEventPublisher = applicationEventPublisher;
+
+
+    @Override
+    public void publishEntityChangeEvent(EntityChangeEvent entityChangeEvent) {
+        applicationEventPublisher.publishEvent(entityChangeEvent);
     }
+
 
 
     @Override
@@ -61,5 +65,11 @@ public class DefaultIotDmEventPublisher implements IotDmEventPublisher {
     @Override
     public void publishControlReqEvent(String productId, String deviceId, DataFormat dataFormat, String payload) {
 
+    }
+
+
+    @Autowired
+    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 }

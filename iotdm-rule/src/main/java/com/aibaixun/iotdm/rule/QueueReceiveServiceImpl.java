@@ -1,5 +1,6 @@
 package com.aibaixun.iotdm.rule;
 
+import com.aibaixun.common.util.JsonUtil;
 import com.aibaixun.iotdm.business.MessageBusinessMsg;
 import com.aibaixun.iotdm.business.PostPropertyBusinessMsg;
 import com.aibaixun.iotdm.enums.SubjectEvent;
@@ -44,7 +45,7 @@ public class QueueReceiveServiceImpl implements QueueReceiveService {
     public <T> void receivePropertyTsData(GenericMessage<T> tsData) {
         log.info("QueueReceiveService receivePropertyTsData:{}",tsData);
         try {
-            PostPropertyBusinessMsg propertyTsData = (PostPropertyBusinessMsg) tsData.getPayload();
+            PostPropertyBusinessMsg propertyTsData = JsonUtil.toObject(tsData.getPayload().toString(),PostPropertyBusinessMsg.class) ;
             String productId = propertyTsData.getMetaData().getProductId();
             List<ForwardRuleInfo> forwardRule = getForwardRule(productId);
             List<ForwardRuleInfo> forwardRuleInfos = matchForwardRule(SubjectResource.DEVICE_PROPERTY, SubjectEvent.DEVICE_PROPERTY_REPORT, forwardRule);
@@ -62,7 +63,7 @@ public class QueueReceiveServiceImpl implements QueueReceiveService {
     public <T> void receiveMessageTsData(GenericMessage<T> tsData) {
         log.info("QueueReceiveService receiveMessageTsData:{}",tsData);
         try {
-            MessageBusinessMsg messageTsData = (MessageBusinessMsg) tsData.getPayload();
+            MessageBusinessMsg messageTsData = JsonUtil.toObject(tsData.getPayload().toString(),MessageBusinessMsg.class);
             String productId = messageTsData.getMetaData().getProductId();
             List<ForwardRuleInfo> forwardRule = getForwardRule(productId);
             List<ForwardRuleInfo> forwardRuleInfos = matchForwardRule(SubjectResource.DEVICE_MESSAGE, SubjectEvent.DEVICE_MESSAGE_REPORT, forwardRule);
@@ -78,7 +79,7 @@ public class QueueReceiveServiceImpl implements QueueReceiveService {
     public <T> void receiveSessionData(GenericMessage<T> sessionData) {
         log.info("QueueReceiveService receiveSessionData:{}",sessionData);
         try {
-            DeviceSessionEvent sessionEventData = (DeviceSessionEvent) sessionData.getPayload();
+            DeviceSessionEvent sessionEventData =  JsonUtil.toObject(sessionData.getPayload().toString(),DeviceSessionEvent.class);
             String productId = sessionEventData.getProductId();
             List<ForwardRuleInfo> forwardRule = getForwardRule(productId);
             List<ForwardRuleInfo> forwardRuleInfos = matchForwardRule(SubjectResource.DEVICE_STATUS, SubjectEvent.DEVICE_STATUS_UPDATE, forwardRule);
@@ -95,7 +96,7 @@ public class QueueReceiveServiceImpl implements QueueReceiveService {
     public <T> void receiveEntityData(GenericMessage<T> entityData) {
         log.info("QueueReceiveService receiveEntityData:{}",entityData);
         try {
-            EntityChangeEvent entityChangeEvent = (EntityChangeEvent) entityData.getPayload();
+            EntityChangeEvent entityChangeEvent = JsonUtil.toObject(entityData.getPayload().toString(),EntityChangeEvent.class);
             List<ForwardRuleInfo> forwardRule = ruleService.queryForwardRule(entityChangeEvent.getTenantId());
             List<ForwardRuleInfo> forwardRuleInfos = matchForwardRule(entityChangeEvent.getSubjectResource(), entityChangeEvent.getSubjectEvent(), forwardRule);
             forwardService.sendMessage(entityData,forwardRuleInfos);

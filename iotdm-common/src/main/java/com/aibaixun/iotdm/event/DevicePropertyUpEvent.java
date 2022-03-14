@@ -19,6 +19,9 @@ public class DevicePropertyUpEvent extends BaseDataEvent{
         this.payload = payload;
     }
 
+    public DevicePropertyUpEvent() {
+    }
+
     public DataFormat getDataFormat() {
         return dataFormat;
     }
