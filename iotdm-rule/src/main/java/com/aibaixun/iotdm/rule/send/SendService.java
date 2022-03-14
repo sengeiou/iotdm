@@ -3,6 +3,7 @@ package com.aibaixun.iotdm.rule.send;
 import com.aibaixun.iotdm.enums.ResourceType;
 import com.aibaixun.iotdm.support.BaseResourceConfig;
 import com.aibaixun.iotdm.support.BaseTargetConfig;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,14 +19,17 @@ public interface SendService {
      Map<ResourceType, SendService> SEND_SERVICE_MAP = new ConcurrentHashMap<>(8);
 
 
-    /**
-     * 发送方法 需要子类实现
-     * @param message 消息
-     * @param resourceConfig 资源配置
-     * @param targetConfig 发送目标配置
-     * @param <T> 消息类型
-     */
-     <T>  void doSendMessage(T message, BaseResourceConfig resourceConfig, BaseTargetConfig targetConfig);
+     ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+         /**
+          * 发送方法 需要子类实现
+          * @param message 消息
+          * @param resourceConfig 资源配置
+          * @param targetConfig 发送目标配置
+          * @param <T> 消息类型
+          */
+             <T>
+
+    void doSendMessage(T message, BaseResourceConfig resourceConfig, BaseTargetConfig targetConfig);
 
     /**
      * 需要子类实现 并调用registerService 方法
