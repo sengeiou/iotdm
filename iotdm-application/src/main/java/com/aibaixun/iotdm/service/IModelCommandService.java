@@ -24,6 +24,14 @@ public interface IModelCommandService extends IService<ModelCommandEntity> {
     Long countModelCommandByLabel(String modelId, String commandLabel);
 
 
+    /**
+     * 统计模型下命令 数目
+     * @param modelId 模型di
+     * @param commandLabel 命令名称
+     * @param id id
+     * @return 数目
+     */
+    Long countModelCommandByLabel(String modelId, String commandLabel,String id);
 
     /**
      * 查询模型命令

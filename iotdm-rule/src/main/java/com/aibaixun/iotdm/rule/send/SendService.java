@@ -3,6 +3,7 @@ package com.aibaixun.iotdm.rule.send;
 import com.aibaixun.iotdm.enums.ResourceType;
 import com.aibaixun.iotdm.support.BaseResourceConfig;
 import com.aibaixun.iotdm.support.BaseTargetConfig;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Map;
@@ -29,7 +30,7 @@ public interface SendService {
           */
              <T>
 
-    void doSendMessage(T message, BaseResourceConfig resourceConfig, BaseTargetConfig targetConfig);
+    void doSendMessage(T message, BaseResourceConfig resourceConfig, BaseTargetConfig targetConfig) throws JsonProcessingException;
 
     /**
      * 需要子类实现 并调用registerService 方法

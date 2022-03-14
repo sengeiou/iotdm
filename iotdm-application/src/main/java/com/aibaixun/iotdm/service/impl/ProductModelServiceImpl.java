@@ -55,14 +55,15 @@ public class ProductModelServiceImpl extends ServiceImpl<ProductModelMapper, Pro
         updateWrapper.eq(ProductModelEntity::getId, productModelEntity.getId());
         if (StringUtils.isNotBlank(productModelEntity.getModelLabel())){
             updateWrapper.set(ProductModelEntity::getModelLabel, productModelEntity.getModelLabel());
-        }else if (StringUtils.isNotBlank(productModelEntity.getProductId())){
+        }
+        if (StringUtils.isNotBlank(productModelEntity.getProductId())){
             updateWrapper.set(ProductModelEntity::getProductId, productModelEntity.getProductId());
-        }else if (StringUtils.isNotBlank(productModelEntity.getDescription())){
+        }
+        if (StringUtils.isNotBlank(productModelEntity.getDescription())){
             updateWrapper.set(ProductModelEntity::getDescription, productModelEntity.getDescription());
-        }else if(StringUtils.isNotBlank(productModelEntity.getModelType())){
+        }
+        if(StringUtils.isNotBlank(productModelEntity.getModelType())){
             updateWrapper.set(ProductModelEntity::getModelType, productModelEntity.getModelType());
-        }else {
-            return false;
         }
         return update(updateWrapper);
     }
@@ -85,7 +86,7 @@ public class ProductModelServiceImpl extends ServiceImpl<ProductModelMapper, Pro
     public Boolean updateModelProperty(String productId, ModelPropertyEntity modelPropertyEntity) throws BaseException {
         String propertyLabel = modelPropertyEntity.getPropertyLabel();
         String productModelId = modelPropertyEntity.getProductModelId();
-        Long countNum = modelPropertyService.countModelPropertyByLabel(propertyLabel, productModelId);
+        Long countNum = modelPropertyService.countModelPropertyByLabel(propertyLabel, productModelId,modelPropertyEntity.getId());
         if (countNum>0){
             throw new BaseException("模型下已经存在同名属性", BaseResultCode.GENERAL_ERROR);
         }
@@ -115,7 +116,7 @@ public class ProductModelServiceImpl extends ServiceImpl<ProductModelMapper, Pro
     public Boolean updateModelCommand(String productId, ModelCommandEntity modelCommandEntity) throws BaseException {
         String commandLabel = modelCommandEntity.getCommandLabel();
         String productModelId = modelCommandEntity.getProductModelId();
-        Long countNum = modelCommandService.countModelCommandByLabel(productModelId, commandLabel);
+        Long countNum = modelCommandService.countModelCommandByLabel(productModelId, commandLabel,modelCommandEntity.getId());
         if (countNum>0){
             throw new BaseException("模型下已经存在同名属性", BaseResultCode.GENERAL_ERROR);
         }

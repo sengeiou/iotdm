@@ -5,6 +5,7 @@
     <resultMap id="ProductModelInfoResultMap" type="com.aibaixun.iotdm.data.ProductModelEntityInfo">
         <id property="id" column="id"/>
         <result property="modelLabel" column="model_label"/>
+        <result property="modelType" column="model_type"/>
         <result property="description" column="description"/>
         <collection property="properties" ofType="com.aibaixun.iotdm.entity.ModelPropertyEntity">
            <id column="mpid" property="id" />
@@ -27,6 +28,7 @@
         SELECT
             pm.id,
             pm.model_label,
+            pm.model_type,
             pm.description,
             mp.id AS mpid,
             mp.property_label,

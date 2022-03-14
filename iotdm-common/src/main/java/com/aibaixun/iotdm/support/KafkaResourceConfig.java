@@ -22,6 +22,16 @@ public class KafkaResourceConfig implements BaseResourceConfig{
 
     private Long reqTimeout;
 
+    private Long connectTimeOut;
+
+    private String compressionType;
+
+    private Long metaUpdateTs;
+
+    private Long bufferSize;
+
+    private Long batchSize;
+
     @Override
     public ResourceType getResourceType() {
         return ResourceType.KAFKA;
@@ -66,5 +76,45 @@ public class KafkaResourceConfig implements BaseResourceConfig{
 
     public void setReqTimeout(Long reqTimeout) {
         this.reqTimeout = reqTimeout;
+    }
+
+    public Long getConnectTimeOut() {
+        return connectTimeOut;
+    }
+
+    public void setConnectTimeOut(Long connectTimeOut) {
+        this.connectTimeOut = connectTimeOut;
+    }
+
+    public String getCompressionType() {
+        return compressionType;
+    }
+
+    public void setCompressionType(String compressionType) {
+        this.compressionType = compressionType;
+    }
+
+    public Long getMetaUpdateTs() {
+        return metaUpdateTs;
+    }
+
+    public void setMetaUpdateTs(Long metaUpdateTs) {
+        this.metaUpdateTs = metaUpdateTs;
+    }
+
+    public Long getBufferSize() {
+        return bufferSize;
+    }
+
+    public void setBufferSize(Long bufferSize) {
+        this.bufferSize = bufferSize;
+    }
+
+    public Long getBatchSize() {
+        return batchSize;
+    }
+
+    public void setBatchSize(Long batchSize) {
+        this.batchSize = batchSize;
     }
 }

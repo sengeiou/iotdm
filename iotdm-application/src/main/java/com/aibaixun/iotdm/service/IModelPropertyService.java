@@ -23,6 +23,15 @@ public interface IModelPropertyService extends IService<ModelPropertyEntity> {
      */
     Long countModelPropertyByLabel(String propertyLabel,String modelId);
 
+    /**
+     * 统计模型下 属性名称个数
+     * @param propertyLabel 属性名称
+     * @param modelId 模型id
+     * @param id id
+     * @return 数目
+     */
+    Long countModelPropertyByLabel(String propertyLabel,String modelId,String id);
+
 
     /**
      * 查询模型属性

@@ -27,7 +27,6 @@ public interface IRuleResourceService extends IService<RuleResourceEntity> {
      */
     Page<RuleResourceEntity> pageQueryRuleResource (Integer page, Integer pageSize, String resourceLabel);
 
-
     /**
      * 查询 资源列表
      * @param limit 限制数目

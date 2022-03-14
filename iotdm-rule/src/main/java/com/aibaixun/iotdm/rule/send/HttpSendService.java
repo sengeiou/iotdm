@@ -79,7 +79,7 @@ public class HttpSendService implements SendService{
 
             @Override
             public void onResponse(Call call, Response response) {
-                log.info("HttpSendService.doExecuteHttp is response,url is:{},response codeis:{}",url,response.code());
+                log.error("HttpSendService.doExecuteHttp is response,url is:{},response codeis:{}",url,response.code());
             }
         });
     }

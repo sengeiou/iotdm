@@ -5,6 +5,7 @@ import com.aibaixun.iotdm.enums.ParamScope;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 /**
@@ -34,7 +35,7 @@ public class ModelPropertyEntity extends BaseEntity {
     /**
      * 数据类型
      */
-    @NotBlank(message = "数据类型不允许为空")
+    @NotNull(message = "数据类型不允许为空")
     private DataType dataType;
 
     /**

@@ -14,19 +14,20 @@ public class RabbitResourceConfig implements BaseResourceConfig{
 
     private String host;
 
+    private int port;
+
     private Long connectPoolSize;
 
     private String username;
 
     private String password;
 
-    private Long connectTimeout;
+    private Integer connectTimeout;
 
     private String virtualHost;
 
-    private Long keepLive;
+    private Integer keepLive;
 
-    private Long retryConnectInterval;
 
     @Override
     public ResourceType getResourceType() {
@@ -65,11 +66,11 @@ public class RabbitResourceConfig implements BaseResourceConfig{
         this.password = password;
     }
 
-    public Long getConnectTimeout() {
+    public Integer getConnectTimeout() {
         return connectTimeout;
     }
 
-    public void setConnectTimeout(Long connectTimeout) {
+    public void setConnectTimeout(Integer connectTimeout) {
         this.connectTimeout = connectTimeout;
     }
 
@@ -81,19 +82,20 @@ public class RabbitResourceConfig implements BaseResourceConfig{
         this.virtualHost = virtualHost;
     }
 
-    public Long getKeepLive() {
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public Integer getKeepLive() {
         return keepLive;
     }
 
-    public void setKeepLive(Long keepLive) {
+    public void setKeepLive(Integer keepLive) {
         this.keepLive = keepLive;
-    }
-
-    public Long getRetryConnectInterval() {
-        return retryConnectInterval;
-    }
-
-    public void setRetryConnectInterval(Long retryConnectInterval) {
-        this.retryConnectInterval = retryConnectInterval;
     }
 }

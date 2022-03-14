@@ -29,6 +29,14 @@ public class ModelPropertyServiceImpl extends ServiceImpl<ModelPropertyMapper, M
         return count(queryWrapper);
     }
 
+    @Override
+    public Long countModelPropertyByLabel(String propertyLabel, String modelId, String id) {
+        LambdaQueryWrapper<ModelPropertyEntity> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(ModelPropertyEntity::getPropertyLabel,propertyLabel)
+                .eq(ModelPropertyEntity::getProductModelId,modelId)
+                .ne(ModelPropertyEntity::getId,id);
+        return count(queryWrapper);
+    }
 
     @Override
     public List<ModelPropertyEntity> listQueryByModelId(String modelId) {

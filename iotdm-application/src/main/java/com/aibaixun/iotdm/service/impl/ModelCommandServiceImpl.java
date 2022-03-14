@@ -29,6 +29,15 @@ public class ModelCommandServiceImpl extends ServiceImpl<ModelCommandMapper, Mod
     }
 
     @Override
+    public Long countModelCommandByLabel(String modelId, String commandLabel, String id) {
+        LambdaQueryWrapper<ModelCommandEntity> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(ModelCommandEntity::getCommandLabel,commandLabel)
+                .eq(ModelCommandEntity::getProductModelId,modelId)
+                .ne(ModelCommandEntity::getId,id);
+        return count(queryWrapper);
+    }
+
+    @Override
     public List<ModelCommandEntity> listQueryByModelId(String modelId) {
         return list(Wrappers.<ModelCommandEntity>lambdaQuery().eq(ModelCommandEntity::getProductModelId,modelId));
     }

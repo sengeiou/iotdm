@@ -2,6 +2,7 @@ package com.aibaixun.iotdm.support;
 
 import com.aibaixun.iotdm.enums.ResourceType;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.rabbitmq.client.BuiltinExchangeType;
 
 /**
  * RabbitMq 转发配置配置
@@ -13,7 +14,7 @@ public class RabbitTargetConfig implements BaseTargetConfig{
 
     private String exchange;
 
-    private String exchangeType;
+    private BuiltinExchangeType exchangeType;
 
     private String routingKey;
 
@@ -32,11 +33,11 @@ public class RabbitTargetConfig implements BaseTargetConfig{
         this.exchange = exchange;
     }
 
-    public String getExchangeType() {
+    public BuiltinExchangeType getExchangeType() {
         return exchangeType;
     }
 
-    public void setExchangeType(String exchangeType) {
+    public void setExchangeType(BuiltinExchangeType exchangeType) {
         this.exchangeType = exchangeType;
     }
 

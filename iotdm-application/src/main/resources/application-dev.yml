@@ -106,6 +106,8 @@ bx:
     title: IOTdm Web Api
     path: /**
     enable: true
+    exception:
+      enable: true
   rule:
     poll_size: 10
     http:
