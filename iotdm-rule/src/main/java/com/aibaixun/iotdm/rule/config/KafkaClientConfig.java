@@ -1,14 +1,12 @@
 package com.aibaixun.iotdm.rule.config;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * @author wangxiao@aibaixun.com
  * @date 2022/3/14
  */
-@Configuration
-public class RabbitClientConfig {
+public class KafkaClientConfig {
 
     @Value("${bx.rule.rabbit.connect-timeout}")
     private Integer connectTimeout;
