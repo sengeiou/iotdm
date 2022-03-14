@@ -48,7 +48,7 @@ public class QueueReceiveServiceImpl implements QueueReceiveService {
             String productId = propertyTsData.getMetaData().getProductId();
             List<ForwardRuleInfo> forwardRule = getForwardRule(productId);
             List<ForwardRuleInfo> forwardRuleInfos = matchForwardRule(SubjectResource.DEVICE_PROPERTY, SubjectEvent.DEVICE_PROPERTY_REPORT, forwardRule);
-
+            forwardService.forwardPropertyReport(propertyTsData,forwardRuleInfos);
         }catch (Exception e){
             log.info("QueueReceiveService receivePropertyTsData,error is:{}",e.getMessage());
         }
@@ -66,7 +66,7 @@ public class QueueReceiveServiceImpl implements QueueReceiveService {
             String productId = messageTsData.getMetaData().getProductId();
             List<ForwardRuleInfo> forwardRule = getForwardRule(productId);
             List<ForwardRuleInfo> forwardRuleInfos = matchForwardRule(SubjectResource.DEVICE_MESSAGE, SubjectEvent.DEVICE_MESSAGE_REPORT, forwardRule);
-
+            forwardService.forwardMessageReport(messageTsData,forwardRuleInfos);
         }catch (Exception e){
             log.info("QueueReceiveService receiveMessageTsData,error is:{}",e.getMessage());
         }
@@ -82,7 +82,7 @@ public class QueueReceiveServiceImpl implements QueueReceiveService {
             String productId = sessionEventData.getProductId();
             List<ForwardRuleInfo> forwardRule = getForwardRule(productId);
             List<ForwardRuleInfo> forwardRuleInfos = matchForwardRule(SubjectResource.DEVICE_STATUS, SubjectEvent.DEVICE_STATUS_UPDATE, forwardRule);
-
+            forwardService.forwardSessionReport(sessionEventData,forwardRuleInfos);
         }catch (Exception e){
             log.info("QueueReceiveService receiveSessionData,error is:{}",e.getMessage());
         }
@@ -98,7 +98,7 @@ public class QueueReceiveServiceImpl implements QueueReceiveService {
             EntityChangeEvent entityChangeEvent = (EntityChangeEvent) entityData.getPayload();
             List<ForwardRuleInfo> forwardRule = ruleService.queryForwardRule(entityChangeEvent.getTenantId());
             List<ForwardRuleInfo> forwardRuleInfos = matchForwardRule(entityChangeEvent.getSubjectResource(), entityChangeEvent.getSubjectEvent(), forwardRule);
-
+            forwardService.forwardEntityReport(entityChangeEvent,forwardRuleInfos);
         }catch (Exception e){
             log.info("QueueReceiveService receiveSessionData,error is:{}",e.getMessage());
         }
@@ -112,6 +112,7 @@ public class QueueReceiveServiceImpl implements QueueReceiveService {
      */
     private List<ForwardRuleInfo> getForwardRule(String productId) {
         String currentProductTenantId = ruleService.getCurrentProductTenantId(productId);
+        log.info("QueueReceiveServiceImpl.getForwardRule >> get ForwardInfo from tenantId:{}",currentProductTenantId);
         return ruleService.queryForwardRule(currentProductTenantId);
     }
 
