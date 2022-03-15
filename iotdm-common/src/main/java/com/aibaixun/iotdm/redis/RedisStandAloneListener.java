@@ -1,6 +1,6 @@
 package com.aibaixun.iotdm.redis;
 
-import com.aibaixun.iotdm.service.DeviceInfoService;
+import com.aibaixun.iotdm.service.DeviceInfoServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class RedisStandAloneListener extends KeyExpirationEventMessageListener i
 
     private final Logger log  = LoggerFactory.getLogger(RedisClusterListener.class);
 
-    private DeviceInfoService deviceInfoService;
+    private DeviceInfoServer deviceInfoService;
 
     public RedisStandAloneListener(RedisMessageListenerContainer listenerContainer) {
         super(listenerContainer);
@@ -45,12 +45,12 @@ public class RedisStandAloneListener extends KeyExpirationEventMessageListener i
 
     @Autowired
     @Override
-    public void setDeviceInfoService(DeviceInfoService deviceInfoService) {
+    public void setDeviceInfoService(DeviceInfoServer deviceInfoService) {
         this.deviceInfoService = deviceInfoService;
     }
 
     @Override
-    public DeviceInfoService getDeviceInfoService() {
+    public DeviceInfoServer getDeviceInfoService() {
         return deviceInfoService;
     }
 

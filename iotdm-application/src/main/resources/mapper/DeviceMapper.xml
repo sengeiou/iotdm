@@ -4,8 +4,8 @@
 
     <select id="countDevice" resultType="com.aibaixun.iotdm.data.KvData">
         SELECT
-            d.device_status as key,
-            COUNT( d.device_status ) as value;
+            d.device_status as label,
+            COUNT( d.device_status ) as dataValue
         FROM
             t_device d
         WHERE

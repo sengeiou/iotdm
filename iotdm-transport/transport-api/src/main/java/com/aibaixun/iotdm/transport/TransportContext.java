@@ -1,6 +1,6 @@
 package com.aibaixun.iotdm.transport;
 
-import com.aibaixun.iotdm.transport.limits.TransportLimitService;
+import com.aibaixun.iotdm.transport.limits.TransportLimitServer;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
@@ -13,7 +13,7 @@ public abstract class TransportContext {
 
     protected TransportService transportService;
 
-    protected TransportLimitService transportRateLimitService;
+    protected TransportLimitServer transportRateLimitService;
 
 
 
@@ -23,7 +23,7 @@ public abstract class TransportContext {
     }
 
     @Autowired
-    public void setTransportRateLimitService(TransportLimitService transportRateLimitService) {
+    public void setTransportRateLimitService(TransportLimitServer transportRateLimitService) {
         this.transportRateLimitService = transportRateLimitService;
     }
 
@@ -32,7 +32,7 @@ public abstract class TransportContext {
         return transportService;
     }
 
-    public TransportLimitService getTransportRateLimitService() {
+    public TransportLimitServer getTransportRateLimitService() {
         return transportRateLimitService;
     }
 

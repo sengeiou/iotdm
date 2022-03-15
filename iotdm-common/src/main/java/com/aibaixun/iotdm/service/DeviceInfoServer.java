@@ -9,7 +9,7 @@ import com.google.common.util.concurrent.ListenableFuture;
  * @author wangxiao@aibaixun.com
  * @date 2022/3/8
  */
-public interface DeviceInfoService   {
+public interface DeviceInfoServer {
 
 
     /**

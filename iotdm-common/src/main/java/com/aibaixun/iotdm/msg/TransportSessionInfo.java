@@ -1,10 +1,7 @@
 package com.aibaixun.iotdm.msg;
 
-import com.aibaixun.iotdm.enums.DataFormat;
-import com.aibaixun.iotdm.enums.NodeType;
-import com.aibaixun.iotdm.enums.ProtocolType;
 
-import java.util.UUID;
+import com.aibaixun.iotdm.transport.SessionId;
 
 /**
  * 传输session 信息
@@ -13,21 +10,13 @@ import java.util.UUID;
  */
 public class TransportSessionInfo {
 
-    private UUID sessionId;
+    private SessionId sessionId;
+
+    private String tenantId;
 
     private String deviceId;
 
-    private String deviceCode;
-
     private String productId;
-
-    private ProtocolType protocolType;
-
-    private NodeType nodeType;
-
-    private DataFormat dataFormat;
-
-    private String tenantId;
 
     private long lastConnectTime;
 
@@ -35,12 +24,21 @@ public class TransportSessionInfo {
 
     protected TransportSessionInfo() {}
 
-    public UUID getSessionId() {
+
+    public SessionId getSessionId() {
         return sessionId;
     }
 
-    public void setSessionId(UUID sessionId) {
+    public void setSessionId(SessionId sessionId) {
         this.sessionId = sessionId;
+    }
+
+    public String getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
 
     public String getDeviceId() {
@@ -59,46 +57,6 @@ public class TransportSessionInfo {
         this.productId = productId;
     }
 
-    public ProtocolType getProtocolType() {
-        return protocolType;
-    }
-
-    public void setProtocolType(ProtocolType protocolType) {
-        this.protocolType = protocolType;
-    }
-
-    public NodeType getNodeType() {
-        return nodeType;
-    }
-
-    public void setNodeType(NodeType nodeType) {
-        this.nodeType = nodeType;
-    }
-
-    public DataFormat getDataFormat() {
-        return dataFormat;
-    }
-
-    public void setDataFormat(DataFormat dataFormat) {
-        this.dataFormat = dataFormat;
-    }
-
-    public String getTenantId() {
-        return tenantId;
-    }
-
-    public void setTenantId(String tenantId) {
-        this.tenantId = tenantId;
-    }
-
-    public String getDeviceCode() {
-        return deviceCode;
-    }
-
-    public void setDeviceCode(String deviceCode) {
-        this.deviceCode = deviceCode;
-    }
-
     public long getLastConnectTime() {
         return lastConnectTime;
     }
@@ -114,4 +72,8 @@ public class TransportSessionInfo {
     public void setLastActivityTime(long lastActivityTime) {
         this.lastActivityTime = lastActivityTime;
     }
+
+
+
+
 }

@@ -1,7 +1,7 @@
 package com.aibaixun.iotdm.business;
 
 import com.aibaixun.iotdm.event.EntityChangeEvent;
-import com.aibaixun.iotdm.queue.QueueSendService;
+import com.aibaixun.iotdm.queue.QueueSendServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,14 +13,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class EntityProcessor {
 
-    private QueueSendService queueSendService;
+    private QueueSendServer queueSendService;
 
     public void  doProcessEntityChangeEvent (EntityChangeEvent entityChangeEvent){
         queueSendService.sendEntityChangeData(entityChangeEvent);
     }
 
     @Autowired
-    public void setQueueSendService(QueueSendService queueSendService) {
+    public void setQueueSendService(QueueSendServer queueSendService) {
         this.queueSendService = queueSendService;
     }
 }

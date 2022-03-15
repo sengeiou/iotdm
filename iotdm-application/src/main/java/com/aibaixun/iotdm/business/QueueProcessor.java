@@ -1,6 +1,6 @@
 package com.aibaixun.iotdm.business;
 
-import com.aibaixun.iotdm.queue.QueueSendService;
+import com.aibaixun.iotdm.queue.QueueSendServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class QueueProcessor extends AbstractReportProcessor<PostPropertyBusinessMsg,MessageBusinessMsg>{
 
-    private QueueSendService queueSendService;
+    private QueueSendServer queueSendService;
 
     @Override
     public void processProperty(PostPropertyBusinessMsg propertyBusinessMsg) {
@@ -25,7 +25,7 @@ public class QueueProcessor extends AbstractReportProcessor<PostPropertyBusiness
     }
 
     @Autowired
-    public void setQueueSendService(QueueSendService queueSendService) {
+    public void setQueueSendService(QueueSendServer queueSendService) {
         this.queueSendService = queueSendService;
     }
 }

@@ -6,7 +6,7 @@ import com.aibaixun.iotdm.business.PostPropertyBusinessMsg;
 import com.aibaixun.iotdm.event.DeviceSessionEvent;
 import com.aibaixun.iotdm.event.EntityChangeEvent;
 import com.aibaixun.iotdm.queue.IotDmSource;
-import com.aibaixun.iotdm.queue.QueueSendService;
+import com.aibaixun.iotdm.queue.QueueSendServer;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @EnableBinding(value = IotDmSource.class)
-public class QueueSendServiceImpl implements QueueSendService {
+public class DefaultQueueSendServer implements QueueSendServer {
 
     private final IotDmSource iotDmSource;
 
@@ -45,7 +45,7 @@ public class QueueSendServiceImpl implements QueueSendService {
 
     }
 
-    public QueueSendServiceImpl(IotDmSource iotDmSource) {
+    public DefaultQueueSendServer(IotDmSource iotDmSource) {
         this.iotDmSource = iotDmSource;
     }
 }

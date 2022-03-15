@@ -11,7 +11,7 @@ import com.aibaixun.iotdm.msg.ForwardRuleInfo;
 import com.aibaixun.iotdm.queue.IotDmSink;
 import com.aibaixun.iotdm.queue.QueueReceiveService;
 import com.aibaixun.iotdm.rule.server.ForwardService;
-import com.aibaixun.iotdm.rule.server.RuleService;
+import com.aibaixun.iotdm.rule.server.RuleServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +36,7 @@ public class QueueReceiveServiceImpl implements QueueReceiveService {
     private final Logger log = LoggerFactory.getLogger(QueueReceiveServiceImpl.class);
 
 
-    private RuleService ruleService;
+    private RuleServer ruleService;
 
     private ForwardService forwardService;
 
@@ -134,7 +134,7 @@ public class QueueReceiveServiceImpl implements QueueReceiveService {
 
 
     @Autowired
-    public void setRuleService(RuleService ruleService) {
+    public void setRuleService(RuleServer ruleService) {
         this.ruleService = ruleService;
     }
 

@@ -9,7 +9,7 @@ import com.aibaixun.iotdm.event.EntityChangeEvent;
  * @author wangxiao@aibaixun.com
  * @date 2022/3/11
  */
-public interface QueueSendService {
+public interface QueueSendServer {
 
     /**
      * 发送 session 数据

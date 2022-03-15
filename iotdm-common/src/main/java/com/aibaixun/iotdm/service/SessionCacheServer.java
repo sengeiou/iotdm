@@ -1,47 +1,44 @@
 package com.aibaixun.iotdm.service;
 
 import com.aibaixun.iotdm.msg.TransportSessionInfo;
-
-import java.util.UUID;
+import com.aibaixun.iotdm.transport.SessionId;
 
 /**
  * 缓存服务
  * @author wangxiao@aibaixun.com
  * @date 2022/3/9
  */
-public interface SessionCacheService {
+public interface SessionCacheServer {
 
 
     /**
      * 添加session
+     * @param sessionId sessionId
      * @param sessionInfo session 信息
      * @param ttl 缓存ttl
      */
-    void addSessionCache(TransportSessionInfo sessionInfo, long ttl);
+    void addSessionCache(SessionId sessionId,TransportSessionInfo sessionInfo, long ttl);
 
 
     /**
      * 移除缓存
-     * @param deviceId 设备id
      * @param sessionId session 信息
      */
-    void removeSessionCache(UUID sessionId,String deviceId);
+    void removeSessionCache(SessionId sessionId);
 
 
     /**
      * 活跃session
      * @param sessionId session 信息
-     * @param deviceId 设备id
      * @param ttl 更新ttl
      */
-    void activitySessionCache(UUID sessionId, String deviceId,long ttl);
+    void activitySessionCache(SessionId sessionId,long ttl);
 
 
     /**
      * 获取缓存
      * @param sessionId session id
-     * @param deviceId 设备id
      * @return session 信息
      */
-    TransportSessionInfo getSessionFromCache(UUID sessionId,String deviceId);
+    TransportSessionInfo getSessionFromCache(SessionId sessionId);
 }

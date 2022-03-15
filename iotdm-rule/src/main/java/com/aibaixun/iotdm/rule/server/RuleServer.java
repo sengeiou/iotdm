@@ -8,7 +8,7 @@ import java.util.List;
  * @author wangxiao@aibaixun.com
  * @date 2022/3/12
  */
-public interface RuleService {
+public interface RuleServer {
 
 
     /**

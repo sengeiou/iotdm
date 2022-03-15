@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author wangxiao@aibaixun.com
  * @date 2022/3/9
  */
-public abstract class BaseSqlInfoService {
+public abstract class BaseSqlInfoServer {
 
     protected SqlExecutorService sqlExecutorService;
 

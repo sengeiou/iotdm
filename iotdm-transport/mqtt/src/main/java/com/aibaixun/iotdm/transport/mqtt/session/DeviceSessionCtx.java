@@ -1,6 +1,7 @@
 package com.aibaixun.iotdm.transport.mqtt.session;
 
 import com.aibaixun.iotdm.enums.DataFormat;
+import com.aibaixun.iotdm.transport.SessionId;
 import com.aibaixun.iotdm.transport.mqtt.MqttTransportContext;
 import com.aibaixun.iotdm.transport.session.DeviceAwareSessionContext;
 import io.netty.channel.ChannelHandlerContext;
@@ -16,24 +17,15 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class DeviceSessionCtx extends DeviceAwareSessionContext {
 
-
     private ChannelHandlerContext channel;
-
 
     private final MqttTransportContext context;
 
-
     private final AtomicInteger msgIdSeq = new AtomicInteger(0);
 
-
-    private volatile String deviceId;
-
-
-    private volatile String productId;
-
+    private volatile SessionId sessionId;
 
     private volatile DataFormat dataFormat;
-
 
     private volatile boolean subscribeControl;
 
@@ -43,8 +35,7 @@ public class DeviceSessionCtx extends DeviceAwareSessionContext {
     private volatile boolean subscribeOta;
 
 
-    public DeviceSessionCtx(UUID sessionId, MqttTransportContext context) {
-        super(sessionId);
+    public DeviceSessionCtx( MqttTransportContext context) {
         this.context = context;
     }
 
@@ -53,15 +44,6 @@ public class DeviceSessionCtx extends DeviceAwareSessionContext {
         return msgIdSeq.incrementAndGet();
     }
 
-    @Override
-    public String getDeviceId() {
-        return deviceId;
-    }
-
-    @Override
-    public String getProductId() {
-        return productId;
-    }
 
     public void setChannel(ChannelHandlerContext channel) {
         this.channel = channel;
@@ -77,15 +59,9 @@ public class DeviceSessionCtx extends DeviceAwareSessionContext {
         return context;
     }
 
-
-    public void setDeviceId(String deviceId) {
-        this.deviceId = deviceId;
+    public void setSessionId(SessionId sessionId) {
+        this.sessionId = sessionId;
     }
-
-    public void setProductId(String productId) {
-        this.productId = productId;
-    }
-
 
     public AtomicInteger getMsgIdSeq() {
         return msgIdSeq;
@@ -122,5 +98,9 @@ public class DeviceSessionCtx extends DeviceAwareSessionContext {
 
     public void setSubscribeOta(boolean subscribeOta) {
         this.subscribeOta = subscribeOta;
+    }
+
+    public SessionId getSessionId() {
+        return sessionId;
     }
 }

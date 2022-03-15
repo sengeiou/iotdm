@@ -1,7 +1,7 @@
 package com.aibaixun.iotdm.transport.mqtt;
 
 import com.aibaixun.iotdm.constants.DataConstants;
-import com.aibaixun.iotdm.transport.BxTransportService;
+import com.aibaixun.iotdm.transport.TransportServer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelOption;
@@ -28,7 +28,7 @@ import java.net.InetSocketAddress;
  */
 @Service("mqttTransportService")
 @ConditionalOnExpression("'${transport.mqtt.enabled}'=='true'")
-public class MqttTransportService implements BxTransportService {
+public class MqttTransportService implements TransportServer {
 
     /**
      * 远程 地址存储
@@ -111,8 +111,9 @@ public class MqttTransportService implements BxTransportService {
     }
 
 
+
     @Override
-    public String getServiceName() {
+    public String getServerName() {
         return DataConstants.MQTT_TRANSPORT_NAME;
     }
 

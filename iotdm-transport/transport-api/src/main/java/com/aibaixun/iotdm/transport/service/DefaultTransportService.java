@@ -6,14 +6,11 @@ import com.aibaixun.iotdm.msg.DeviceAuthRespMsg;
 import com.aibaixun.iotdm.msg.DeviceAuthSecretReqMsg;
 import com.aibaixun.iotdm.msg.SessionEventType;
 import com.aibaixun.iotdm.msg.TransportSessionInfo;
-import com.aibaixun.iotdm.service.DeviceInfoService;
+import com.aibaixun.iotdm.service.DeviceInfoServer;
 import com.aibaixun.iotdm.service.IotDmEventPublisher;
-import com.aibaixun.iotdm.service.SessionCacheService;
-import com.aibaixun.iotdm.transport.MqttTransportException;
-import com.aibaixun.iotdm.transport.TransportService;
-import com.aibaixun.iotdm.transport.TransportServiceCallback;
-import com.aibaixun.iotdm.transport.TransportSessionListener;
-import com.aibaixun.iotdm.transport.limits.TransportLimitService;
+import com.aibaixun.iotdm.service.SessionCacheServer;
+import com.aibaixun.iotdm.transport.*;
+import com.aibaixun.iotdm.transport.limits.TransportLimitServer;
 import com.aibaixun.iotdm.util.AsyncCallbackTemplate;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -26,7 +23,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -38,10 +34,10 @@ import java.util.concurrent.ConcurrentMap;
 @Service
 public class DefaultTransportService implements TransportService {
 
-    private DeviceInfoService deviceInfoService;
+    private DeviceInfoServer deviceInfoService;
 
 
-    private SessionCacheService sessionCacheService;
+    private SessionCacheServer sessionCacheService;
 
 
     private IotDmEventPublisher iotDmEventPublisher;
@@ -50,7 +46,7 @@ public class DefaultTransportService implements TransportService {
     private final Logger log  = LoggerFactory.getLogger(DefaultTransportService.class);
 
 
-    private TransportLimitService transportLimitService;
+    private TransportLimitServer transportLimitService;
 
 
     @Value("${transport.default-keepalive}")
@@ -59,7 +55,7 @@ public class DefaultTransportService implements TransportService {
     /**
      * 存储 session 信息
      */
-    private final ConcurrentMap<UUID, TransportSessionMetaData> sessionListeners = new ConcurrentHashMap<>();
+    private final ConcurrentMap<SessionId, TransportSessionMetaData> sessionListeners = new ConcurrentHashMap<>();
 
     @Override
     public void processDeviceAuthBySecret(ProtocolType protocolType, DeviceAuthSecretReqMsg deviceAuthSecretReqMsg, TransportServiceCallback<DeviceAuthRespMsg> callback) {
@@ -88,107 +84,108 @@ public class DefaultTransportService implements TransportService {
     }
 
     @Override
-    public void processDeviceDisConnect(UUID sessionId, String productId,String deviceId,String hostName) {
-        TransportSessionInfo sessionFromCache = sessionCacheService.getSessionFromCache(sessionId, deviceId);
+    public void processDeviceDisConnect(SessionId sessionId, String hostName) {
+        TransportSessionInfo sessionFromCache = sessionCacheService.getSessionFromCache(sessionId);
         var  lastConnect = Objects.nonNull(sessionFromCache)?sessionFromCache.getLastConnectTime():null;
         var  lastActivity = Objects.nonNull(sessionFromCache)?sessionFromCache.getLastActivityTime():null;
-        Futures.transform(deviceInfoService.setDeviceStatus2OffOnLine(deviceId,lastConnect,lastActivity,hostName),
+        Futures.transform(deviceInfoService.setDeviceStatus2OffOnLine(sessionId.getDeviceId(),lastConnect,lastActivity,hostName),
                 status -> null, MoreExecutors.directExecutor());
 
-        Futures.submit(()->iotDmEventPublisher.publishDeviceSessionEvent(productId,deviceId, SessionEventType.DISCONNECT),MoreExecutors.directExecutor());
+        Futures.submit(()->iotDmEventPublisher.publishDeviceSessionEvent(sessionId.getProductId(),sessionId.getDeviceId(), SessionEventType.DISCONNECT),MoreExecutors.directExecutor());
     }
 
 
     @Override
-    public void processLogDevice(UUID sessionId, String deviceId,String hostName) {
-        log.info("DefaultTransportService.processLogDevice >> sessionId:{},deviceId:{},hostName:{}",sessionId,deviceId,hostName);
+    public void processLogDevice(SessionId sessionId, String hostName) {
+        log.info("DefaultTransportService.processLogDevice >> sessionId:{},deviceId:{},hostName:{}",sessionId,sessionId.getDeviceId(),hostName);
     }
 
     @Override
     public void registerSession(TransportSessionInfo transportSessionInfo, TransportSessionListener listener) {
-        sessionCacheService.addSessionCache(transportSessionInfo,defaultKeepalive);
-        sessionListeners.computeIfAbsent(transportSessionInfo.getSessionId(),k->new TransportSessionMetaData(transportSessionInfo.getDeviceId(),listener));
+        SessionId sessionId = transportSessionInfo.getSessionId();
+        sessionCacheService.addSessionCache(sessionId,transportSessionInfo,defaultKeepalive);
+        sessionListeners.computeIfAbsent(sessionId,k->new TransportSessionMetaData(transportSessionInfo.getDeviceId(),listener));
     }
 
 
     @Override
-    public void deregisterSession(UUID sessionId,String deviceId) {
-        sessionCacheService.removeSessionCache(sessionId,deviceId);
+    public void deregisterSession(SessionId sessionId) {
+        sessionCacheService.removeSessionCache(sessionId);
         sessionListeners.remove(sessionId);
     }
 
 
     @Override
-    public void reportActivity(UUID sessionId,String deviceId) {
-        sessionCacheService.activitySessionCache(sessionId,deviceId,defaultKeepalive);
+    public void reportActivity(SessionId sessionId) {
+        sessionCacheService.activitySessionCache(sessionId,defaultKeepalive);
     }
 
 
     @Override
-    public void processPropertyUp(UUID sessionId, String deviceId, String productId, DataFormat dataFormat, String payload, TransportServiceCallback<Void> callback) {
-        if (checkSessionAndLimit(sessionId,deviceId)){
-            ListenableFuture<Void> listenableFuture = Futures.submit(() -> iotDmEventPublisher.publishPropertyUpEvent(productId, deviceId, dataFormat, payload), MoreExecutors.directExecutor());
+    public void processPropertyUp(SessionId sessionId,  DataFormat dataFormat, String payload, TransportServiceCallback<Void> callback) {
+        if (checkSessionAndLimit(sessionId)){
+            ListenableFuture<Void> listenableFuture = Futures.submit(() -> iotDmEventPublisher.publishPropertyUpEvent(sessionId.getProductId(), sessionId.getDeviceId(), dataFormat, payload), MoreExecutors.directExecutor());
             AsyncCallbackTemplate.withCallback(listenableFuture,callback::onSuccess,callback::onError,MoreExecutors.directExecutor());
         }
     }
 
 
     @Override
-    public void processMessageUp(UUID sessionId, String deviceId, String productId, String payload, TransportServiceCallback<Void> callback) {
-        if (checkSessionAndLimit(sessionId,deviceId)){
-            ListenableFuture<Void> listenableFuture = Futures.submit(() -> iotDmEventPublisher.publishMessageUpEvent(productId, deviceId, payload), MoreExecutors.directExecutor());
+    public void processMessageUp(SessionId sessionId,  String payload, TransportServiceCallback<Void> callback) {
+        if (checkSessionAndLimit(sessionId)){
+            ListenableFuture<Void> listenableFuture = Futures.submit(() -> iotDmEventPublisher.publishMessageUpEvent(sessionId.getProductId(), sessionId.getDeviceId(), payload), MoreExecutors.directExecutor());
             AsyncCallbackTemplate.withCallback(listenableFuture,callback::onSuccess,callback::onError,MoreExecutors.directExecutor());
         }
     }
 
 
     @Override
-    public void processWarnUp(UUID sessionId, String deviceId, String productId, TransportServiceCallback<Void> callback) {
-        if (checkSessionAndLimit(sessionId,deviceId)){
-            sessionCacheService.removeSessionCache(sessionId,deviceId);
-            ListenableFuture<Void> listenableFuture = Futures.transform(deviceInfoService.setDeviceStatus2Warn(deviceId), status -> null, MoreExecutors.directExecutor());
+    public void processWarnUp(SessionId sessionId,  TransportServiceCallback<Void> callback) {
+        if (checkSessionAndLimit(sessionId)){
+            sessionCacheService.removeSessionCache(sessionId);
+            ListenableFuture<Void> listenableFuture = Futures.transform(deviceInfoService.setDeviceStatus2Warn(sessionId.getDeviceId()), status -> null, MoreExecutors.directExecutor());
             AsyncCallbackTemplate.withCallback(listenableFuture,callback::onSuccess,callback::onError,MoreExecutors.directExecutor());
         }
     }
 
 
     @Override
-    public void processPubAck(UUID sessionId, String deviceId, int msgId) {
-        if (checkSessionAndLimit(sessionId,deviceId)){
-            Futures.transform(deviceInfoService.toDeviceMessageIsReceived(deviceId, msgId), status -> null, MoreExecutors.directExecutor());
+    public void processPubAck(SessionId sessionId,  int msgId) {
+        if (checkSessionAndLimit(sessionId)){
+            Futures.transform(deviceInfoService.toDeviceMessageIsReceived(sessionId.getDeviceId(), msgId), status -> null, MoreExecutors.directExecutor());
         }
     }
 
 
     @Override
-    public void processConfigRespUp(UUID sessionId, String deviceId, String productId, DataFormat dataFormat, String payload, TransportServiceCallback<Void> callback) {
-        if (checkSessionAndLimit(sessionId,deviceId)){
-            ListenableFuture<Void> listenableFuture = Futures.submit(() -> iotDmEventPublisher.publishConfigRespUpEvent(productId, deviceId, dataFormat, payload), MoreExecutors.directExecutor());
+    public void processConfigRespUp(SessionId sessionId,DataFormat dataFormat, String payload, TransportServiceCallback<Void> callback) {
+        if (checkSessionAndLimit(sessionId)){
+            ListenableFuture<Void> listenableFuture = Futures.submit(() -> iotDmEventPublisher.publishConfigRespUpEvent(sessionId.getProductId(), sessionId.getDeviceId(), dataFormat, payload), MoreExecutors.directExecutor());
             AsyncCallbackTemplate.withCallback(listenableFuture,callback::onSuccess,callback::onError,MoreExecutors.directExecutor());
         }
     }
 
     @Override
-    public void processOtaRespUp(UUID sessionId, String deviceId, String productId, DataFormat dataFormat, String payload, TransportServiceCallback<Void> callback) {
-        if (checkSessionAndLimit(sessionId,deviceId)){
-            ListenableFuture<Void> listenableFuture = Futures.submit(() -> iotDmEventPublisher.publishConfigOtaRespUpEvent(productId, deviceId, dataFormat, payload), MoreExecutors.directExecutor());
+    public void processOtaRespUp(SessionId sessionId, DataFormat dataFormat, String payload, TransportServiceCallback<Void> callback) {
+        if (checkSessionAndLimit(sessionId)){
+            ListenableFuture<Void> listenableFuture = Futures.submit(() -> iotDmEventPublisher.publishConfigOtaRespUpEvent(sessionId.getProductId(), sessionId.getDeviceId(), dataFormat, payload), MoreExecutors.directExecutor());
             AsyncCallbackTemplate.withCallback(listenableFuture,callback::onSuccess,callback::onError,MoreExecutors.directExecutor());
         }
     }
 
     @Override
-    public void processControlRespUp(UUID sessionId, String deviceId, String productId, DataFormat dataFormat, String payload, TransportServiceCallback<Void> callback) {
-        if (checkSessionAndLimit(sessionId,deviceId)){
-            ListenableFuture<Void> listenableFuture = Futures.submit(() -> iotDmEventPublisher.publishControlRespEvent(productId, deviceId, dataFormat, payload), MoreExecutors.directExecutor());
+    public void processControlRespUp(SessionId sessionId, DataFormat dataFormat, String payload, TransportServiceCallback<Void> callback) {
+        if (checkSessionAndLimit(sessionId)){
+            ListenableFuture<Void> listenableFuture = Futures.submit(() -> iotDmEventPublisher.publishControlRespEvent(sessionId.getProductId(), sessionId.getDeviceId(), dataFormat, payload), MoreExecutors.directExecutor());
             AsyncCallbackTemplate.withCallback(listenableFuture,callback::onSuccess,callback::onError,MoreExecutors.directExecutor());
         }
     }
 
 
     @Override
-    public void processControlReqUp(UUID sessionId, String deviceId, String productId, DataFormat dataFormat, String payload, TransportServiceCallback<Void> callback) {
-        if (checkSessionAndLimit(sessionId,deviceId)){
-            ListenableFuture<Void> listenableFuture = Futures.submit(() -> iotDmEventPublisher.publishControlReqEvent(productId, deviceId, dataFormat, payload), MoreExecutors.directExecutor());
+    public void processControlReqUp(SessionId sessionId,  DataFormat dataFormat, String payload, TransportServiceCallback<Void> callback) {
+        if (checkSessionAndLimit(sessionId)){
+            ListenableFuture<Void> listenableFuture = Futures.submit(() -> iotDmEventPublisher.publishControlReqEvent(sessionId.getProductId(), sessionId.getDeviceId(), dataFormat, payload), MoreExecutors.directExecutor());
             AsyncCallbackTemplate.withCallback(listenableFuture,callback::onSuccess,callback::onError,MoreExecutors.directExecutor());
         }
     }
@@ -196,15 +193,14 @@ public class DefaultTransportService implements TransportService {
     /**
      * 校验session 与 限制
      * @param sessionId 会话信息
-     * @param deviceId 设备id
      * @return 是否成功
      */
-    private boolean  checkSessionAndLimit(UUID sessionId, String deviceId){
+    private boolean  checkSessionAndLimit(SessionId sessionId){
 
         if (log.isTraceEnabled()) {
-            log.trace("DefaultTransportService.checkSessionAndLimit >>  Processing msg: {},{}", sessionId,deviceId);
+            log.trace("DefaultTransportService.checkSessionAndLimit >>  Processing msg: {},{}", sessionId.getProductId(),sessionId.getDeviceId());
         }
-        TransportSessionInfo sessionFromCache = sessionCacheService.getSessionFromCache(sessionId, deviceId);
+        TransportSessionInfo sessionFromCache = sessionCacheService.getSessionFromCache(sessionId);
         if (Objects.isNull(sessionFromCache)){
             return false;
         }
@@ -213,12 +209,12 @@ public class DefaultTransportService implements TransportService {
     }
 
     @Autowired
-    public void setDeviceInfoService(DeviceInfoService deviceInfoService) {
+    public void setDeviceInfoService(DeviceInfoServer deviceInfoService) {
         this.deviceInfoService = deviceInfoService;
     }
 
     @Autowired
-    public void setSessionCacheService(SessionCacheService sessionCacheService) {
+    public void setSessionCacheService(SessionCacheServer sessionCacheService) {
         this.sessionCacheService = sessionCacheService;
     }
 
@@ -229,7 +225,7 @@ public class DefaultTransportService implements TransportService {
     }
 
     @Autowired
-    public void setTransportLimitService(TransportLimitService transportLimitService) {
+    public void setTransportLimitService(TransportLimitServer transportLimitService) {
         this.transportLimitService = transportLimitService;
     }
 }

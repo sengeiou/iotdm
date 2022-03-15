@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @date 2022/3/8
  */
 @Service
-public class DefaultTransportLimitService implements TransportLimitService {
+public class DefaultTransportLimitService implements TransportLimitServer {
 
     private final Logger log  = LoggerFactory.getLogger(DefaultTransportLimitService.class);
 

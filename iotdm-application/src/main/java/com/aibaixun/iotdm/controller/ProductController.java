@@ -60,8 +60,9 @@ public class ProductController extends BaseController{
 
 
     @GetMapping("/list")
-    public JsonResult<List<ProductEntity>> listQueryProducts (@RequestParam(required = false) Integer limit) {
-        List<ProductEntity> productEntities = productService.queryProducts(limit);
+    public JsonResult<List<ProductEntity>> listQueryProducts (@RequestParam(required = false) Integer limit,
+                                                              @RequestParam(required = false) String productLabel) {
+        List<ProductEntity> productEntities = productService.queryProducts(limit,productLabel);
         return JsonResult.success(productEntities);
     }
 

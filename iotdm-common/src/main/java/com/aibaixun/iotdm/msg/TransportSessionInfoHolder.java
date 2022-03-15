@@ -1,5 +1,7 @@
 package com.aibaixun.iotdm.msg;
 
+import com.aibaixun.iotdm.transport.SessionId;
+
 import java.time.Instant;
 import java.util.UUID;
 
@@ -18,17 +20,14 @@ public class TransportSessionInfoHolder {
      * @param sessionId  sessionId
      * @return session
      */
-    public static TransportSessionInfo create (DeviceInfo deviceInfo, UUID sessionId){
+    public static TransportSessionInfo create (DeviceInfo deviceInfo){
         TransportSessionInfo sessionInfo = new TransportSessionInfo();
-        sessionInfo.setSessionId(sessionId);
         sessionInfo.setDeviceId(deviceInfo.getDeviceId());
-        sessionInfo.setDeviceCode(deviceInfo.getDeviceCode());
         sessionInfo.setProductId(deviceInfo.getProductId());
-        sessionInfo.setProtocolType(deviceInfo.getProtocolType());
-        sessionInfo.setNodeType(deviceInfo.getNodeType());
-        sessionInfo.setDataFormat(deviceInfo.getDataFormat());
         sessionInfo.setTenantId(deviceInfo.getTenantId());
         sessionInfo.setLastConnectTime(Instant.now().toEpochMilli());
+        SessionId sessionId = new SessionId( deviceInfo.getDeviceId(),deviceInfo.getProductId());
+        sessionInfo.setSessionId(sessionId);
         return sessionInfo;
     }
 

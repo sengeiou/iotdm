@@ -1,6 +1,6 @@
 package com.aibaixun.iotdm.redis;
 
-import com.aibaixun.iotdm.service.DeviceInfoService;
+import com.aibaixun.iotdm.service.DeviceInfoServer;
 import io.lettuce.core.cluster.models.partitions.RedisClusterNode;
 import io.lettuce.core.cluster.pubsub.RedisClusterPubSubAdapter;
 import org.slf4j.Logger;
@@ -22,7 +22,7 @@ public class RedisClusterListener extends RedisClusterPubSubAdapter<String,Strin
 
     private final Logger log = LoggerFactory.getLogger(RedisClusterListener.class);
 
-    private DeviceInfoService deviceInfoService;
+    private DeviceInfoServer deviceInfoService;
 
     @Override
     public void message(RedisClusterNode node, String pattern, String channel, String message) {
@@ -35,12 +35,12 @@ public class RedisClusterListener extends RedisClusterPubSubAdapter<String,Strin
 
     @Autowired
     @Override
-    public void setDeviceInfoService(DeviceInfoService deviceInfoService) {
+    public void setDeviceInfoService(DeviceInfoServer deviceInfoService) {
         this.deviceInfoService = deviceInfoService;
     }
 
     @Override
-    public DeviceInfoService getDeviceInfoService() {
+    public DeviceInfoServer getDeviceInfoService() {
         return deviceInfoService;
     }
 }

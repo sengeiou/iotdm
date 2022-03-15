@@ -55,9 +55,10 @@ public interface IProductService extends IService<ProductEntity> {
     /**
      * 产品列表
      * @param limit 限制数
+     * @param productLabel  产品名称
      * @return 产品列表
      */
-    List<ProductEntity> queryProducts (Integer limit);
+    List<ProductEntity> queryProducts (Integer limit,String productLabel);
 
 
     /**

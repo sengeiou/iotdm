@@ -43,7 +43,7 @@ public interface IDeviceService extends IService<DeviceEntity> {
      * @param deviceLabel 设备名称
      * @return 设备列表
      */
-    List<DeviceEntity> queryDevice(String productId, Integer limit, String deviceLabel);
+    List<DeviceEntity> listQueryDevice(String productId, Integer limit, String deviceLabel);
 
     /**
      * 分页查询设备

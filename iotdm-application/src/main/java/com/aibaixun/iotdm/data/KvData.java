@@ -7,32 +7,32 @@ package com.aibaixun.iotdm.data;
  */
 public class KvData<T> {
 
-    private String key;
+    private String label;
 
-    private T value;
+    private T dataValue;
 
 
     public KvData() {
     }
 
-    public KvData(String key, T value) {
-        this.key = key;
-        this.value = value;
+    public KvData(String label, T dataValue) {
+        this.label = label;
+        this.dataValue = dataValue;
     }
 
-    public String getKey() {
-        return key;
+    public String getLabel() {
+        return label;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setLabel(String label) {
+        this.label = label;
     }
 
-    public T getValue() {
-        return value;
+    public T getDataValue() {
+        return dataValue;
     }
 
-    public void setValue(T value) {
-        this.value = value;
+    public void setDataValue(T dataValue) {
+        this.dataValue = dataValue;
     }
 }

@@ -56,8 +56,8 @@ public class DeviceController extends BaseController{
         }
         long total = 0L;
         for (KvData<Long> longKvData : kvDataList) {
-            String key = longKvData.getKey();
-            Long value = longKvData.getValue();
+            String key = longKvData.getLabel();
+            Long value = longKvData.getDataValue();
             if (null!=value){
                 total+=value;
             }
@@ -76,7 +76,7 @@ public class DeviceController extends BaseController{
         if (Objects.isNull(limit)){
             limit = 50;
         }
-        List<DeviceEntity> deviceEntities = deviceService.queryDevice(productId,limit,deviceLabel);
+        List<DeviceEntity> deviceEntities = deviceService.listQueryDevice(productId,limit,deviceLabel);
         return JsonResult.success(deviceEntities);
     }
 

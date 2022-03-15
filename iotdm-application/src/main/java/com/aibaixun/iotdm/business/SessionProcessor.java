@@ -1,7 +1,7 @@
 package com.aibaixun.iotdm.business;
 
 import com.aibaixun.iotdm.event.DeviceSessionEvent;
-import com.aibaixun.iotdm.queue.QueueSendService;
+import com.aibaixun.iotdm.queue.QueueSendServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,14 +13,14 @@ import org.springframework.stereotype.Component;
 public class SessionProcessor {
 
 
-    private QueueSendService queueSendService;
+    private QueueSendServer queueSendService;
 
     public void doProcessDeviceSessionEvent(DeviceSessionEvent deviceSessionEvent){
         queueSendService.sendSessionData(deviceSessionEvent);
     }
 
     @Autowired
-    public void setQueueSendService(QueueSendService queueSendService) {
+    public void setQueueSendService(QueueSendServer queueSendService) {
         this.queueSendService = queueSendService;
     }
 }

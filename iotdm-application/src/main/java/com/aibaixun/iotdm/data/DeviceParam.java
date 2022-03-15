@@ -25,6 +25,7 @@ public class DeviceParam {
     private DeviceAuthType authType;
 
 
+
     private String deviceSecret;
 
 

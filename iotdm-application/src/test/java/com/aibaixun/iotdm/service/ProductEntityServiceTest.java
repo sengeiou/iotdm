@@ -56,10 +56,7 @@ public class ProductEntityServiceTest {
 
     @Test
     public void testListQueryProduct (){
-        List<ProductEntity> productEntities = listQueryProduct();
-        for (ProductEntity productEntity : productEntities) {
-            logger.info(productEntity.toString());
-        }
+
     }
 
 
@@ -72,9 +69,7 @@ public class ProductEntityServiceTest {
         return productService.save(productEntity);
     }
 
-    private List<ProductEntity> listQueryProduct() {
-        return productService.queryProducts(10);
-    }
+
 
 
     private Page<ProductEntity> pageQueryProduct() {

@@ -1,14 +1,14 @@
 package com.aibaixun.iotdm.controller;
 
 import com.aibaixun.basic.result.JsonResult;
+import com.aibaixun.iotdm.data.SendDeviceCommandParam;
 import com.aibaixun.iotdm.entity.DeviceCommandSendEntity;
 import com.aibaixun.iotdm.entity.ModelCommandEntity;
 import com.aibaixun.iotdm.service.IDeviceCommandSendService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -35,6 +35,13 @@ public class DeviceCommandController extends BaseController{
 
         List<DeviceCommandSendEntity> deviceCommandSendEntities = deviceCommandSendService.queryDeviceCommandSend(deviceId,commandLabel, commandId, startTs, endTs, limit);
         return JsonResult.success(deviceCommandSendEntities);
+    }
+
+
+
+    @PostMapping
+    public JsonResult<Boolean> sendCommandToDevice(@RequestBody @Valid SendDeviceCommandParam sendDeviceCommandParam){
+        return null;
     }
 
 

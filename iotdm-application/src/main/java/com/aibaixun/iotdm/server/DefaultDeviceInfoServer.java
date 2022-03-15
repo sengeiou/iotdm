@@ -21,7 +21,7 @@ import java.util.Objects;
  * @date 2022/3/8
  */
 @Service
-public class DeviceInfoServiceImpl extends BaseSqlInfoService implements DeviceInfoService {
+public class DefaultDeviceInfoServer extends BaseSqlInfoServer implements DeviceInfoServer {
 
     private IDeviceService deviceService;
 

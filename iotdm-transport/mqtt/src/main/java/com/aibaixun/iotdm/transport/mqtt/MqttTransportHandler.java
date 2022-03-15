@@ -3,10 +3,7 @@ package com.aibaixun.iotdm.transport.mqtt;
 import com.aibaixun.iotdm.enums.DataFormat;
 import com.aibaixun.iotdm.enums.ProtocolType;
 import com.aibaixun.iotdm.msg.*;
-import com.aibaixun.iotdm.transport.MqttTransportException;
-import com.aibaixun.iotdm.transport.TransportService;
-import com.aibaixun.iotdm.transport.TransportServiceCallback;
-import com.aibaixun.iotdm.transport.TransportSessionListener;
+import com.aibaixun.iotdm.transport.*;
 import com.aibaixun.iotdm.transport.mqtt.session.DeviceSessionCtx;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
@@ -46,7 +43,7 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
     /**
      * handler id
      */
-    private final UUID sessionId;
+    private final UUID handlerId;
 
     /**
      * 上下文
@@ -71,10 +68,10 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
 
 
     MqttTransportHandler(MqttTransportContext context) {
-        this.sessionId = UUID.randomUUID();
+        this.handlerId = UUID.randomUUID();
         this.context = context;
         this.transportService = context.getTransportService();
-        this.deviceSessionCtx = new DeviceSessionCtx(sessionId,context);
+        this.deviceSessionCtx = new DeviceSessionCtx(context);
     }
 
     @Override
@@ -91,7 +88,7 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
 
     @Override
     public void channelRead(ChannelHandlerContext channelHandlerContext, Object msg) {
-        log.trace("MqttTransportHandler.channelRead >> [{}] Processing msg: {}", sessionId, msg);
+        log.trace("MqttTransportHandler.channelRead >> [{}] Processing msg: {}", handlerId, msg);
         if (address == null) {
             address = getAddress(channelHandlerContext);
         }
@@ -101,11 +98,11 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
                 if (message.decoderResult().isSuccess()) {
                     processMqttMsg(channelHandlerContext, message);
                 } else {
-                    log.error("MqttTransportHandler.channelRead >> [{}] Message decoding failed: {}", sessionId, message.decoderResult().cause().getMessage());
+                    log.error("MqttTransportHandler.channelRead >> [{}] Message decoding failed: {}", handlerId, message.decoderResult().cause().getMessage());
                     channelHandlerContext.close();
                 }
             } else {
-                log.debug("MqttTransportHandler.channelRead >> [{}] Received non mqtt message: {}", sessionId, msg.getClass().getSimpleName());
+                log.debug("MqttTransportHandler.channelRead >> [{}] Received non mqtt message: {}", handlerId, msg.getClass().getSimpleName());
                 channelHandlerContext.close();
             }
         } finally {
@@ -120,7 +117,7 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
 
     @Override
     public void exceptionCaught(ChannelHandlerContext channelHandlerContext, Throwable cause) {
-        log.error("MqttTransportHandler.exceptionCaught >> [{}] Unexpected Exception", sessionId, cause);
+        log.error("MqttTransportHandler.exceptionCaught >> [{}] Unexpected Exception", handlerId, cause);
         channelHandlerContext.close();
         if (cause instanceof OutOfMemoryError) {
             log.error("MqttTransportHandler.exceptionCaught >> Received critical error： OutOfMemoryError. Going to shutdown the service.");
@@ -130,7 +127,7 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
 
     @Override
     public void operationComplete(Future<? super Void> future) {
-        log.trace("MqttTransportHandler.operationComplete >> [{}] Channel closed!", sessionId);
+        log.trace("MqttTransportHandler.operationComplete >> [{}] Channel closed!", handlerId);
         doDisconnect();
     }
 
@@ -178,7 +175,7 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
      */
     private void processConnect(ChannelHandlerContext channelHandlerContext,MqttConnectMessage mqttConnectMessage){
         String clientId = mqttConnectMessage.payload().clientIdentifier();
-        log.debug("MqttTransportHandler.processConnect >> [{}][{}] Processing connect msg for client: {}!", address, sessionId, clientId);
+        log.debug("MqttTransportHandler.processConnect >> [{}][{}] Processing connect msg for client: {}!", address, handlerId, clientId);
         processAuthSecretConnect(channelHandlerContext, clientId,mqttConnectMessage);
     }
 
@@ -191,7 +188,7 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
         String userName = connectMessage.payload().userName();
         byte[] passwordBytes = connectMessage.payload().passwordInBytes();
         String password = Objects.nonNull(passwordBytes)?new String(passwordBytes, CharsetUtil.UTF_8):"";
-        log.debug("MqttTransportHandler.processAuthSecretConnect >> [{}][{}] Processing connect msg for client with clientId: {} ,username: {} ,password:{}!", address, sessionId, clientId,userName,password);
+        log.debug("MqttTransportHandler.processAuthSecretConnect >> [{}][{}] Processing connect msg for client with clientId: {} ,username: {} ,password:{}!", address, handlerId, clientId,userName,password);
         transportService.processDeviceAuthBySecret(ProtocolType.MQTT, new DeviceAuthSecretReqMsg(clientId, userName, password), new TransportServiceCallback<>() {
             @Override
             public void onSuccess(DeviceAuthRespMsg msg) {
@@ -203,7 +200,7 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
                 if (e instanceof MqttTransportException){
                     mqttConnectReturnCode = MqttConnectReturnCode.valueOf(((MqttTransportException) e).getReturnCode());
                 }
-                log.trace("MqttTransportHandler.processAuthSecretConnect [{}] [{}] Failed to process with clientId: {} ,username: {} ,password:{},error msg :{}", address, sessionId, clientId, userName, password, e.getMessage());
+                log.trace("MqttTransportHandler.processAuthSecretConnect [{}] [{}] Failed to process with clientId: {} ,username: {} ,password:{},error msg :{}", address, handlerId, clientId, userName, password, e.getMessage());
                 channelHandlerContext.writeAndFlush(createMqttConnAckMsg(mqttConnectReturnCode, connectMessage));
                 channelHandlerContext.close();
             }
@@ -231,18 +228,18 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
             ctx.close();
         } else {
             context.onDeviceAuthSuccess(address);
-            TransportSessionInfo transportSessionInfo = TransportSessionInfoHolder.create(respMsg.getDeviceInfo(), sessionId);
+            TransportSessionInfo transportSessionInfo = TransportSessionInfoHolder.create(respMsg.getDeviceInfo());
             ctx.writeAndFlush(createMqttConnAckMsg(CONNECTION_ACCEPTED, connectMessage));
             transportService.processDeviceConnectSuccess(transportSessionInfo, new TransportServiceCallback<>() {
                 @Override
                 public void onSuccess(Boolean msg) {
-                    initDeviceSessionCtx(respMsg.getDeviceInfo());
+                    initDeviceSessionCtx(respMsg.getDeviceInfo(),transportSessionInfo.getSessionId());
                     transportService.registerSession(transportSessionInfo, MqttTransportHandler.this);
                 }
 
                 @Override
                 public void onError(Throwable e) {
-                    log.warn("MqttTransportHandler.processDeviceAuthResponse >> [{}] [{}] Failed to submit session event", address, sessionId, e);
+                    log.warn("MqttTransportHandler.processDeviceAuthResponse >> [{}] [{}] Failed to submit session event", address, handlerId, e);
                     ctx.writeAndFlush(createMqttConnAckMsg(MqttConnectReturnCode.CONNECTION_REFUSED_SERVER_UNAVAILABLE, connectMessage));
                     ctx.close();
                 }
@@ -254,10 +251,9 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
      * 设置设备上下文 信息
      * @param deviceInfo 设备 信息
      */
-    private void initDeviceSessionCtx( DeviceInfo deviceInfo) {
+    private void initDeviceSessionCtx(DeviceInfo deviceInfo, SessionId sessionId) {
         deviceSessionCtx.setConnected();
-        deviceSessionCtx.setDeviceId(deviceInfo.getDeviceId());
-        deviceSessionCtx.setProductId(deviceInfo.getProductId());
+        deviceSessionCtx.setSessionId(sessionId);
         deviceSessionCtx.setDataFormat(deviceInfo.getDataFormat());
     }
 
@@ -328,11 +324,11 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
                    processWarnUp(channelHandlerContext, msgId);
                    break;
                default:
-                   log.warn("MqttTransportHandler.processPublishMsg >> [{}] [{}] Failed topic is error,topic:{}", address, sessionId, topicName);
+                   log.warn("MqttTransportHandler.processPublishMsg >> [{}] [{}] Failed topic is error,topic:{}", address, handlerId, topicName);
                    channelHandlerContext.close();
            }
        }catch (RuntimeException e){
-           log.warn("MqttTransportHandler.processPublishMsg >> [{}] [{}] error,topic:{},msgId:{}", address, sessionId, topicName,msgId);
+           log.warn("MqttTransportHandler.processPublishMsg >> [{}] [{}] error,topic:{},msgId:{}", address, handlerId, topicName,msgId);
            channelHandlerContext.close();
        }
     }
@@ -349,7 +345,7 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
             return;
         }
         var msgId = mqttSubscribeMessage.variableHeader().messageId();
-        log.trace("MqttTransportHandler.processSubscribeMsg >> [{}][{}] Processing subscription [{}]!", sessionId,address, msgId);
+        log.trace("MqttTransportHandler.processSubscribeMsg >> [{}][{}] Processing subscription [{}]!", handlerId,address, msgId);
         List<Integer> qosList = new ArrayList<>();
         boolean activityReported = false;
         for (MqttTopicSubscription subscription : mqttSubscribeMessage.payload().topicSubscriptions()) {
@@ -376,17 +372,17 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
                         break;
                     }
                     default:
-                        log.warn("MqttTransportHandler.processSubscribeMsg >> [{}][{}] Failed to subscribe to [{}][{}]", sessionId,address, topic, reqQoS);
+                        log.warn("MqttTransportHandler.processSubscribeMsg >> [{}][{}] Failed to subscribe to [{}][{}]", handlerId,address, topic, reqQoS);
                         qosList.add(FAILURE.value());
                         break;
                 }
             } catch (Exception e) {
-                log.warn("MqttTransportHandler.processSubscribeMsg >> [{}][{}] Failed to subscribe to [{}][{}],error:{}", sessionId,address, topic, reqQoS,e.getMessage());
+                log.warn("MqttTransportHandler.processSubscribeMsg >> [{}][{}] Failed to subscribe to [{}][{}],error:{}", handlerId,address, topic, reqQoS,e.getMessage());
                 qosList.add(FAILURE.value());
             }
         }
         if (!activityReported) {
-            transportService.reportActivity(deviceSessionCtx.getSessionId(), deviceSessionCtx.getDeviceId());
+            transportService.reportActivity(deviceSessionCtx.getSessionId());
         }
         channelHandlerContext.writeAndFlush(createSubAckMessage(msgId, qosList));
     }
@@ -402,7 +398,7 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
         }
         boolean activityReported = false;
         int msgId = mqttUnsubscribeMessage.variableHeader().messageId();
-        log.trace("MqttTransportHandler.processUnsubscribeMsg >> [{}][{}] Processing subscription [{}]!", sessionId,address,msgId );
+        log.trace("MqttTransportHandler.processUnsubscribeMsg >> [{}][{}] Processing subscription [{}]!", handlerId,address,msgId );
         var topics = mqttUnsubscribeMessage.payload().topics();
         for (String topic : topics) {
             try {
@@ -423,15 +419,15 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
                         break;
                     }
                     default:
-                        log.warn("MqttTransportHandler.processUnsubscribeMsg >> [{}][{}] Failed to unsubscribe to [{}]", sessionId,address, topic);
+                        log.warn("MqttTransportHandler.processUnsubscribeMsg >> [{}][{}] Failed to unsubscribe to [{}]", handlerId,address, topic);
                         break;
                 }
             } catch (Exception e) {
-                log.warn("MqttTransportHandler.processUnsubscribeMsg >> [{}][{}] Failed to unsubscribe to [{}],error:{}", sessionId,address, topic,e.getMessage());
+                log.warn("MqttTransportHandler.processUnsubscribeMsg >> [{}][{}] Failed to unsubscribe to [{}],error:{}", handlerId,address, topic,e.getMessage());
             }
         }
         if (!activityReported) {
-            transportService.reportActivity(deviceSessionCtx.getSessionId(), deviceSessionCtx.getDeviceId());
+            transportService.reportActivity(deviceSessionCtx.getSessionId());
         }
         channelHandlerContext.writeAndFlush(createUnSubAckMessage(msgId));
     }
@@ -444,7 +440,7 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
     private void processPingMsg(ChannelHandlerContext channelHandlerContext){
         if (checkConnected()) {
             channelHandlerContext.writeAndFlush(new MqttMessage(new MqttFixedHeader(PINGRESP, false, AT_MOST_ONCE, false, 0)));
-            transportService.reportActivity(deviceSessionCtx.getSessionId(), deviceSessionCtx.getDeviceId());
+            transportService.reportActivity(deviceSessionCtx.getSessionId());
         }
     }
 
@@ -455,7 +451,7 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
     private void  processDisConnectMsg(ChannelHandlerContext channelHandlerContext){
         channelHandlerContext.close();
         String hostName = address.getHostString();
-        transportService.processDeviceDisConnect(deviceSessionCtx.getSessionId(), deviceSessionCtx.getProductId(), deviceSessionCtx.getDeviceId(),hostName);
+        transportService.processDeviceDisConnect(deviceSessionCtx.getSessionId(),hostName);
     }
 
 
@@ -465,7 +461,7 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
      */
     private void  processPubAckMsg(MqttPubAckMessage mqttPubAckMessage){
         int msgId = mqttPubAckMessage.variableHeader().messageId();
-        transportService.processPubAck(sessionId, deviceSessionCtx.getDeviceId(), msgId);
+        transportService.processPubAck(deviceSessionCtx.getSessionId(), msgId);
     }
 
 
@@ -477,9 +473,9 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
      */
     private void  processPropertiesUp(ChannelHandlerContext channelHandlerContext,MqttPublishMessage mqttPublishMessage,int msgId) {
         String payload = getPayload(mqttPublishMessage);
-        transportService.processPropertyUp(sessionId, deviceSessionCtx.getDeviceId(), deviceSessionCtx.getProductId(), deviceSessionCtx.getDataFormat(),payload,
+        transportService.processPropertyUp(deviceSessionCtx.getSessionId(), deviceSessionCtx.getDataFormat(),payload,
                 pubAckCallback(channelHandlerContext,msgId));
-        transportService.reportActivity(sessionId, deviceSessionCtx.getDeviceId());
+        transportService.reportActivity(deviceSessionCtx.getSessionId());
     }
 
     /**
@@ -488,8 +484,7 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
      * @param msgId 消息id
      */
     private void  processWarnUp(ChannelHandlerContext channelHandlerContext, int msgId) {
-        transportService.processWarnUp(sessionId, deviceSessionCtx.getDeviceId(), deviceSessionCtx.getProductId(),
-                pubAckCallback(channelHandlerContext,msgId));
+        transportService.processWarnUp(deviceSessionCtx.getSessionId(), pubAckCallback(channelHandlerContext,msgId));
         channelHandlerContext.close();
     }
 
@@ -501,9 +496,8 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
      */
     private void  processMessageUp(ChannelHandlerContext channelHandlerContext,MqttPublishMessage mqttPublishMessage,int msgId) {
         String payload = getHexPayload(mqttPublishMessage.payload());
-        transportService.processMessageUp(sessionId, deviceSessionCtx.getDeviceId(), deviceSessionCtx.getProductId(), payload,
-                pubAckCallback(channelHandlerContext,msgId));
-        transportService.reportActivity(sessionId, deviceSessionCtx.getDeviceId());
+        transportService.processMessageUp(deviceSessionCtx.getSessionId(),  payload, pubAckCallback(channelHandlerContext,msgId));
+        transportService.reportActivity(deviceSessionCtx.getSessionId());
     }
 
     /**
@@ -514,7 +508,7 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
      */
     public void processConfigRespUp(ChannelHandlerContext channelHandlerContext,MqttPublishMessage mqttPublishMessage,int msgId){
         String payload = getPayload(mqttPublishMessage);
-        transportService.processConfigRespUp(sessionId, deviceSessionCtx.getDeviceId(), deviceSessionCtx.getProductId(),deviceSessionCtx.getDataFormat(), payload,
+        transportService.processConfigRespUp(deviceSessionCtx.getSessionId(), deviceSessionCtx.getDataFormat(), payload,
                 pubAckCallback(channelHandlerContext,msgId));
     }
 
@@ -526,7 +520,7 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
      */
     public void processOtaRespUp(ChannelHandlerContext channelHandlerContext,MqttPublishMessage mqttPublishMessage,int msgId){
         String payload = getPayload(mqttPublishMessage);
-        transportService.processOtaRespUp(sessionId, deviceSessionCtx.getDeviceId(), deviceSessionCtx.getProductId(),deviceSessionCtx.getDataFormat(), payload,
+        transportService.processOtaRespUp(deviceSessionCtx.getSessionId(), deviceSessionCtx.getDataFormat(), payload,
                 pubAckCallback(channelHandlerContext,msgId));
     }
 
@@ -538,7 +532,7 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
      */
     public void processControlRespUp(ChannelHandlerContext channelHandlerContext,MqttPublishMessage mqttPublishMessage,int msgId){
         String payload = getPayload(mqttPublishMessage);
-        transportService.processControlRespUp(sessionId, deviceSessionCtx.getDeviceId(), deviceSessionCtx.getProductId(), deviceSessionCtx.getDataFormat(),payload,
+        transportService.processControlRespUp(deviceSessionCtx.getSessionId(),  deviceSessionCtx.getDataFormat(),payload,
                 pubAckCallback(channelHandlerContext,msgId));
     }
 
@@ -551,7 +545,7 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
      */
     public void processControlReqUp(ChannelHandlerContext channelHandlerContext,MqttPublishMessage mqttPublishMessage,int msgId){
         String payload = getPayload(mqttPublishMessage);
-        transportService.processControlReqUp(sessionId, deviceSessionCtx.getDeviceId(), deviceSessionCtx.getProductId(), deviceSessionCtx.getDataFormat(),payload,
+        transportService.processControlReqUp(deviceSessionCtx.getSessionId(),  deviceSessionCtx.getDataFormat(),payload,
                 pubAckCallback(channelHandlerContext,msgId));
     }
 
@@ -579,7 +573,7 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
         if (deviceSessionCtx.isConnected()) {
             return true;
         } else {
-            log.info("MqttTransportHandler.checkConnected [{}] [{}] Closing current session ", address,sessionId);
+            log.info("MqttTransportHandler.checkConnected [{}] [{}] Closing current session ", address,handlerId);
             return false;
         }
     }
@@ -590,11 +584,11 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
      */
     private void doDisconnect() {
         if (deviceSessionCtx.isConnected()) {
-            log.debug("MqttTransportHandler.doDisconnect >> [{}] Client disconnected!", sessionId);
+            log.debug("MqttTransportHandler.doDisconnect >> [{}] Client disconnected!", handlerId);
             String hostName = address.getHostString();
-            transportService.processDeviceDisConnect(deviceSessionCtx.getSessionId(), deviceSessionCtx.getProductId(), deviceSessionCtx.getDeviceId(),hostName);
-            transportService.processLogDevice(sessionId, deviceSessionCtx.getDeviceId(),hostName);
-            transportService.deregisterSession(deviceSessionCtx.getSessionId(), deviceSessionCtx.getDeviceId());
+            transportService.processDeviceDisConnect(deviceSessionCtx.getSessionId(), hostName);
+            transportService.processLogDevice(deviceSessionCtx.getSessionId(), hostName);
+            transportService.deregisterSession(deviceSessionCtx.getSessionId());
             deviceSessionCtx.setDisconnected();
         }
     }
@@ -624,17 +618,17 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
         return new MqttMessage(mqttFixedHeader, mqttMessageIdVariableHeader);
     }
 
-    private <T> TransportServiceCallback<Void> pubAckCallback(final ChannelHandlerContext ctx, final int msgId) {
+    private <T> TransportServiceCallback<T> pubAckCallback(final ChannelHandlerContext ctx, final int msgId) {
         return new TransportServiceCallback<>() {
             @Override
-            public void onSuccess(Void dummy) {
-                log.trace("MqttTransportHandler.publish >> [{}][{}] message ack success,msgId:{}", sessionId,address,msgId );
+            public void onSuccess(T dummy) {
+                log.trace("MqttTransportHandler.publish >> [{}][{}] message ack success,msgId:{}", handlerId,address,msgId );
                 ack(ctx, msgId);
             }
 
             @Override
             public void onError(Throwable e) {
-                log.trace("MqttTransportHandler.publish >> [{}][{}] message ack failure,msgId:{}", sessionId,address,msgId );
+                log.trace("MqttTransportHandler.publish >> [{}][{}] message ack failure,msgId:{}", handlerId,address,msgId );
                 ctx.close();
             }
         };

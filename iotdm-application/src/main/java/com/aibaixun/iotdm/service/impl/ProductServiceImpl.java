@@ -79,11 +79,14 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, ProductEntity
 
 
     @Override
-    public List<ProductEntity> queryProducts(Integer limit) {
+    public List<ProductEntity> queryProducts(Integer limit,String productLabel) {
         var queryWrapper = Wrappers.<ProductEntity>lambdaQuery();
         queryWrapper.eq(ProductEntity::getTenantId, UserInfoUtil.getTenantIdOfNull());
+        if (StringUtils.isNotBlank(productLabel)){
+            queryWrapper.likeRight(ProductEntity::getProductLabel,productLabel);
+        }
         if (Objects.isNull(limit)){
-            limit = 10;
+            limit = 30;
         }
         queryWrapper.last(" LIMIT "+limit);
         queryWrapper.orderByDesc(ProductEntity::getCreateTime);

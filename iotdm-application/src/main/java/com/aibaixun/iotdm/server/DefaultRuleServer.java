@@ -3,7 +3,7 @@ package com.aibaixun.iotdm.server;
 import com.aibaixun.common.redis.util.RedisRepository;
 import com.aibaixun.iotdm.entity.ProductEntity;
 import com.aibaixun.iotdm.msg.ForwardRuleInfo;
-import com.aibaixun.iotdm.rule.server.RuleService;
+import com.aibaixun.iotdm.rule.server.RuleServer;
 import com.aibaixun.iotdm.service.IForwardRuleService;
 import com.aibaixun.iotdm.service.IProductService;
 import com.aibaixun.toolkit.coomon.util.StringUtil;
@@ -21,7 +21,7 @@ import static com.aibaixun.iotdm.constants.DataConstants.IOT_TENANT_FORWARD_KEY;
  * @date 2022/3/12
  */
 @Service
-public class RuleServiceImpl implements RuleService {
+public class DefaultRuleServer implements RuleServer {
 
 
     private IProductService productService;

@@ -35,20 +35,17 @@ public interface TransportService {
     /**
      * 设备断开连接
      * @param sessionId 会话信息
-     * @param productId 产品id  [主要防止缓存移除 但tcp 未断开]
-     * @param deviceId 设备id  [主要防止缓存移除 但tcp 未断开]
      * @param hostName 连接地址
      */
-    void processDeviceDisConnect(UUID sessionId,String productId,String deviceId,String hostName);
+    void processDeviceDisConnect(SessionId sessionId,String hostName);
 
 
     /**
      * 记录设备信息
      * @param sessionId session 信息
      * @param hostName 连接地址
-     * @param deviceId 设备id
      */
-    void processLogDevice(UUID sessionId,String deviceId,String hostName);
+    void processLogDevice(SessionId sessionId,String hostName);
 
 
     /**
@@ -61,104 +58,87 @@ public interface TransportService {
 
     /**
      * 移除 session
-     * @param deviceId 设备id
      * @param sessionId session 信息
      */
-    void deregisterSession(UUID sessionId,String deviceId);
+    void deregisterSession(SessionId sessionId);
 
 
     /**
      * 记录活跃时间
-     * @param deviceId 设备id
      * @param sessionId session 信息
      */
-    void reportActivity(UUID sessionId,String deviceId);
+    void reportActivity(SessionId sessionId);
 
 
     /**
      * 设备上报属性信息
      * @param sessionId session 信息
      * @param payload 负载内容
-     * @param deviceId 设备id
-     * @param productId 产品id
      * @param dataFormat 数据格式
      * @param callback 回调函数
      */
-    void  processPropertyUp(UUID sessionId, String deviceId, String productId, DataFormat dataFormat,String payload,TransportServiceCallback<Void> callback);
+    void  processPropertyUp(SessionId sessionId,  DataFormat dataFormat,String payload,TransportServiceCallback<Void> callback);
 
 
     /**
      * 设备上报消息信息
      * @param sessionId session 信息
      * @param payload 负载内容
-     * @param deviceId 设备id
-     * @param productId 产品id
      * @param callback 回调函数
      */
-    void  processMessageUp(UUID sessionId, String deviceId, String productId,String payload,TransportServiceCallback<Void> callback);
+    void  processMessageUp(SessionId sessionId, String payload,TransportServiceCallback<Void> callback);
 
 
     /**
      * 设备上报预警信息
      * @param sessionId session 信息
-     * @param deviceId 设备id
-     * @param productId 产品id
      * @param callback 回调函数
      */
-    void  processWarnUp(UUID sessionId, String deviceId, String productId,TransportServiceCallback<Void> callback);
+    void  processWarnUp(SessionId sessionId, TransportServiceCallback<Void> callback);
 
     /**
      * 设备上报消息收到消息
      * @param sessionId session 信息
-     * @param deviceId 设备id
      * @param msgId 消息id
      */
-    void  processPubAck(UUID sessionId,String deviceId,int msgId);
+    void  processPubAck(SessionId sessionId,int msgId);
 
 
     /**
      * 设备上报配置更改反馈
      * @param sessionId session 信息
      * @param payload 负载内容
-     * @param deviceId 设备id
-     * @param productId 产品id
      * @param dataFormat 数据格式
      * @param callback 回调函数
      */
-    void  processConfigRespUp(UUID sessionId, String deviceId, String productId, DataFormat dataFormat,String payload,TransportServiceCallback<Void> callback);
+    void  processConfigRespUp(SessionId sessionId,  DataFormat dataFormat,String payload,TransportServiceCallback<Void> callback);
 
     /**
      * 设备上报OTA更改反馈
      * @param sessionId session 信息
      * @param payload 负载内容
-     * @param deviceId 设备id
-     * @param productId 产品id
      * @param dataFormat 数据格式
      * @param callback 回调函数
      */
-    void  processOtaRespUp(UUID sessionId, String deviceId, String productId, DataFormat dataFormat,String payload,TransportServiceCallback<Void> callback);
+    void  processOtaRespUp(SessionId sessionId,  DataFormat dataFormat,String payload,TransportServiceCallback<Void> callback);
 
     /**
      * 设备上报命令执行反馈
      * @param sessionId session 信息
      * @param payload 负载内容
-     * @param deviceId 设备id
-     * @param productId 产品id
      * @param dataFormat 数据格式
      * @param callback 回调函数
      */
-    void  processControlRespUp(UUID sessionId, String deviceId, String productId, DataFormat dataFormat,String payload,TransportServiceCallback<Void> callback);
+    void  processControlRespUp(SessionId sessionId, DataFormat dataFormat,String payload,TransportServiceCallback<Void> callback);
 
 
     /**
      * 设备上报命令请求
      * @param sessionId session 信息
-     * @param payload 负载内容
-     * @param deviceId 设备id
-     * @param productId 产品id
      * @param dataFormat 数据格式
      * @param callback 回调函数
+     * @param payload 负载内容
      */
-    void  processControlReqUp(UUID sessionId, String deviceId, String productId, DataFormat dataFormat,String payload,TransportServiceCallback<Void> callback);
+    void  processControlReqUp(SessionId sessionId, DataFormat dataFormat,String payload,TransportServiceCallback<Void> callback);
 
 }

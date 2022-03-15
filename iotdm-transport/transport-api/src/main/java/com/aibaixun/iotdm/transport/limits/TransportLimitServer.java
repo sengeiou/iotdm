@@ -7,7 +7,7 @@ import java.net.InetSocketAddress;
  * @author wangxiao@aibaixun.com
  * @date 2022/3/8
  */
-public interface TransportLimitService {
+public interface TransportLimitServer {
 
 
     /**

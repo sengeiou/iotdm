@@ -1,6 +1,6 @@
 package com.aibaixun.iotdm.redis;
 
-import com.aibaixun.iotdm.service.DeviceInfoService;
+import com.aibaixun.iotdm.service.DeviceInfoServer;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.Instant;
@@ -46,11 +46,11 @@ public interface RedisKeyExpirationListener {
      * 设置设备服务类
      * @param deviceInfoService 设备服务类
      */
-     void setDeviceInfoService(DeviceInfoService deviceInfoService);
+     void setDeviceInfoService(DeviceInfoServer deviceInfoService);
 
     /**
      * 获取设备服务类
      * @return 设备服务类
      */
-    DeviceInfoService getDeviceInfoService();
+    DeviceInfoServer getDeviceInfoService();
 }

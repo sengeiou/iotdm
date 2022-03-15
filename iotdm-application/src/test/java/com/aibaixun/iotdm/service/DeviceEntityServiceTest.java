@@ -4,14 +4,11 @@ import com.aibaixun.basic.exception.BaseException;
 import com.aibaixun.basic.result.BaseResultCode;
 import com.aibaixun.iotdm.IotDmApplication;
 import com.aibaixun.iotdm.data.DeviceEntityInfo;
-import com.aibaixun.iotdm.data.DeviceParam;
 import com.aibaixun.iotdm.data.SubDeviceParam;
 import com.aibaixun.iotdm.entity.DeviceEntity;
 import com.aibaixun.iotdm.entity.ProductEntity;
-import com.aibaixun.iotdm.enums.DeviceAuthType;
 import com.aibaixun.iotdm.enums.DeviceStatus;
 import com.aibaixun.iotdm.enums.NodeType;
-import com.aibaixun.iotdm.util.Base64Util;
 import com.aibaixun.iotdm.util.UserInfoUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -60,33 +57,8 @@ public class DeviceEntityServiceTest extends BaseTest{
     @Test
     public void  testCreateDevice () throws BaseException {
 
-        DeviceParam deviceParam = new DeviceParam();
-        deviceParam.setDeviceCode("q1");
-        deviceParam.setDeviceSecret(Base64Util.encode("mysql"));
-        deviceParam.setAuthType(DeviceAuthType.SECRET);
-        deviceParam.setProductId("37985ac6adb627e2e0d8e73e23055bd8");
-        deviceParam.setConfirmSecret(Base64Util.encode("mysql"));
+        List<DeviceEntity> deviceEntities = deviceService.listQueryDevice(null,10,null);
 
-        String deviceSecret = deviceParam.getDeviceSecret();
-        boolean secretBlank = StringUtils.isNotBlank(deviceSecret);
-        if ( !secretBlank && StringUtils.equals(deviceSecret,deviceParam.getConfirmSecret())){
-            throw new BaseException("设备密钥不一致", BaseResultCode.BAD_PARAMS);
-        }
-        if (deviceParam.getAuthType().equals(DeviceAuthType.SECRET)){
-            deviceSecret = secretBlank? RandomStringUtils.randomAlphanumeric(20): Base64Util.decode(deviceSecret);
-        }
-        String productId = deviceParam.getProductId();
-        checkProductId(productId);
-        DeviceEntity saveDeviceEntity = new DeviceEntity();
-        saveDeviceEntity.setDeviceCode(deviceParam.getDeviceCode());
-        saveDeviceEntity.setDeviceLabel(deviceParam.getDeviceLabel());
-        saveDeviceEntity.setDeviceSecret(deviceSecret);
-        saveDeviceEntity.setAuthType(deviceParam.getAuthType());
-        saveDeviceEntity.setProductId(productId);
-        saveDeviceEntity.setNodeType(NodeType.GATEWAY);
-        saveDeviceEntity.setInvented(false);
-        saveDeviceEntity.setDeviceStatus(DeviceStatus.INACTIVE);
-        deviceService.save(saveDeviceEntity);
     }
 
     private void checkProductId(String productId) throws BaseException {
@@ -126,7 +98,7 @@ public class DeviceEntityServiceTest extends BaseTest{
         if (Objects.isNull(limit)){
             limit = 50;
         }
-        List<DeviceEntity> deviceEntities = deviceService.queryDevice("37985ac6adb627e2e0d8e73e23055bd8",limit,null);
+        List<DeviceEntity> deviceEntities = deviceService.listQueryDevice("37985ac6adb627e2e0d8e73e23055bd8",limit,null);
         logger.info(deviceEntities.toString());
     }
 
