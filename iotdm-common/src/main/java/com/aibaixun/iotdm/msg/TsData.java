@@ -10,16 +10,15 @@ public class TsData implements Serializable {
 
     private Long ts;
 
-    private String tsId;
+
 
     private String tsLabel;
 
     private String tsValue;
 
 
-    public TsData(Long ts, String tsId, String tsLabel, String tsValue) {
+    public TsData(Long ts,  String tsLabel, String tsValue) {
         this.ts = ts;
-        this.tsId = tsId;
         this.tsLabel = tsLabel;
         this.tsValue = tsValue;
     }
@@ -35,13 +34,6 @@ public class TsData implements Serializable {
         this.ts = ts;
     }
 
-    public String getTsId() {
-        return tsId;
-    }
-
-    public void setTsId(String tsId) {
-        this.tsId = tsId;
-    }
 
     public String getTsLabel() {
         return tsLabel;

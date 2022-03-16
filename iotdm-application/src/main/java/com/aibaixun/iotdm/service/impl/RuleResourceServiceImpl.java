@@ -43,13 +43,14 @@ public class RuleResourceServiceImpl extends ServiceImpl<RuleResourceMapper, Rul
     @Override
     public List<RuleResourceEntity> listQueryRuleResource(Integer limit, String resourceLabel, ResourceType resourceType) {
         LambdaQueryWrapper<RuleResourceEntity> queryWrapper = Wrappers.lambdaQuery();
-        queryWrapper.eq(RuleResourceEntity::getTenantId, UserInfoUtil.getTenantIdOfNull());
+        queryWrapper.eq(RuleResourceEntity::getTenantId, UserInfoUtil.getTenantIdOfNull()).eq(RuleResourceEntity::getResourceStatus,true);
         if (StringUtils.isNotBlank(resourceLabel)){
             queryWrapper.likeRight(RuleResourceEntity::getResourceLabel,resourceLabel);
         }
         if (Objects.nonNull(resourceType)){
             queryWrapper.eq(RuleResourceEntity::getResourceType,resourceType);
         }
+
         queryWrapper.orderByDesc(RuleResourceEntity::getCreateTime);
         queryWrapper.last(" LIMIT "+ limit);
         return list(queryWrapper);

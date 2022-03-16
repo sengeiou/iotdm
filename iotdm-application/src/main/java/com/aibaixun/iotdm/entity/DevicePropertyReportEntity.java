@@ -19,10 +19,7 @@ public class DevicePropertyReportEntity implements Serializable {
 
     private static final long serialVersionUID = 19876543210L;
 
-    /**
-     * id
-     */
-      private String id;
+
 
     /**
      * 设备id
@@ -70,13 +67,6 @@ public class DevicePropertyReportEntity implements Serializable {
         this.propertyLabel = propertyLabel;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public String getDeviceId() {
         return deviceId;
@@ -110,10 +100,11 @@ public class DevicePropertyReportEntity implements Serializable {
         this.ts = ts;
     }
 
+
+
     @Override
     public String toString() {
         return "DevicePropertyReport{" +
-        "id=" + id +
         ", deviceId=" + deviceId +
         ", propertyId=" + propertyId +
         ", propertyValue=" + propertyValue +

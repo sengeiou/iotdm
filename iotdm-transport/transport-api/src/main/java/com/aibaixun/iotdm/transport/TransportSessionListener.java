@@ -25,4 +25,9 @@ public interface TransportSessionListener {
      * @param payload 命令数据
      */
     void on2DeviceControlReq(String payload);
+
+    /**
+     * 关闭会话
+     */
+    void onCloseConnect();
 }

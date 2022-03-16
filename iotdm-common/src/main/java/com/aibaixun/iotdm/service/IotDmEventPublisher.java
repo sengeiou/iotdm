@@ -1,11 +1,9 @@
 package com.aibaixun.iotdm.service;
 
 import com.aibaixun.iotdm.enums.DataFormat;
-import com.aibaixun.iotdm.event.EntityChangeEvent;
-import com.aibaixun.iotdm.event.ToDeviceConfigEvent;
-import com.aibaixun.iotdm.event.ToDeviceControlEvent;
-import com.aibaixun.iotdm.event.ToDeviceOtaEvent;
+import com.aibaixun.iotdm.event.*;
 import com.aibaixun.iotdm.msg.SessionEventType;
+import com.aibaixun.iotdm.transport.SessionId;
 
 /**
  * 事件发布者
@@ -107,4 +105,10 @@ public interface IotDmEventPublisher {
      * @param deviceControlEvent 设备命令事件
      */
     void publish2ControlReqEvent(ToDeviceControlEvent deviceControlEvent);
+
+    /**
+     * 发布设备关闭
+     * @param deviceCloseConnectEvent 设备关闭
+     */
+    void publishDeviceCloseConnectEvent(ToDeviceCloseConnectEvent deviceCloseConnectEvent);
 }

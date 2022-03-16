@@ -40,4 +40,14 @@
             AND     mp.property_label LIKE concat(#{propertyLabel},'%')
         </if>
     </select>
+
+    <insert id="saveOrUpdateBatch" parameterType="list">
+        insert into t_device_property_report ( device_id, property_id, property_label,property_value, ts)
+        values
+        <foreach collection="entities" item="item" index="index" separator=",">
+         ( #{item.deviceId}, #{item.propertyId}, #{item.propertyLabel},#{item.propertyValue}, #{item.ts})
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        property_value =VALUES( property_value ),ts =VALUES(ts)
+         </insert>
 </mapper>

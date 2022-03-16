@@ -32,4 +32,11 @@ public interface DevicePropertyReportMapper extends BaseMapper<DevicePropertyRep
      * @return 最新设备属性信息
      */
     List<DevicePropertyInfo> selectShadowDeviceProperty(@Param("deviceId") String deviceId,@Param("propertyLabel") String propertyLabel);
+
+    /**
+     * 保存更新
+     * @param devicePropertyReportEntities 设备属性信息
+     * @return 数量
+     */
+    int saveOrUpdateBatch(@Param("entities") List<DevicePropertyReportEntity> devicePropertyReportEntities);
 }

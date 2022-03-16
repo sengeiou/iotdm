@@ -43,6 +43,8 @@ public class RuleResourceEntity extends BaseEntity {
      */
     private Boolean deleted;
 
+    private Boolean resourceStatus;
+
 
     public String getResourceLabel() {
         return resourceLabel;
@@ -79,6 +81,13 @@ public class RuleResourceEntity extends BaseEntity {
         this.resourceType = resourceType;
     }
 
+    public Boolean getResourceStatus() {
+        return resourceStatus;
+    }
+
+    public void setResourceStatus(Boolean resourceStatus) {
+        this.resourceStatus = resourceStatus;
+    }
 
     @Override
     public String toString() {

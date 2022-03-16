@@ -16,6 +16,7 @@ public interface ToDeviceProcessor {
      * @param host 连接地址
      * @param productId 产品id
      * @param port 连接端口
+     * @throws BaseException
      */
     void  processConfig(String deviceId,String productId,String host,Integer port) throws BaseException;
 
@@ -36,4 +37,11 @@ public interface ToDeviceProcessor {
      * @throws BaseException
      */
     void processControl(String deviceId, String productId,String commandId, Map<String,Object> params) throws BaseException;
+
+    /**
+     * 关闭设备连接
+     * @param deviceId deviceId
+     * @param productId 产品id
+     */
+    void processCloseConnectDevice(String deviceId,String productId);
 }

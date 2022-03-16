@@ -6,7 +6,10 @@ import com.aibaixun.iotdm.service.IDevicePropertyReportService;
 import com.aibaixun.iotdm.data.DevicePropertyInfo;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -32,5 +35,13 @@ public class DevicePropertyReportServiceImpl extends ServiceImpl<DevicePropertyR
         return baseMapper.selectShadowDeviceProperty(deviceId,propertyLabel);
     }
 
-
+    @Override
+    public boolean saveOrUpdateBatch(Collection<DevicePropertyReportEntity> entityList) {
+        if (CollectionUtils.isEmpty(entityList)){
+            return false;
+        }
+        int size = entityList.size();
+        int i = baseMapper.saveOrUpdateBatch(new ArrayList<>(entityList));
+        return size ==i;
+    }
 }

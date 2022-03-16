@@ -17,6 +17,7 @@ import io.netty.util.CharsetUtil;
 import io.netty.util.ReferenceCountUtil;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.net.InetSocketAddress;
@@ -657,6 +658,9 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
 
     @Override
     public void on2DeviceConfigReq(String payload) {
+        if (StringUtils.isBlank(payload)){
+            return;
+        }
         MqttPublishMessage publishMessage = getMqttPublishMessage(payload, CONFIG_REQ);
         deviceSessionCtx.getChannel().writeAndFlush(publishMessage);
 
@@ -664,17 +668,27 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
 
     @Override
     public void on2DeviceOtaReq(String payload) {
+        if (StringUtils.isBlank(payload)){
+            return;
+        }
         MqttPublishMessage publishMessage = getMqttPublishMessage(payload, OTA_REQ);
         deviceSessionCtx.getChannel().writeAndFlush(publishMessage);
     }
 
     @Override
     public void on2DeviceControlReq(String payload) {
+        if (StringUtils.isBlank(payload)){
+            return;
+        }
         MqttPublishMessage publishMessage = getMqttPublishMessage(payload, CONTROL_REQ);
         deviceSessionCtx.getChannel().writeAndFlush(publishMessage);
     }
 
 
+    @Override
+    public void onCloseConnect() {
+        deviceSessionCtx.getChannel().close();
+    }
 
     private MqttPublishMessage getMqttPublishMessage(String payload, String topic) {
         byte [] bytes;
@@ -695,6 +709,7 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
         payload.writeBytes(payloadByte);
         return new MqttPublishMessage(mqttFixedHeader, header, payload);
     }
+
 
 
 }

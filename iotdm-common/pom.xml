@@ -25,11 +25,6 @@
         </dependency>
         <dependency>
             <groupId>com.aibaixun</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.aibaixun</groupId>
             <artifactId>spring-boot-starter-redis</artifactId>
             <scope>provided</scope>
         </dependency>

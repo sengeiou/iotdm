@@ -12,6 +12,7 @@ import com.aibaixun.iotdm.entity.ProductEntity;
 import com.aibaixun.iotdm.enums.BusinessStep;
 import com.aibaixun.iotdm.enums.CommandSendStatus;
 import com.aibaixun.iotdm.enums.DataFormat;
+import com.aibaixun.iotdm.event.ToDeviceCloseConnectEvent;
 import com.aibaixun.iotdm.event.ToDeviceConfigEvent;
 import com.aibaixun.iotdm.event.ToDeviceControlEvent;
 import com.aibaixun.iotdm.script.JsInvokeService;
@@ -130,6 +131,12 @@ public class Default2DeviceProcessor implements ToDeviceProcessor{
         ToDeviceControlEvent toDeviceControlEvent = new ToDeviceControlEvent(new SessionId(deviceId, productId), payload);
         toDeviceControlEvent.setSendId(deviceCommandSendEntity.getId());
         eventPublisher.publish2ControlReqEvent(toDeviceControlEvent);
+    }
+
+
+    @Override
+    public void processCloseConnectDevice(String deviceId, String productId) {
+        eventPublisher.publishDeviceCloseConnectEvent(new ToDeviceCloseConnectEvent(new SessionId(deviceId,productId)));
     }
 
     private void  doLog (String deviceId, BusinessStep businessStep, String businessDetails, Boolean messageStatus){

@@ -7,6 +7,7 @@ import com.aibaixun.iotdm.entity.DeviceEntity;
 import com.aibaixun.iotdm.entity.ProductEntity;
 import com.aibaixun.iotdm.enums.*;
 import com.aibaixun.iotdm.event.EntityChangeEvent;
+import com.aibaixun.iotdm.server.ToDeviceProcessor;
 import com.aibaixun.iotdm.service.IDeviceService;
 import com.aibaixun.iotdm.service.IProductService;
 import com.aibaixun.iotdm.data.*;
@@ -45,6 +46,8 @@ public class DeviceController extends BaseController{
     private IProductService productService;
 
     private IotDmEventPublisher iotDmEventPublisher;
+
+    private ToDeviceProcessor toDeviceProcessor;
 
     @GetMapping("/count")
     public JsonResult<Map<String,Long>> countDevice(@RequestParam(required = false)String productId) {
@@ -109,14 +112,35 @@ public class DeviceController extends BaseController{
 
     @PutMapping("/device-label")
     public JsonResult<Boolean> updateDeviceLabel (@RequestBody @Valid UpdateDeviceLabelParam updateDeviceLabelParam) throws BaseException {
+        String deviceId = updateDeviceLabelParam.getDeviceId();
+        DeviceEntity deviceEntity = deviceService.queryById(deviceId);
+        if (Objects.isNull(deviceEntity)){
+            throw new BaseException("设备不存在，无法更改", BaseResultCode.GENERAL_ERROR);
+        }
+        String deviceLabel = updateDeviceLabelParam.getDeviceLabel();
+        if (Objects.equals(deviceEntity.getDeviceLabel(),deviceLabel)){
+            throw new BaseException("设备已经是当前名称，无法进行修改", BaseResultCode.GENERAL_ERROR);
+        }
         Boolean aBoolean = deviceService.updateDeviceLabel(updateDeviceLabelParam.getDeviceId(), updateDeviceLabelParam.getDeviceLabel());
         return JsonResult.success(aBoolean);
     }
 
 
     @PutMapping("/device-status")
-    public JsonResult<Boolean> updateDeviceLabel (@RequestBody @Valid UpdateDeviceStatusParam updateDeviceStatusParam) throws BaseException {
+    public JsonResult<Boolean> updateDeviceStatus (@RequestBody @Valid UpdateDeviceStatusParam updateDeviceStatusParam) throws BaseException {
+        String deviceId = updateDeviceStatusParam.getDeviceId();
+        DeviceEntity deviceEntity = deviceService.queryById(deviceId);
+        if (Objects.isNull(deviceEntity)){
+            throw new BaseException("设备不存在，无法更改", BaseResultCode.GENERAL_ERROR);
+        }
+        DeviceStatus deviceStatus = updateDeviceStatusParam.getDeviceStatus();
+        if (Objects.equals(deviceEntity.getDeviceStatus(),deviceStatus)){
+            throw new BaseException("设备已经是当前状态，无法进行修改", BaseResultCode.GENERAL_ERROR);
+        }
         Boolean aBoolean = deviceService.updateDeviceStatus(updateDeviceStatusParam.getDeviceId(), updateDeviceStatusParam.getDeviceStatus());
+        if (aBoolean && Objects.equals(DeviceStatus.ONLINE,deviceEntity.getDeviceStatus())){
+            toDeviceProcessor.processCloseConnectDevice(deviceId,deviceEntity.getProductId());
+        }
         return JsonResult.success(aBoolean);
     }
 
@@ -168,6 +192,9 @@ public class DeviceController extends BaseController{
         boolean remove = deviceService.removeById(id);
         if (remove){
             iotDmEventPublisher.publishEntityChangeEvent(new EntityChangeEvent(SubjectResource.DEVICE, SubjectEvent.DEVICE_DELETE,UserInfoUtil.getTenantIdOfNull()));
+        }
+        if (Objects.equals(DeviceStatus.ONLINE,deviceEntity.getDeviceStatus())){
+            toDeviceProcessor.processCloseConnectDevice(id,deviceEntity.getProductId());
         }
         return JsonResult.success(remove);
     }
@@ -283,5 +310,10 @@ public class DeviceController extends BaseController{
     @Autowired
     public void setIotDmEventPublisher(IotDmEventPublisher iotDmEventPublisher) {
         this.iotDmEventPublisher = iotDmEventPublisher;
+    }
+
+    @Autowired
+    public void setToDeviceProcessor(ToDeviceProcessor toDeviceProcessor) {
+        this.toDeviceProcessor = toDeviceProcessor;
     }
 }

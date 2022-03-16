@@ -19,11 +19,6 @@ public class DeviceMessageReportEntity implements Serializable {
     private static final long serialVersionUID = 10987654321L;
 
     /**
-     * id
-     */
-      private String id;
-
-    /**
      * 设备id
      */
     private String deviceId;
@@ -39,13 +34,7 @@ public class DeviceMessageReportEntity implements Serializable {
     private Long ts;
 
 
-    public String getId() {
-        return id;
-    }
 
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public String getDeviceId() {
         return deviceId;
@@ -74,7 +63,6 @@ public class DeviceMessageReportEntity implements Serializable {
     @Override
     public String toString() {
         return "DeviceMessageReport{" +
-        "id=" + id +
         ", deviceId=" + deviceId +
         ", payload=" + payload +
         ", ts=" + ts +

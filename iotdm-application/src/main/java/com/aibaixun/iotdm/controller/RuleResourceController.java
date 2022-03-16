@@ -68,6 +68,7 @@ public class RuleResourceController extends BaseController{
         if (Objects.isNull(ruleResourceEntity.getResourceType())){
             ruleResourceEntity.setResourceType(ruleResourceEntity.getConfiguration().getResourceType());
         }
+        ruleResourceEntity.setResourceStatus(false);
         boolean save = ruleResourceService.save(ruleResourceEntity);
         return JsonResult.success(save);
     }

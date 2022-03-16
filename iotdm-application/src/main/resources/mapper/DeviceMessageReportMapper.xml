@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aibaixun.iotdm.mapper.DeviceMessageReportMapper">
+
+
+
+    <insert id="saveOrUpdateBatch" parameterType="list">
+        insert into t_device_message_report ( device_id, payload, ts,                                                                                                                                                                                                                                             property_value, ts)
+        values
+        <foreach collection="entities" item="item" index="index" separator=",">
+            ( #{item.deviceId}, #{item.payload}, #{item.ts})
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        payload =VALUES( payload ),ts =VALUES(ts)
+    </insert>
+</mapper>

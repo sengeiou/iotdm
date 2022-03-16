@@ -127,7 +127,7 @@ public class MatchBusinessProcessor extends AbstractReportProcessor<PrePropertyB
     private List<TsData> toTsData (List<DevicePropertyReportEntity> devicePropertyReportEntities) {
         List<TsData> result = new ArrayList<>();
         for (DevicePropertyReportEntity entity : devicePropertyReportEntities) {
-            result.add(new TsData(entity.getTs(), entity.getId(), entity.getPropertyLabel(),entity.getPropertyValue()));
+            result.add(new TsData(entity.getTs(), entity.getPropertyLabel(),entity.getPropertyValue()));
         }
         return result;
     }

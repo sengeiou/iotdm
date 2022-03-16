@@ -83,10 +83,10 @@ public class DefaultIotDmEventPublisher implements IotDmEventPublisher {
         applicationEventPublisher.publishEvent(deviceControlEvent);
     }
 
-
-
-
-
+    @Override
+    public void publishDeviceCloseConnectEvent(ToDeviceCloseConnectEvent deviceCloseConnectEvent) {
+        applicationEventPublisher.publishEvent(deviceCloseConnectEvent);
+    }
 
     @Autowired
     public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
