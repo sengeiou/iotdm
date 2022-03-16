@@ -2,6 +2,9 @@ package com.aibaixun.iotdm.service;
 
 import com.aibaixun.iotdm.enums.DataFormat;
 import com.aibaixun.iotdm.event.EntityChangeEvent;
+import com.aibaixun.iotdm.event.ToDeviceConfigEvent;
+import com.aibaixun.iotdm.event.ToDeviceControlEvent;
+import com.aibaixun.iotdm.event.ToDeviceOtaEvent;
 import com.aibaixun.iotdm.msg.SessionEventType;
 
 import javax.xml.stream.events.EntityDeclaration;
@@ -87,4 +90,23 @@ public interface IotDmEventPublisher {
      * @param entityChangeEvent entityChangeEvent
      */
     void  publishEntityChangeEvent(EntityChangeEvent entityChangeEvent);
+
+
+    /**
+     * 设备配置 更改去
+     * @param  deviceConfigEvent 设备配置更改事件
+     */
+    void publish2DeviceConfigReqEvent(ToDeviceConfigEvent deviceConfigEvent);
+
+    /**
+     * 设备配置更改
+     * @param  deviceOtaEvent 设备固件事件
+     */
+    void publish2DeviceOtaReqEvent(ToDeviceOtaEvent deviceOtaEvent);
+
+    /**
+     * 设备命令事件
+     * @param deviceControlEvent 设备命令事件
+     */
+    void publish2ControlReqEvent(ToDeviceControlEvent deviceControlEvent);
 }

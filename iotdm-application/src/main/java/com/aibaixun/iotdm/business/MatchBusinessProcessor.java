@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
  * @date 2022/3/11
  */
 @Component
-public class MatchProcessor extends AbstractReportProcessor<PrePropertyBusinessMsg,MessageBusinessMsg> {
+public class MatchBusinessProcessor extends AbstractReportProcessor<PrePropertyBusinessMsg,MessageBusinessMsg> {
 
 
     private final String modelLabelKey = "modelId";
@@ -39,13 +39,13 @@ public class MatchProcessor extends AbstractReportProcessor<PrePropertyBusinessM
         ProductEntityInfo productInfo = productService.queryProductInfoById(productId);
         List<ProductModelEntityInfo> models = productInfo.models;
         if (CollectionUtils.isEmpty(models)){
-            doLog(deviceId, BusinessType.DEVICE2PLATFORM, BusinessStep.MATCH_MODEL,"product model is empty");
+            doLog(deviceId, BusinessType.DEVICE2PLATFORM, BusinessStep.MATCH_MODEL,"product model is empty",false);
             return;
         }
 
         JsonNode prePropertyBusinessMsgPropertyJsonNode = prePropertyBusinessMsg.getPropertyJsonNode();
         if (Objects.isNull(prePropertyBusinessMsgPropertyJsonNode)){
-            doLog(deviceId, BusinessType.DEVICE2PLATFORM, BusinessStep.MATCH_MODEL,"resolving data is empty");
+            doLog(deviceId, BusinessType.DEVICE2PLATFORM, BusinessStep.MATCH_MODEL,"resolving data is empty",false);
             return;
         }
 
@@ -65,11 +65,11 @@ public class MatchProcessor extends AbstractReportProcessor<PrePropertyBusinessM
                 reportEntities.addAll(doMatchPropertyAnd2DbEntity(deviceId,prePropertyBusinessMsgPropertyJsonNode,models,modelPropertyEntities));
             }
         }catch (Exception e){
-            doLog(deviceId, BusinessType.DEVICE2PLATFORM, BusinessStep.MATCH_MODEL,"Match Model property is empty"+e.getMessage());
+            doLog(deviceId, BusinessType.DEVICE2PLATFORM, BusinessStep.MATCH_MODEL,"Match Model property is empty"+e.getMessage(),false);
         }
 
         propertyReportService.saveOrUpdateBatch(reportEntities);
-        doLog(deviceId, BusinessType.DEVICE2PLATFORM, BusinessStep.MATCH_MODEL, JsonUtil.toJSONString(reportEntities));
+        doLog(deviceId, BusinessType.DEVICE2PLATFORM, BusinessStep.MATCH_MODEL, JsonUtil.toJSONString(reportEntities),true);
         queueProcessor.doProcessProperty(new PostPropertyBusinessMsg(prePropertyBusinessMsg.getMetaData(),toTsData(reportEntities)));
     }
 

@@ -37,6 +37,13 @@ public class MessageTraceEntity extends BaseEntity {
     private String businessDetails;
 
 
+    /**
+     * 消息状态
+     */
+    private Boolean messageStatus;
+
+
+
     public String getDeviceId() {
         return deviceId;
     }
@@ -67,6 +74,14 @@ public class MessageTraceEntity extends BaseEntity {
 
     public void setBusinessDetails(String businessDetails) {
         this.businessDetails = businessDetails;
+    }
+
+    public Boolean getMessageStatus() {
+        return messageStatus;
+    }
+
+    public void setMessageStatus(Boolean messageStatus) {
+        this.messageStatus = messageStatus;
     }
 
     @Override

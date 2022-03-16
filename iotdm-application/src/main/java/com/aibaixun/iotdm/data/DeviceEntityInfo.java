@@ -18,10 +18,13 @@ public class DeviceEntityInfo extends DeviceEntity {
         this.productLabel = productLabel;
         setDeviceStatus(deviceEntity.getDeviceStatus());
         setDeviceLabel(deviceEntity.getDeviceLabel());
-        setDeviceCode(getDeviceCode());
+        setDeviceCode(deviceEntity.getDeviceCode());
         setId(deviceEntity.getId());
         setProductId(deviceEntity.getProductId());
         setNodeType(deviceEntity.getNodeType());
+        setAuthType(deviceEntity.getAuthType());
+        setDeviceSecret(deviceEntity.getDeviceSecret());
+
     }
 
     public String getProductLabel() {

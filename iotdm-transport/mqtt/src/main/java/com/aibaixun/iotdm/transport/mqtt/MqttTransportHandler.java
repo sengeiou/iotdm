@@ -5,8 +5,11 @@ import com.aibaixun.iotdm.enums.ProtocolType;
 import com.aibaixun.iotdm.msg.*;
 import com.aibaixun.iotdm.transport.*;
 import com.aibaixun.iotdm.transport.mqtt.session.DeviceSessionCtx;
+import com.aibaixun.toolkit.coomon.util.HexUtil;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.ByteBufUtil;
+import io.netty.buffer.UnpooledByteBufAllocator;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.mqtt.*;
@@ -37,6 +40,8 @@ import static io.netty.handler.codec.mqtt.MqttQoS.FAILURE;
  * @date 2022/3/8
  */
 public class MqttTransportHandler extends ChannelInboundHandlerAdapter implements GenericFutureListener<Future<? super Void>>, TransportSessionListener {
+
+    private static final ByteBufAllocator ALLOCATOR = new UnpooledByteBufAllocator(false);
 
     private final Logger log  = LoggerFactory.getLogger("mqtt-transport");
 
@@ -603,11 +608,11 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
         return new MqttPubAckMessage(mqttFixedHeader, mqttMsgIdVariableHeader);
     }
 
-    private static MqttSubAckMessage createSubAckMessage(Integer msgId, List<Integer> grantedQoSList) {
+    private static MqttSubAckMessage createSubAckMessage(Integer msgId, List<Integer> grantedQosList) {
         MqttFixedHeader mqttFixedHeader =
                 new MqttFixedHeader(SUBACK, false, AT_MOST_ONCE, false, 0);
         MqttMessageIdVariableHeader mqttMessageIdVariableHeader = MqttMessageIdVariableHeader.from(msgId);
-        MqttSubAckPayload mqttSubAckPayload = new MqttSubAckPayload(grantedQoSList);
+        MqttSubAckPayload mqttSubAckPayload = new MqttSubAckPayload(grantedQosList);
         return new MqttSubAckMessage(mqttFixedHeader, mqttMessageIdVariableHeader, mqttSubAckPayload);
     }
 
@@ -648,4 +653,48 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
     private  String getHexPayload( ByteBuf payloadData)  {
         return ByteBufUtil.hexDump(payloadData);
     }
+
+
+    @Override
+    public void on2DeviceConfigReq(String payload) {
+        MqttPublishMessage publishMessage = getMqttPublishMessage(payload, CONFIG_REQ);
+        deviceSessionCtx.getChannel().writeAndFlush(publishMessage);
+
+    }
+
+    @Override
+    public void on2DeviceOtaReq(String payload) {
+        MqttPublishMessage publishMessage = getMqttPublishMessage(payload, OTA_REQ);
+        deviceSessionCtx.getChannel().writeAndFlush(publishMessage);
+    }
+
+    @Override
+    public void on2DeviceControlReq(String payload) {
+        MqttPublishMessage publishMessage = getMqttPublishMessage(payload, CONTROL_REQ);
+        deviceSessionCtx.getChannel().writeAndFlush(publishMessage);
+    }
+
+
+
+    private MqttPublishMessage getMqttPublishMessage(String payload, String topic) {
+        byte [] bytes;
+        if (DataFormat.JSON.equals(deviceSessionCtx.getDataFormat())){
+            bytes = payload.getBytes(StandardCharsets.UTF_8);
+        }else {
+            bytes = HexUtil.decodeHex(payload);
+        }
+        return createMqttPublishMsg(deviceSessionCtx, topic, bytes);
+    }
+
+
+    protected MqttPublishMessage createMqttPublishMsg( DeviceSessionCtx ctx, String topic, byte [] payloadByte) {
+        MqttFixedHeader mqttFixedHeader =
+                new MqttFixedHeader(MqttMessageType.PUBLISH, false, AT_MOST_ONCE, false, 0);
+        MqttPublishVariableHeader header = new MqttPublishVariableHeader(topic, ctx.nextMsgId());
+        ByteBuf payload = ALLOCATOR.buffer();
+        payload.writeBytes(payloadByte);
+        return new MqttPublishMessage(mqttFixedHeader, header, payload);
+    }
+
+
 }

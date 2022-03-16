@@ -28,7 +28,9 @@ public class DevicePropertyReportServiceImpl extends ServiceImpl<DevicePropertyR
 
 
     @Override
-    public List<DevicePropertyInfo> queryShadowDeviceProperty(String deviceId) {
-        return baseMapper.selectShadowDeviceProperty(deviceId);
+    public List<DevicePropertyInfo> queryShadowDeviceProperty(String deviceId,String propertyLabel) {
+        return baseMapper.selectShadowDeviceProperty(deviceId,propertyLabel);
     }
+
+
 }

@@ -38,7 +38,7 @@ public class DevicePropertyReportController extends BaseController{
         }
         DeviceEntity deviceEntity = deviceService.getById(deviceId);
         if (Objects.isNull(deviceEntity)){
-            throw new BaseException("设备已经被删除",BaseResultCode.BAD_PARAMS);
+            throw new BaseException("设备已经被删除,无法查询最新数据",BaseResultCode.GENERAL_ERROR);
         }
         List<DevicePropertyInfo> devicePropertyInfos = devicePropertyReportService.queryLatestDeviceProperty(deviceId);
         return JsonResult.success(devicePropertyInfos);
@@ -46,15 +46,16 @@ public class DevicePropertyReportController extends BaseController{
 
 
     @GetMapping("/shadow")
-    public JsonResult<List<DevicePropertyInfo>> queryShadowDeviceProperty(@RequestParam String deviceId) throws BaseException {
+    public JsonResult<List<DevicePropertyInfo>> queryShadowDeviceProperty(@RequestParam String deviceId,
+                                                                          @RequestParam(required = false) String propertyLabel) throws BaseException {
         if (StringUtils.isBlank(deviceId)){
             throw new BaseException("设备id不允许为空", BaseResultCode.BAD_PARAMS);
         }
         DeviceEntity deviceEntity = deviceService.getById(deviceId);
         if (Objects.isNull(deviceEntity)){
-            throw new BaseException("设备已经被删除",BaseResultCode.BAD_PARAMS);
+            throw new BaseException("设备已经被删除,无法查询最新数据",BaseResultCode.GENERAL_ERROR);
         }
-        List<DevicePropertyInfo> devicePropertyInfos = devicePropertyReportService.queryShadowDeviceProperty(deviceId);
+        List<DevicePropertyInfo> devicePropertyInfos = devicePropertyReportService.queryShadowDeviceProperty(deviceId,propertyLabel);
         return JsonResult.success(devicePropertyInfos);
     }
 

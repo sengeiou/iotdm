@@ -21,10 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * 默认传输服务
@@ -32,7 +29,7 @@ import java.util.concurrent.ConcurrentMap;
  * @date 2022/3/8
  */
 @Service
-public class DefaultTransportService implements TransportService {
+public class DefaultTransportServer implements TransportService {
 
     private DeviceInfoServer deviceInfoService;
 
@@ -43,19 +40,18 @@ public class DefaultTransportService implements TransportService {
     private IotDmEventPublisher iotDmEventPublisher;
 
 
-    private final Logger log  = LoggerFactory.getLogger(DefaultTransportService.class);
+    private final Logger log  = LoggerFactory.getLogger(DefaultTransportServer.class);
 
 
     private TransportLimitServer transportLimitService;
+
+    private ListenerContainer listenerContainer;
 
 
     @Value("${transport.default-keepalive}")
     private long defaultKeepalive;
 
-    /**
-     * 存储 session 信息
-     */
-    private final ConcurrentMap<SessionId, TransportSessionMetaData> sessionListeners = new ConcurrentHashMap<>();
+
 
     @Override
     public void processDeviceAuthBySecret(ProtocolType protocolType, DeviceAuthSecretReqMsg deviceAuthSecretReqMsg, TransportServiceCallback<DeviceAuthRespMsg> callback) {
@@ -104,14 +100,14 @@ public class DefaultTransportService implements TransportService {
     public void registerSession(TransportSessionInfo transportSessionInfo, TransportSessionListener listener) {
         SessionId sessionId = transportSessionInfo.getSessionId();
         sessionCacheService.addSessionCache(sessionId,transportSessionInfo,defaultKeepalive);
-        sessionListeners.computeIfAbsent(sessionId,k->new TransportSessionMetaData(transportSessionInfo.getDeviceId(),listener));
+        listenerContainer.computeIfAbsent(sessionId,k->new TransportSessionMetaData(transportSessionInfo.getDeviceId(),listener));
     }
 
 
     @Override
     public void deregisterSession(SessionId sessionId) {
         sessionCacheService.removeSessionCache(sessionId);
-        sessionListeners.remove(sessionId);
+        listenerContainer.remove(sessionId);
     }
 
 
@@ -228,4 +224,10 @@ public class DefaultTransportService implements TransportService {
     public void setTransportLimitService(TransportLimitServer transportLimitService) {
         this.transportLimitService = transportLimitService;
     }
+
+    @Autowired
+    public void setListenerContainer(ListenerContainer listenerContainer) {
+        this.listenerContainer = listenerContainer;
+    }
+
 }

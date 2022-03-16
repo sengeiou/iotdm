@@ -1,22 +1,22 @@
 package com.aibaixun.iotdm.data;
 
-import com.aibaixun.iotdm.enums.DeviceStatus;
-
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 /**
- * 更改设备状态参数
+ * 设备追踪参数
  * @author wangxiao@aibaixun.com
- * @date 2022/3/14
+ * @date 2022/3/16
  */
-public class UpdateDeviceStatusParam {
+public class TraceDeviceParam {
 
     @NotBlank(message = "设备id不允许为空")
     private String deviceId;
 
-    @NotNull(message = "设备状态不允许为空")
-    private DeviceStatus deviceStatus;
+    @NotNull(message = "追踪追踪时间不允许为空")
+    @Max(value = 259200,message = "追踪时间最长不超过3天")
+    private Long ttl;
 
     public String getDeviceId() {
         return deviceId;
@@ -26,11 +26,11 @@ public class UpdateDeviceStatusParam {
         this.deviceId = deviceId;
     }
 
-    public DeviceStatus getDeviceStatus() {
-        return deviceStatus;
+    public Long getTtl() {
+        return ttl;
     }
 
-    public void setDeviceStatus(DeviceStatus deviceStatus) {
-        this.deviceStatus = deviceStatus;
+    public void setTtl(Long ttl) {
+        this.ttl = ttl;
     }
 }

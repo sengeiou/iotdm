@@ -6,8 +6,6 @@ import com.aibaixun.iotdm.msg.DeviceAuthRespMsg;
 import com.aibaixun.iotdm.msg.DeviceAuthSecretReqMsg;
 import com.aibaixun.iotdm.msg.TransportSessionInfo;
 
-import java.util.UUID;
-
 /**
  * 数据传输 service
  * @author wangxiao@aibaixun.com

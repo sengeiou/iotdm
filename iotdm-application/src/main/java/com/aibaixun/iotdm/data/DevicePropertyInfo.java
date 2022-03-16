@@ -1,6 +1,7 @@
 package com.aibaixun.iotdm.data;
 
 import com.aibaixun.iotdm.enums.DataType;
+import com.aibaixun.iotdm.enums.ParamScope;
 
 /**
  * 设备属性
@@ -13,6 +14,8 @@ public class DevicePropertyInfo {
 
     private String propertyLabel;
 
+    private String propertyValue;
+
     private String deviceId;
 
     private String modelLabel;
@@ -20,6 +23,8 @@ public class DevicePropertyInfo {
     private DataType dataType;
 
     private Long ts;
+
+    private ParamScope scope;
 
 
     public String getPropertyId() {
@@ -70,12 +75,28 @@ public class DevicePropertyInfo {
         this.ts = ts;
     }
 
+    public String getPropertyValue() {
+        return propertyValue;
+    }
+
+    public void setPropertyValue(String propertyValue) {
+        this.propertyValue = propertyValue;
+    }
+
+    public ParamScope getScope() {
+        return scope;
+    }
+
+    public void setScope(ParamScope scope) {
+        this.scope = scope;
+    }
 
     @Override
     public String toString() {
         return "DevicePropertyInfo{" +
                 "propertyId='" + propertyId + '\'' +
                 ", propertyLabel='" + propertyLabel + '\'' +
+                ", propertyValue='" + propertyValue + '\'' +
                 ", deviceId='" + deviceId + '\'' +
                 ", modelLabel='" + modelLabel + '\'' +
                 ", dataType=" + dataType +

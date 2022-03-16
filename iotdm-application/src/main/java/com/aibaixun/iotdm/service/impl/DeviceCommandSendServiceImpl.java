@@ -8,6 +8,7 @@ import com.aibaixun.iotdm.util.UserInfoUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -29,11 +30,9 @@ public class DeviceCommandSendServiceImpl extends ServiceImpl<DeviceCommandSendM
 
 
     @Override
-    public List<DeviceCommandSendEntity> queryDeviceCommandSend(String deviceId, String commandLabel, String commandId, Long startTs, Long endTs, Integer limit) {
+    public Page<DeviceCommandSendEntity> pageQueryDeviceCommandSend(String deviceId, String commandLabel, String commandId, Long startTs, Long endTs, Integer page,Integer pageSize) {
 
-        if (Objects.isNull(limit)){
-            limit =10;
-        }
+
         String tenantId = UserInfoUtil.getTenantIdOfNull();
         LambdaQueryWrapper<DeviceCommandSendEntity> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(DeviceCommandSendEntity::getTenantId,tenantId);
@@ -50,8 +49,7 @@ public class DeviceCommandSendServiceImpl extends ServiceImpl<DeviceCommandSendM
             queryWrapper.between(DeviceCommandSendEntity::getRespTs,startTs,endTs);
         }
         queryWrapper.orderByDesc(DeviceCommandSendEntity::getRespTs);
-        queryWrapper.last(" LIMIT "+limit);
-        return list(queryWrapper);
+        return page(Page.of(page,pageSize),queryWrapper);
     }
 
 

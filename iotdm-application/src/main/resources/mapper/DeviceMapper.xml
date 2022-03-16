@@ -37,9 +37,9 @@
         LEFT JOIN  t_product p ON p.id = d.product_id
         WHERE
             d.tenant_id = #{tenantId}
-
+        AND d.deleted = 0
         <if test="deviceStatus != null">
-            AND d.device_status = #{device_status}
+            AND d.device_status = #{deviceStatus}
         </if>
         <if test="searchKey != null and searchKey != '' and searchValue != null and searchValue != ''">
             AND ${searchKey} like  CONCAT('%',#{searchValue})
@@ -56,13 +56,14 @@
             d.device_code,
             d.product_id,
             d.node_type,
-            d.device_status
+            d.device_status,
+            p.product_label
         FROM
             t_device d
         LEFT JOIN  t_product p ON p.id = d.product_id
         WHERE
         d.gateway_id = #{gateWayId}
-
+        AND d.deleted = 0
         ORDER BY d.create_time DESC
     </select>
 
@@ -84,7 +85,7 @@
             LEFT JOIN t_device_group_relation dgr ON dgr.device_id = d.id
         </if>
         WHERE
-            d.tenant_id = #{tenantId}
+            d.tenant_id = #{tenantId}         AND d.deleted = 0
         <if test="groupId != null and groupId != ''">
             dgr.group_id = #{groupId}
         </if>

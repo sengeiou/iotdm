@@ -10,7 +10,9 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>
@@ -23,24 +25,36 @@ import java.util.List;
 @Service
 public class MessageTraceServiceImpl extends ServiceImpl<MessageTraceMapper, MessageTraceEntity> implements IMessageTraceService {
 
-    @Override
-    public List<MessageTraceEntity> queryMessageTrace(String deviceId, Long ts) {
 
+
+    @Override
+    public List<MessageTraceEntity> queryMessageTrace(String deviceId,  BusinessType businessType, Boolean messageStatus) {
+
+
+        long ts =  Instant.now().toEpochMilli()-10000;
         LambdaQueryWrapper<MessageTraceEntity> q = Wrappers.<MessageTraceEntity>lambdaQuery()
                 .eq(MessageTraceEntity::getDeviceId, deviceId)
                 .ge(MessageTraceEntity::getCreateTime, ts)
                 .orderByDesc(MessageTraceEntity::getCreateTime);
+
+        if (Objects.nonNull(businessType)){
+            q.eq(MessageTraceEntity::getBusinessType,businessType);
+        }
+
+        if (Objects.nonNull(messageStatus)){
+            q.eq(MessageTraceEntity::getMessageStatus,messageStatus);
+        }
         return list(q);
     }
 
-
     @Override
-    public void logDeviceMessageTrace(String deviceId, BusinessType businessType, BusinessStep businessStep, String businessDetails) {
+    public void logDeviceMessageTrace(String deviceId, BusinessType businessType, BusinessStep businessStep, String businessDetails,Boolean messageStatus) {
         MessageTraceEntity messageTraceEntity = new MessageTraceEntity();
         messageTraceEntity.setDeviceId(deviceId);
         messageTraceEntity.setBusinessDetails(businessDetails);
         messageTraceEntity.setBusinessType(businessType);
         messageTraceEntity.setBusinessStep(businessStep);
+        messageTraceEntity.setMessageStatus(messageStatus);
         save(messageTraceEntity);
     }
 }

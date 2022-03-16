@@ -21,10 +21,11 @@ public interface IMessageTraceService extends IService<MessageTraceEntity> {
     /**
      * 查询设备消息
      * @param deviceId 设备id
-     * @param ts 时间
+     * @param businessType 业务类型
+     * @param messageStatus 消息状态
      * @return 消息数据
      */
-    List<MessageTraceEntity> queryMessageTrace (String deviceId, Long ts);
+    List<MessageTraceEntity> queryMessageTrace (String deviceId,BusinessType businessType,Boolean messageStatus);
 
 
     /**
@@ -33,7 +34,8 @@ public interface IMessageTraceService extends IService<MessageTraceEntity> {
      * @param businessType 业务类型
      * @param businessStep 业务步骤
      * @param businessDetails 业务细节
+     * @param messageStatus 消息状态
      */
-    void logDeviceMessageTrace (String deviceId, BusinessType businessType, BusinessStep businessStep, String businessDetails);
+    void logDeviceMessageTrace (String deviceId, BusinessType businessType, BusinessStep businessStep, String businessDetails,Boolean messageStatus);
 
 }

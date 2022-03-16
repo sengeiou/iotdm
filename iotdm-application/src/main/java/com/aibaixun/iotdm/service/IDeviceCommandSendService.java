@@ -1,6 +1,7 @@
 package com.aibaixun.iotdm.service;
 
 import com.aibaixun.iotdm.entity.DeviceCommandSendEntity;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -23,10 +24,11 @@ public interface IDeviceCommandSendService extends IService<DeviceCommandSendEnt
      * @param commandId 命令id
      * @param startTs 开始时间
      * @param endTs 结束时间
-     * @param limit 限制条数
+     * @param page 限制条数
+     * @param pageSize 限制条数
      * @return 命令下发历史
      */
-    List<DeviceCommandSendEntity> queryDeviceCommandSend(String deviceId, String commandLabel, String commandId, Long startTs, Long endTs, Integer limit);
+    Page<DeviceCommandSendEntity> pageQueryDeviceCommandSend(String deviceId, String commandLabel, String commandId, Long startTs, Long endTs, Integer page,Integer pageSize);
 
 
 

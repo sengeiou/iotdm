@@ -86,7 +86,7 @@ public class DeviceEntityServiceTest extends BaseTest{
         if (StringUtils.isNotBlank(searchKey) && !searchKeys.contains(searchKey)){
             throw new BaseException("下拉查询条件不满足,应该选择设备名称,设备标识码,设备id", BaseResultCode.BAD_PARAMS);
         }
-        Page<DeviceEntityInfo> devicePage = deviceService.pageQueryDeviceInfos(page, pageSize, deviceStatus, searchKey, searchValue);
+        Page<DeviceEntityInfo> devicePage = deviceService.pageQueryDeviceInfos(page, pageSize, null, searchKey, searchValue);
         logger.info(String.valueOf(devicePage.getPages()));
     }
 

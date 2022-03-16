@@ -1,18 +1,31 @@
 package com.aibaixun.iotdm.data;
 
+import javax.validation.constraints.NotBlank;
 import java.util.HashMap;
-import java.util.List;
 
 /**
+ * 发送到设备的命令参数
  * @author wangxiao@aibaixun.com
  * @date 2022/3/15
  */
-public class SendDeviceCommandParam {
+public class ToDeviceCommandParam {
 
+    @NotBlank(message = "设备id不允许为空")
+    private String deviceId;
+
+    @NotBlank(message = "命令id不允许为空")
     private String commandId;
 
     public HashMap<String,Object> params;
 
+
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
+    }
 
     public String getCommandId() {
         return commandId;

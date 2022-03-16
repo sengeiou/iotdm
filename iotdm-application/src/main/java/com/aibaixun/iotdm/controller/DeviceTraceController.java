@@ -5,17 +5,19 @@ import com.aibaixun.basic.result.BaseResultCode;
 import com.aibaixun.basic.result.JsonResult;
 import com.aibaixun.common.redis.util.RedisRepository;
 import com.aibaixun.iotdm.constants.DataConstants;
+import com.aibaixun.iotdm.data.TraceDeviceParam;
 import com.aibaixun.iotdm.entity.DeviceEntity;
 import com.aibaixun.iotdm.entity.MessageTraceEntity;
+import com.aibaixun.iotdm.enums.BusinessType;
 import com.aibaixun.iotdm.service.IDeviceService;
 import com.aibaixun.iotdm.service.IMessageTraceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import static com.aibaixun.iotdm.constants.DataConstants.DEFAULT_DEVICE_DEBUG_TTL;
 
@@ -37,50 +39,52 @@ public class DeviceTraceController extends BaseController{
 
     @GetMapping("/debug/{deviceId}")
     public JsonResult<Boolean>  debugDevice(@PathVariable String deviceId) throws BaseException {
-
         DeviceEntity deviceEntity = deviceService.getById(deviceId);
         if (Objects.isNull(deviceEntity)){
             throw new BaseException("设备信息不存在，无法在线调试", BaseResultCode.GENERAL_ERROR);
         }
         long ttl = Instant.now().toEpochMilli() + DEFAULT_DEVICE_DEBUG_TTL;
         redisRepository.putHashValue(DataConstants.IOT_DEVICE_DEBUG_CACHE_KEY,deviceId,ttl );
+        redisRepository.getRedisTemplate().expire(DataConstants.IOT_DEVICE_DEBUG_CACHE_KEY,4, TimeUnit.DAYS);
         return JsonResult.success(true);
     }
 
-    @GetMapping("/{deviceId}")
-    public JsonResult<Boolean> traceDevice(@PathVariable String deviceId,@RequestParam Long ttl) throws BaseException {
+    @PostMapping
+    public JsonResult<Boolean> getTraceDeviceTime(@RequestBody TraceDeviceParam traceDeviceParam) throws BaseException {
 
-        DeviceEntity deviceEntity = deviceService.getById(deviceId);
+        Long ttl = traceDeviceParam.getTtl();
+        DeviceEntity deviceEntity = deviceService.getById(traceDeviceParam.getDeviceId());
         if (Objects.isNull(deviceEntity)){
             throw new BaseException("设备信息不存在，无法在线调试", BaseResultCode.GENERAL_ERROR);
         }
-        long threeDay = 259200;
-        if (ttl> threeDay){
-            throw new BaseException("最多可以追踪3天消息", BaseResultCode.GENERAL_ERROR);
-        }
-
-        long value = Instant.now().toEpochMilli() + ttl;
-        redisRepository.putHashValue(DataConstants.IOT_DEVICE_DEBUG_CACHE_KEY,deviceId,value );
+        long value = Instant.now().toEpochMilli() + ttl*1000;
+        redisRepository.putHashValue(DataConstants.IOT_DEVICE_DEBUG_CACHE_KEY,traceDeviceParam.getDeviceId(),value );
+        redisRepository.getRedisTemplate().expire(DataConstants.IOT_DEVICE_DEBUG_CACHE_KEY,4, TimeUnit.DAYS);
         return JsonResult.success(true);
     }
 
 
-    @GetMapping
-    public JsonResult<Long> tranceDevice (@RequestParam String deviceId){
-        Long ttl = ((Long) redisRepository.get(DataConstants.IOT_DEVICE_DEBUG_CACHE_KEY + deviceId));
-        if (ttl >60){
-            return JsonResult.success(ttl);
-        }
-        return JsonResult.success(null);
+    @GetMapping("/time/{deviceId}")
+    public JsonResult<Long> getTraceDeviceTime(@PathVariable String deviceId){
+        Long ttl = ((Long) redisRepository.getHashValues(DataConstants.IOT_DEVICE_DEBUG_CACHE_KEY , deviceId));
+        return JsonResult.success(ttl);
+    }
+
+    @DeleteMapping("/{deviceId}")
+    public JsonResult<Boolean> removeTraceDevice (@PathVariable String deviceId){
+        redisRepository.delHashValues(DataConstants.IOT_DEVICE_DEBUG_CACHE_KEY , deviceId);
+        return JsonResult.success(true);
     }
 
 
 
 
-    @GetMapping("/{deviceId}/{ts}")
-    public JsonResult<List<MessageTraceEntity>> getDeviceTrace (@PathVariable String deviceId,
-                                                                @PathVariable Long ts){
-        List<MessageTraceEntity> messageTraceEntities = messageTraceService.queryMessageTrace(deviceId, ts);
+    @GetMapping("/{deviceId}")
+    public JsonResult<List<MessageTraceEntity>> getDeviceTraceMessage (@PathVariable String deviceId,
+                                                                       @RequestParam(required = false) Boolean messageStatus,
+                                                                       @RequestParam(required = false)BusinessType businessType){
+
+        List<MessageTraceEntity> messageTraceEntities = messageTraceService.queryMessageTrace(deviceId, businessType,messageStatus);
         Long ttl = ((Long) redisRepository.getHashValues(DataConstants.IOT_DEVICE_DEBUG_CACHE_KEY , deviceId));
         if (Objects.isNull(ttl) || ttl < Instant.now().toEpochMilli()){
             redisRepository.putHashValue(DataConstants.IOT_DEVICE_DEBUG_CACHE_KEY,deviceId,ttl );

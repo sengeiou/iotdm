@@ -4,17 +4,19 @@
 
     <select id="selectLatestDeviceProperty" resultType="com.aibaixun.iotdm.data.DevicePropertyInfo">
         SELECT
-            DISTINCT pr.property_id,
-                     pr.device_id,
-                     pr.property_value,
-                     pr.ts ,
-                     pr.property_label,
-                     pm.model_label
+         pr.property_id,
+         pr.device_id,
+         pr.property_value,
+         pr.ts ,
+         pr.property_label,
+         pm.model_label
         FROM
             t_device_property_report pr
+        LEFT JOIN t_model_property mp ON mp.id = pr.property_id
+        LEFT JOIN t_product_model pm ON mp.product_model_id = pm.id
         WHERE
             pr.device_id = #{deviceId}
-
+        AND  pm.deleted = 0
     </select>
 
 
@@ -28,11 +30,14 @@
             pm.model_label
         FROM
             t_product_model pm
-                LEFT JOIN t_model_property mp ON mp.product_model_id = pm.id
-                LEFT JOIN t_device_property_report pr ON mp.id = pr.property_id
+        LEFT JOIN t_model_property mp ON mp.product_model_id = pm.id
+        LEFT JOIN t_device_property_report pr ON mp.id = pr.property_id
         WHERE
             pr.device_id = #{deviceId}
-
           AND pm.deleted = 0
+
+        <if test="propertyLabel != null and propertyLabel != ''">
+            AND     mp.property_label LIKE concat(#{propertyLabel},'%')
+        </if>
     </select>
 </mapper>

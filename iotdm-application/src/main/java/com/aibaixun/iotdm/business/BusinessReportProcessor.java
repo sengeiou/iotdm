@@ -30,7 +30,8 @@ public interface BusinessReportProcessor<P extends AbstractBusinessMsg,M extends
      * @param businessType 业务类型
      * @param businessStep 业务步骤
      * @param businessDetails 业务细节
+     * @param messageStatus 消息状态
      */
-    void doLog (String deviceId, BusinessType businessType, BusinessStep businessStep, String businessDetails);
+    void doLog (String deviceId, BusinessType businessType, BusinessStep businessStep, String businessDetails,Boolean messageStatus);
 
 }

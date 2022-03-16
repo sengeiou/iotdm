@@ -1,22 +1,22 @@
 package com.aibaixun.iotdm.business;
 
-import com.aibaixun.iotdm.event.DeviceSessionEvent;
+import com.aibaixun.iotdm.event.EntityChangeEvent;
 import com.aibaixun.iotdm.queue.QueueSendServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
+ * 实体更改处理类
  * @author wangxiao@aibaixun.com
- * @date 2022/3/11
+ * @date 2022/3/14
  */
 @Component
-public class SessionProcessor {
-
+public class EntityBusinessProcessor {
 
     private QueueSendServer queueSendService;
 
-    public void doProcessDeviceSessionEvent(DeviceSessionEvent deviceSessionEvent){
-        queueSendService.sendSessionData(deviceSessionEvent);
+    public void  doProcessEntityChangeEvent (EntityChangeEvent entityChangeEvent){
+        queueSendService.sendEntityChangeData(entityChangeEvent);
     }
 
     @Autowired

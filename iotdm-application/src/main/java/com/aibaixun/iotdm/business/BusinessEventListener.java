@@ -26,17 +26,17 @@ import org.springframework.stereotype.Component;
  * @date 2022/3/10
  */
 @Component
-public class DefaultEventListener {
+public class BusinessEventListener {
 
-    private final Logger log = LoggerFactory.getLogger(DefaultEventListener.class);
+    private final Logger log = LoggerFactory.getLogger(BusinessEventListener.class);
 
     private JsInvokeService jsInvokeService;
 
     private BusinessReportProcessor<PrePropertyBusinessMsg,MessageBusinessMsg> matchProcessor;
 
-    private SessionProcessor sessionProcessor;
+    private SessionBusinessProcessor sessionProcessor;
 
-    private EntityProcessor entityProcessor;
+    private EntityBusinessProcessor entityProcessor;
 
     @EventListener
     @Async("taskExecutor")
@@ -52,7 +52,7 @@ public class DefaultEventListener {
         String payload = devicePropertyUpEvent.getPayload();
         DataFormat dataFormat = devicePropertyUpEvent.getDataFormat();
         JsonNode jsonNode = null;
-        matchProcessor.doLog(devicePropertyUpEvent.getDeviceId(), BusinessType.DEVICE2PLATFORM, BusinessStep.DEVICE_REPORT_DATA,payload);
+        matchProcessor.doLog(devicePropertyUpEvent.getDeviceId(), BusinessType.DEVICE2PLATFORM, BusinessStep.DEVICE_REPORT_DATA,payload,true);
         try {
             if (DataFormat.JSON.equals(dataFormat)){
                 jsonNode = JsonUtil.parse(payload);
@@ -63,10 +63,10 @@ public class DefaultEventListener {
             }
             PrePropertyBusinessMsg prePropertyBusinessMsg = new PrePropertyBusinessMsg(new MetaData(devicePropertyUpEvent.getDeviceId(), devicePropertyUpEvent.getProductId()), jsonNode);
             matchProcessor.doProcessProperty(prePropertyBusinessMsg);
-            matchProcessor.doLog(devicePropertyUpEvent.getDeviceId(), BusinessType.DEVICE2PLATFORM, BusinessStep.PLATFORM_RESOLVING_DATA,jsonNode !=null?jsonNode.toString():"{}");
+            matchProcessor.doLog(devicePropertyUpEvent.getDeviceId(), BusinessType.DEVICE2PLATFORM, BusinessStep.PLATFORM_RESOLVING_DATA,jsonNode !=null?jsonNode.toString():"{}",true);
         }catch (Exception e){
             log.error("DefaultIotDmEventListener.onDevicePropertyUpEvent >> is error ,message is:{},error is:{}",devicePropertyUpEvent,e.getMessage());
-            matchProcessor.doLog(devicePropertyUpEvent.getDeviceId(), BusinessType.DEVICE2PLATFORM, BusinessStep.PLATFORM_RESOLVING_DATA_ERROR,e.getMessage());
+            matchProcessor.doLog(devicePropertyUpEvent.getDeviceId(), BusinessType.DEVICE2PLATFORM, BusinessStep.PLATFORM_RESOLVING_DATA_ERROR,e.getMessage(),false);
         }
     }
 
@@ -77,16 +77,16 @@ public class DefaultEventListener {
     public void onDeviceMessageUpEvent(DeviceMessageUpEvent deviceMessageUpEvent){
         log.info(String.valueOf(deviceMessageUpEvent));
         String payload = deviceMessageUpEvent.getPayload();
-        matchProcessor.doLog(deviceMessageUpEvent.getDeviceId(), BusinessType.DEVICE2PLATFORM, BusinessStep.DEVICE_REPORT_DATA,payload);
+        matchProcessor.doLog(deviceMessageUpEvent.getDeviceId(), BusinessType.DEVICE2PLATFORM, BusinessStep.DEVICE_REPORT_DATA,payload,true);
         try {
             byte [] messageBytes = HexUtil.decodeHex(payload);
             String jsResult = (String)jsInvokeService.invokeDecodeFunction(deviceMessageUpEvent.getProductId(), messageBytes, TopicConstants.MESSAGE_UP);
             JsonNode jsonNode = JsonUtil.parse(jsResult);
             matchProcessor.doProcessMessage(new MessageBusinessMsg(new MetaData(deviceMessageUpEvent.getDeviceId(), deviceMessageUpEvent.getProductId()),jsonNode));
-            matchProcessor.doLog(deviceMessageUpEvent.getDeviceId(), BusinessType.DEVICE2PLATFORM, BusinessStep.PLATFORM_RESOLVING_DATA,jsonNode !=null?jsonNode.toString():"{}");
+            matchProcessor.doLog(deviceMessageUpEvent.getDeviceId(), BusinessType.DEVICE2PLATFORM, BusinessStep.PLATFORM_RESOLVING_DATA,jsonNode !=null?jsonNode.toString():"{}",true);
         }catch (Exception e){
             matchProcessor.doProcessMessage(new MessageBusinessMsg(new MetaData(deviceMessageUpEvent.getDeviceId(), deviceMessageUpEvent.getProductId()),payload));
-            matchProcessor.doLog(deviceMessageUpEvent.getDeviceId(), BusinessType.DEVICE2PLATFORM, BusinessStep.PLATFORM_RESOLVING_DATA,payload);
+            matchProcessor.doLog(deviceMessageUpEvent.getDeviceId(), BusinessType.DEVICE2PLATFORM, BusinessStep.PLATFORM_RESOLVING_DATA,payload,false);
         }
     }
 
@@ -114,7 +114,12 @@ public class DefaultEventListener {
 
 
     @Autowired
-    public void setSessionProcessor(SessionProcessor sessionProcessor) {
+    public void setEntityProcessor(EntityBusinessProcessor entityProcessor) {
+        this.entityProcessor = entityProcessor;
+    }
+
+    @Autowired
+    public void setSessionProcessor(SessionBusinessProcessor sessionProcessor) {
         this.sessionProcessor = sessionProcessor;
     }
 }

@@ -30,6 +30,6 @@ public interface IDevicePropertyReportService extends IService<DevicePropertyRep
      * @param deviceId 设备id
      * @return 设备属性最新上报数据
      */
-    List<DevicePropertyInfo> queryShadowDeviceProperty(String deviceId);
+    List<DevicePropertyInfo> queryShadowDeviceProperty(String deviceId,String propertyLabel);
 
 }

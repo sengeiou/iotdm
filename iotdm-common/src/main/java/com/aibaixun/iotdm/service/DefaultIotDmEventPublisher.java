@@ -1,10 +1,7 @@
 package com.aibaixun.iotdm.service;
 
 import com.aibaixun.iotdm.enums.DataFormat;
-import com.aibaixun.iotdm.event.DeviceMessageUpEvent;
-import com.aibaixun.iotdm.event.DevicePropertyUpEvent;
-import com.aibaixun.iotdm.event.DeviceSessionEvent;
-import com.aibaixun.iotdm.event.EntityChangeEvent;
+import com.aibaixun.iotdm.event.*;
 import com.aibaixun.iotdm.msg.SessionEventType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -66,6 +63,26 @@ public class DefaultIotDmEventPublisher implements IotDmEventPublisher {
     public void publishControlReqEvent(String productId, String deviceId, DataFormat dataFormat, String payload) {
 
     }
+
+
+    @Override
+    public void publish2DeviceConfigReqEvent(ToDeviceConfigEvent deviceConfigEvent) {
+
+    }
+
+    @Override
+    public void publish2DeviceOtaReqEvent(ToDeviceOtaEvent deviceOtaEvent) {
+
+    }
+
+    @Override
+    public void publish2ControlReqEvent(ToDeviceControlEvent deviceControlEvent) {
+
+    }
+
+
+
+
 
 
     @Autowired

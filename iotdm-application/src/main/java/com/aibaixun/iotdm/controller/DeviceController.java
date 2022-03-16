@@ -97,10 +97,10 @@ public class DeviceController extends BaseController{
 
 
     @GetMapping("/{id}")
-    public JsonResult<DeviceEntityInfo> queryDeviceById(@PathVariable String id){
+    public JsonResult<DeviceEntityInfo> queryDeviceById(@PathVariable String id) throws BaseException {
         DeviceEntity deviceEntity = deviceService.queryById(id);
         if (Objects.isNull(deviceEntity)){
-            return JsonResult.success(null);
+            throw new BaseException("设备不存在，无法查询", BaseResultCode.GENERAL_ERROR);
         }
         String productId = deviceEntity.getProductId();
         ProductEntity productEntity = productService.getById(productId);
@@ -187,7 +187,7 @@ public class DeviceController extends BaseController{
 
 
     @PostMapping("sub-device")
-    public JsonResult<Boolean> createSubDevice (@RequestParam @Valid SubDeviceParam subDeviceParam) throws BaseException {
+    public JsonResult<Boolean> createSubDevice (@RequestBody @Valid SubDeviceParam subDeviceParam) throws BaseException {
         String gatewayId = subDeviceParam.getGatewayId();
         DeviceEntity byId = deviceService.getById(gatewayId);
         if (Objects.isNull(byId)){
@@ -208,6 +208,7 @@ public class DeviceController extends BaseController{
         saveDeviceEntity.setInvented(false);
         saveDeviceEntity.setDeviceStatus(DeviceStatus.INACTIVE);
         saveDeviceEntity.setGatewayId(gatewayId);
+        saveDeviceEntity.setDeleted(false);
         boolean save = deviceService.save(saveDeviceEntity);
         return JsonResult.success(save);
     }
@@ -243,6 +244,14 @@ public class DeviceController extends BaseController{
         boolean save = deviceService.save(saveDeviceEntity);
         return JsonResult.success(save);
     }
+
+
+
+
+
+
+
+
 
 
     private void checkProductId(String productId) throws BaseException {

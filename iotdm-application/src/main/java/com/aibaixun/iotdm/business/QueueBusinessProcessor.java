@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
  * @date 2022/3/11
  */
 @Component
-public class QueueProcessor extends AbstractReportProcessor<PostPropertyBusinessMsg,MessageBusinessMsg>{
+public class QueueBusinessProcessor extends AbstractReportProcessor<PostPropertyBusinessMsg,MessageBusinessMsg>{
 
     private QueueSendServer queueSendService;
 
