@@ -3,7 +3,6 @@ package com.aibaixun.iotdm.config;
 import com.aibaixun.basic.exception.BaseException;
 import com.aibaixun.basic.result.BaseResultCode;
 import com.aibaixun.basic.result.JsonResult;
-import com.aibaixun.toolkit.coomon.exception.BaiXunException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
@@ -32,7 +31,7 @@ public class GlobalExceptionHandler {
     }
 
     
-    @ExceptionHandler({BaseException.class, BaiXunException.class})
+    @ExceptionHandler({BaseException.class})
     public ResponseEntity<JsonResult<Void>> baseExceptionHandler(BaseException e) {
         JsonResult<Void> jsonResult = JsonResult.failed(e.getErrorCode(), e.getMessage());
         LOGGER.warn("ExceptionHandlerConfiguration--baseExceptionHandler errorCode:{},message:{}", e.getErrorCode(), e.getMessage());

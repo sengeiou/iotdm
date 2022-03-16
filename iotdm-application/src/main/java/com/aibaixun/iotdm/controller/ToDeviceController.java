@@ -1,5 +1,6 @@
 package com.aibaixun.iotdm.controller;
 
+import com.aibaixun.basic.exception.BaseException;
 import com.aibaixun.basic.result.JsonResult;
 import com.aibaixun.iotdm.data.ToDeviceCommandParam;
 import com.aibaixun.iotdm.data.ToDeviceConfigParam;
@@ -31,7 +32,7 @@ public class ToDeviceController extends BaseController{
     private IDeviceService deviceService;
 
     @PostMapping("/command")
-    public JsonResult<Boolean> sendCommandToDevice(@RequestBody @Valid ToDeviceCommandParam deviceCommandParam){
+    public JsonResult<Boolean> sendCommandToDevice(@RequestBody @Valid ToDeviceCommandParam deviceCommandParam) throws BaseException {
         String deviceId = deviceCommandParam.getDeviceId();
         DeviceEntity deviceEntity = getById(deviceId);
         if (checkDevice(deviceEntity)){
@@ -43,7 +44,7 @@ public class ToDeviceController extends BaseController{
 
 
     @PostMapping("/config")
-    public JsonResult<Boolean> sendConfigToDevice(@RequestBody @Valid ToDeviceConfigParam deviceConfigParam){
+    public JsonResult<Boolean> sendConfigToDevice(@RequestBody @Valid ToDeviceConfigParam deviceConfigParam) throws BaseException {
         String deviceId = deviceConfigParam.getDeviceId();
         DeviceEntity deviceEntity = getById(deviceId);
         if (checkDevice(deviceEntity)){

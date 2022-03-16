@@ -164,7 +164,7 @@ public class DefaultTransportServer implements TransportService {
     @Override
     public void processOtaRespUp(SessionId sessionId, DataFormat dataFormat, String payload, TransportServiceCallback<Void> callback) {
         if (checkSessionAndLimit(sessionId)){
-            ListenableFuture<Void> listenableFuture = Futures.submit(() -> iotDmEventPublisher.publishConfigOtaRespUpEvent(sessionId.getProductId(), sessionId.getDeviceId(), dataFormat, payload), MoreExecutors.directExecutor());
+            ListenableFuture<Void> listenableFuture = Futures.submit(() -> iotDmEventPublisher.publishOtaRespUpEvent(sessionId.getProductId(), sessionId.getDeviceId(), dataFormat, payload), MoreExecutors.directExecutor());
             AsyncCallbackTemplate.withCallback(listenableFuture,callback::onSuccess,callback::onError,MoreExecutors.directExecutor());
         }
     }

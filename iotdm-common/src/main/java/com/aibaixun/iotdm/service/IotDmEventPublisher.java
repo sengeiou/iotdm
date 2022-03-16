@@ -7,8 +7,6 @@ import com.aibaixun.iotdm.event.ToDeviceControlEvent;
 import com.aibaixun.iotdm.event.ToDeviceOtaEvent;
 import com.aibaixun.iotdm.msg.SessionEventType;
 
-import javax.xml.stream.events.EntityDeclaration;
-
 /**
  * 事件发布者
  * @author wangxiao@aibaixun.com
@@ -63,7 +61,7 @@ public interface IotDmEventPublisher {
      * @param dataFormat 数据格式
      * @param payload 负载
      */
-    void  publishConfigOtaRespUpEvent(String productId,String deviceId,  DataFormat dataFormat, String payload);
+    void publishOtaRespUpEvent(String productId, String deviceId, DataFormat dataFormat, String payload);
 
 
 

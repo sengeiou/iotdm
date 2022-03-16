@@ -1,11 +1,11 @@
 package com.aibaixun.iotdm.transport.mqtt;
 
+import com.aibaixun.basic.toolkit.HexTool;
 import com.aibaixun.iotdm.enums.DataFormat;
 import com.aibaixun.iotdm.enums.ProtocolType;
 import com.aibaixun.iotdm.msg.*;
 import com.aibaixun.iotdm.transport.*;
 import com.aibaixun.iotdm.transport.mqtt.session.DeviceSessionCtx;
-import com.aibaixun.toolkit.coomon.util.HexUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.ByteBufUtil;
@@ -681,7 +681,7 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
         if (DataFormat.JSON.equals(deviceSessionCtx.getDataFormat())){
             bytes = payload.getBytes(StandardCharsets.UTF_8);
         }else {
-            bytes = HexUtil.decodeHex(payload);
+            bytes = HexTool.decodeHex(payload);
         }
         return createMqttPublishMsg(deviceSessionCtx, topic, bytes);
     }

@@ -1,10 +1,10 @@
 package com.aibaixun.iotdm.service;
 
+import com.aibaixun.basic.exception.BaseException;
 import com.aibaixun.iotdm.entity.DeviceEntity;
 import com.aibaixun.iotdm.enums.DeviceStatus;
 import com.aibaixun.iotdm.data.DeviceEntityInfo;
 import com.aibaixun.iotdm.data.KvData;
-import com.aibaixun.toolkit.coomon.exception.BaiXunException;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -62,9 +62,9 @@ public interface IDeviceService extends IService<DeviceEntity> {
      * @param deviceId 设备id
      * @param deviceLabel 设备名称
      * @return 更改结果
-     * @throws BaiXunException
+     * @throws BaseException
      */
-    Boolean updateDeviceLabel(String deviceId,String deviceLabel) throws BaiXunException;
+    Boolean updateDeviceLabel(String deviceId,String deviceLabel) throws BaseException;
 
 
     /**
@@ -72,9 +72,9 @@ public interface IDeviceService extends IService<DeviceEntity> {
      * @param deviceId 设备id
      * @param deviceStatus 设备状态
      * @return 更改结果
-     * @throws BaiXunException
+     * @throws BaseException
      */
-    Boolean updateDeviceStatus(String deviceId,DeviceStatus deviceStatus) throws BaiXunException;
+    Boolean updateDeviceStatus(String deviceId,DeviceStatus deviceStatus) throws BaseException;
 
 
     /**

@@ -13,7 +13,6 @@ import com.aibaixun.iotdm.data.*;
 import com.aibaixun.iotdm.service.IotDmEventPublisher;
 import com.aibaixun.iotdm.util.Base64Util;
 import com.aibaixun.iotdm.util.UserInfoUtil;
-import com.aibaixun.toolkit.coomon.exception.BaiXunException;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -109,14 +108,14 @@ public class DeviceController extends BaseController{
 
 
     @PutMapping("/device-label")
-    public JsonResult<Boolean> updateDeviceLabel (@RequestBody @Valid UpdateDeviceLabelParam updateDeviceLabelParam) throws BaiXunException {
+    public JsonResult<Boolean> updateDeviceLabel (@RequestBody @Valid UpdateDeviceLabelParam updateDeviceLabelParam) throws BaseException {
         Boolean aBoolean = deviceService.updateDeviceLabel(updateDeviceLabelParam.getDeviceId(), updateDeviceLabelParam.getDeviceLabel());
         return JsonResult.success(aBoolean);
     }
 
 
     @PutMapping("/device-status")
-    public JsonResult<Boolean> updateDeviceLabel (@RequestBody @Valid UpdateDeviceStatusParam updateDeviceStatusParam) throws BaiXunException {
+    public JsonResult<Boolean> updateDeviceLabel (@RequestBody @Valid UpdateDeviceStatusParam updateDeviceStatusParam) throws BaseException {
         Boolean aBoolean = deviceService.updateDeviceStatus(updateDeviceStatusParam.getDeviceId(), updateDeviceStatusParam.getDeviceStatus());
         return JsonResult.success(aBoolean);
     }

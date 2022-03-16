@@ -96,5 +96,9 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-stream-rabbit</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.aibaixun</groupId>
+            <artifactId>basic</artifactId>
+        </dependency>
     </dependencies>
 </project>

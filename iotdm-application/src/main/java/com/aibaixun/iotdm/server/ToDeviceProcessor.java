@@ -1,5 +1,7 @@
 package com.aibaixun.iotdm.server;
 
+import com.aibaixun.basic.exception.BaseException;
+
 import java.util.Map;
 
 /**
@@ -15,7 +17,7 @@ public interface ToDeviceProcessor {
      * @param productId 产品id
      * @param port 连接端口
      */
-    void  processConfig(String deviceId,String productId,String host,Integer port);
+    void  processConfig(String deviceId,String productId,String host,Integer port) throws BaseException;
 
     /**
      * 处理ota 消息
@@ -31,6 +33,7 @@ public interface ToDeviceProcessor {
      * @param commandId 命令id
      * @param productId 产品id
      * @param params 参数
+     * @throws BaseException
      */
-    void processControl(String deviceId, String productId,String commandId, Map<String,Object> params);
+    void processControl(String deviceId, String productId,String commandId, Map<String,Object> params) throws BaseException;
 }

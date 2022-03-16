@@ -17,9 +17,14 @@ public enum BusinessStep {
     PLATFORM_RESOLVING_DATA,
 
     /**
-     * 平台解析数据
+     * 平台解析数据 失败
      */
     PLATFORM_RESOLVING_DATA_ERROR,
+
+    /**
+     * 平台解析数据 成功
+     */
+    PLATFORM_RESOLVING_DATA_SUCCESS,
 
     /**
      * 匹配物模型

@@ -3,6 +3,8 @@ package com.aibaixun.iotdm.service;
 import com.aibaixun.iotdm.enums.DataFormat;
 import com.aibaixun.iotdm.event.*;
 import com.aibaixun.iotdm.msg.SessionEventType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class DefaultIotDmEventPublisher implements IotDmEventPublisher {
 
+    private final Logger logger = LoggerFactory.getLogger(DefaultIotDmEventPublisher.class);
 
     private ApplicationEventPublisher applicationEventPublisher;
 
@@ -45,39 +48,39 @@ public class DefaultIotDmEventPublisher implements IotDmEventPublisher {
 
     @Override
     public void publishConfigRespUpEvent(String productId,String deviceId,  DataFormat dataFormat, String payload) {
-
+        logger.warn("配置更改结果，deviceId:{},payload:{}",deviceId,payload);
     }
 
     @Override
-    public void publishConfigOtaRespUpEvent(String productId,String deviceId,  DataFormat dataFormat, String payload) {
-
+    public void publishOtaRespUpEvent(String productId, String deviceId, DataFormat dataFormat, String payload) {
+        logger.warn("OTA更改结果，deviceId:{},payload:{}",deviceId,payload);
     }
 
 
     @Override
     public void publishControlRespEvent(String productId, String deviceId, DataFormat dataFormat, String payload) {
-
+        logger.warn("命令执行结果改结果，deviceId:{},payload:{}",deviceId,payload);
     }
 
     @Override
     public void publishControlReqEvent(String productId, String deviceId, DataFormat dataFormat, String payload) {
-
+        logger.warn("命令执行结果改结果，deviceId:{},payload:{}",deviceId,payload);
     }
 
 
     @Override
     public void publish2DeviceConfigReqEvent(ToDeviceConfigEvent deviceConfigEvent) {
-
+        applicationEventPublisher.publishEvent(deviceConfigEvent);
     }
 
     @Override
     public void publish2DeviceOtaReqEvent(ToDeviceOtaEvent deviceOtaEvent) {
-
+        applicationEventPublisher.publishEvent(deviceOtaEvent);
     }
 
     @Override
     public void publish2ControlReqEvent(ToDeviceControlEvent deviceControlEvent) {
-
+        applicationEventPublisher.publishEvent(deviceControlEvent);
     }
 
 

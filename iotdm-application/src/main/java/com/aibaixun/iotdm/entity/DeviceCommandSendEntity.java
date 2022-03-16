@@ -39,14 +39,12 @@ public class DeviceCommandSendEntity extends BaseEntity {
     /**
      * 参数
      */
-    @TableField(typeHandler = JacksonTypeHandler.class)
-    private List<BaseParam> params;
+    private String params;
 
     /**
      * 返回结果
      */
-    @TableField(typeHandler = JacksonTypeHandler.class)
-    private List<BaseParam> responses;
+    private String responses;
 
     /**
      * 下发时间
@@ -98,19 +96,20 @@ public class DeviceCommandSendEntity extends BaseEntity {
         this.commandLabel = commandLabel;
     }
 
-    public List<BaseParam> getParams() {
+
+    public String getParams() {
         return params;
     }
 
-    public void setParams(List<BaseParam> params) {
+    public void setParams(String params) {
         this.params = params;
     }
 
-    public List<BaseParam> getResponses() {
+    public String getResponses() {
         return responses;
     }
 
-    public void setResponses(List<BaseParam> responses) {
+    public void setResponses(String responses) {
         this.responses = responses;
     }
 

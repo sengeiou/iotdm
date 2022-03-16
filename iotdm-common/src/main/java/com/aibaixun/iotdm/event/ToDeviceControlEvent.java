@@ -9,9 +9,17 @@ import com.aibaixun.iotdm.transport.SessionId;
  */
 public class ToDeviceControlEvent extends BaseToDeviceEvent {
 
-    private String id;
+    private String sendId;
 
     public ToDeviceControlEvent(SessionId sessionId, String payload) {
         super(sessionId, payload);
+    }
+
+    public String getSendId() {
+        return sendId;
+    }
+
+    public void setSendId(String sendId) {
+        this.sendId = sendId;
     }
 }

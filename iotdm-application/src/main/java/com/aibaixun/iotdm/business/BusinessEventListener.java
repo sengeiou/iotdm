@@ -1,5 +1,6 @@
 package com.aibaixun.iotdm.business;
 
+import com.aibaixun.basic.toolkit.HexTool;
 import com.aibaixun.common.util.JsonUtil;
 import com.aibaixun.iotdm.constants.TopicConstants;
 import com.aibaixun.iotdm.enums.BusinessStep;
@@ -10,7 +11,6 @@ import com.aibaixun.iotdm.event.DevicePropertyUpEvent;
 import com.aibaixun.iotdm.event.DeviceSessionEvent;
 import com.aibaixun.iotdm.event.EntityChangeEvent;
 import com.aibaixun.iotdm.script.JsInvokeService;
-import com.aibaixun.toolkit.coomon.util.HexUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +57,7 @@ public class BusinessEventListener {
             if (DataFormat.JSON.equals(dataFormat)){
                 jsonNode = JsonUtil.parse(payload);
             }else if (DataFormat.BINARY.equals(dataFormat)){
-                byte [] messageBytes = HexUtil.decodeHex(payload);
+                byte [] messageBytes = HexTool.decodeHex(payload);
                 String jsResult = (String)jsInvokeService.invokeDecodeFunction(devicePropertyUpEvent.getProductId(), messageBytes, TopicConstants.PROPERTIES_UP);
                 jsonNode = JsonUtil.parse(jsResult);
             }
@@ -79,7 +79,7 @@ public class BusinessEventListener {
         String payload = deviceMessageUpEvent.getPayload();
         matchProcessor.doLog(deviceMessageUpEvent.getDeviceId(), BusinessType.DEVICE2PLATFORM, BusinessStep.DEVICE_REPORT_DATA,payload,true);
         try {
-            byte [] messageBytes = HexUtil.decodeHex(payload);
+            byte [] messageBytes = HexTool.decodeHex(payload);
             String jsResult = (String)jsInvokeService.invokeDecodeFunction(deviceMessageUpEvent.getProductId(), messageBytes, TopicConstants.MESSAGE_UP);
             JsonNode jsonNode = JsonUtil.parse(jsResult);
             matchProcessor.doProcessMessage(new MessageBusinessMsg(new MetaData(deviceMessageUpEvent.getDeviceId(), deviceMessageUpEvent.getProductId()),jsonNode));

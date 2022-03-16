@@ -6,7 +6,7 @@ import com.aibaixun.iotdm.msg.ForwardRuleInfo;
 import com.aibaixun.iotdm.rule.server.RuleServer;
 import com.aibaixun.iotdm.service.IForwardRuleService;
 import com.aibaixun.iotdm.service.IProductService;
-import com.aibaixun.toolkit.coomon.util.StringUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +33,7 @@ public class DefaultRuleServer implements RuleServer {
 
     @Override
     public List<ForwardRuleInfo> queryForwardRule(String tenantId) {
-        if (StringUtil.isBlank(tenantId)){
+        if (StringUtils.isBlank(tenantId)){
             return null;
         }
         Object hashValues = redisRepository.getHashValues(IOT_TENANT_FORWARD_KEY, tenantId);
