@@ -6,6 +6,7 @@ import com.aibaixun.iotdm.mapper.RuleResourceMapper;
 import com.aibaixun.iotdm.service.IRuleResourceService;
 import com.aibaixun.iotdm.util.UserInfoUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -31,6 +32,7 @@ public class RuleResourceServiceImpl extends ServiceImpl<RuleResourceMapper, Rul
     public Page<RuleResourceEntity> pageQueryRuleResource(Integer page, Integer pageSize, String resourceLabel) {
 
         LambdaQueryWrapper<RuleResourceEntity> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.select(RuleResourceEntity::getResourceLabel,RuleResourceEntity::getId,RuleResourceEntity::getResourceStatus,RuleResourceEntity::getResourceType);
         queryWrapper.eq(RuleResourceEntity::getTenantId, UserInfoUtil.getTenantIdOfNull());
         if (Objects.nonNull(resourceLabel)){
             queryWrapper.likeRight(RuleResourceEntity::getResourceLabel,resourceLabel);
@@ -43,6 +45,7 @@ public class RuleResourceServiceImpl extends ServiceImpl<RuleResourceMapper, Rul
     @Override
     public List<RuleResourceEntity> listQueryRuleResource(Integer limit, String resourceLabel, ResourceType resourceType) {
         LambdaQueryWrapper<RuleResourceEntity> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.select(RuleResourceEntity::getResourceLabel,RuleResourceEntity::getId,RuleResourceEntity::getResourceStatus,RuleResourceEntity::getResourceType);
         queryWrapper.eq(RuleResourceEntity::getTenantId, UserInfoUtil.getTenantIdOfNull()).eq(RuleResourceEntity::getResourceStatus,true);
         if (StringUtils.isNotBlank(resourceLabel)){
             queryWrapper.likeRight(RuleResourceEntity::getResourceLabel,resourceLabel);
@@ -54,5 +57,12 @@ public class RuleResourceServiceImpl extends ServiceImpl<RuleResourceMapper, Rul
         queryWrapper.orderByDesc(RuleResourceEntity::getCreateTime);
         queryWrapper.last(" LIMIT "+ limit);
         return list(queryWrapper);
+    }
+
+    @Override
+    public Boolean updateResourceStatus(String resourceId, Boolean resourceStatus) {
+        LambdaUpdateWrapper<RuleResourceEntity> updateWrapper = Wrappers.lambdaUpdate();
+        updateWrapper.set(RuleResourceEntity::getResourceStatus,resourceStatus).eq(RuleResourceEntity::getId,resourceId);
+        return update(updateWrapper);
     }
 }

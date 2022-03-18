@@ -26,8 +26,6 @@ public class KafkaResourceConfig implements BaseResourceConfig{
 
     private String compressionType;
 
-    private Long metaUpdateTs;
-
     private Long bufferSize;
 
     private Long batchSize;
@@ -94,13 +92,6 @@ public class KafkaResourceConfig implements BaseResourceConfig{
         this.compressionType = compressionType;
     }
 
-    public Long getMetaUpdateTs() {
-        return metaUpdateTs;
-    }
-
-    public void setMetaUpdateTs(Long metaUpdateTs) {
-        this.metaUpdateTs = metaUpdateTs;
-    }
 
     public Long getBufferSize() {
         return bufferSize;

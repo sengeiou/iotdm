@@ -6,6 +6,7 @@ import com.aibaixun.iotdm.msg.ForwardRuleInfo;
 import com.aibaixun.iotdm.service.IForwardRuleService;
 import com.aibaixun.iotdm.util.UserInfoUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -44,6 +45,24 @@ public class ForwardRuleServiceImpl extends ServiceImpl<ForwardRuleMapper, Forwa
         return update(Wrappers.<ForwardRuleEntity>lambdaUpdate().set(ForwardRuleEntity::getRuleStatus,status).eq(ForwardRuleEntity::getId,id));
     }
 
+
+    @Override
+    public Boolean updateRuleEntity(String id, String ruleLabel, String description) {
+
+        LambdaUpdateWrapper<ForwardRuleEntity> objectLambdaUpdateWrapper = Wrappers.lambdaUpdate();
+
+        if (StringUtils.isBlank(ruleLabel) && StringUtils.isBlank(description)){
+            return false;
+        }
+        if (StringUtils.isNotBlank(ruleLabel)){
+            objectLambdaUpdateWrapper.set(ForwardRuleEntity::getRuleLabel,ruleLabel);
+        }
+        if (StringUtils.isNotBlank(description)){
+            objectLambdaUpdateWrapper.set(ForwardRuleEntity::getDescription,description);
+        }
+        objectLambdaUpdateWrapper.eq(ForwardRuleEntity::getId,id);
+        return update(objectLambdaUpdateWrapper);
+    }
 
     @Override
     public List<ForwardRuleInfo> queryForwardRuleByTenantId(String tenantId) {

@@ -3,6 +3,7 @@ package com.aibaixun.iotdm.controller;
 import com.aibaixun.basic.exception.BaseException;
 import com.aibaixun.basic.result.BaseResultCode;
 import com.aibaixun.basic.result.JsonResult;
+import com.aibaixun.iotdm.data.UpdateRuleResourceStatusParam;
 import com.aibaixun.iotdm.entity.RuleResourceEntity;
 import com.aibaixun.iotdm.enums.ResourceType;
 import com.aibaixun.iotdm.service.IForwardTargetService;
@@ -89,8 +90,34 @@ public class RuleResourceController extends BaseController{
     }
 
 
+    @PutMapping("/resource-status")
+    public JsonResult<Boolean> updateRuleResourceStatus (@RequestBody @Valid UpdateRuleResourceStatusParam updateRuleResourceStatusParam) throws BaseException {
+        String id = updateRuleResourceStatusParam.getResourceId();
+        RuleResourceEntity ruleResourceEntity = ruleResourceService.getById(id);
+        if (Objects.isNull(ruleResourceEntity)){
+            throw new BaseException("资源不存在，无法更改", BaseResultCode.BAD_PARAMS);
+        }
+        Long resourceUseNum = forwardTargetService.countTargetByResourceId(id);
+        if (resourceUseNum > 0){
+            throw new BaseException("资源正在被使用，无法修改",BaseResultCode.GENERAL_ERROR);
+        }
+        if (Objects.equals(ruleResourceEntity.getResourceStatus(),updateRuleResourceStatusParam.getResourceStatus())){
+            throw new BaseException("资源状态与当前状态一致，无法修改",BaseResultCode.GENERAL_ERROR);
+        }
+        boolean update = ruleResourceService.updateResourceStatus(id,updateRuleResourceStatusParam.getResourceStatus());
+        return JsonResult.success(update);
+    }
+
+    @GetMapping("/{id}")
+    public JsonResult<RuleResourceEntity> removeRuleResourceEntity (@PathVariable String id) {
+        RuleResourceEntity ruleResourceEntity = ruleResourceService.getById(id);
+        return JsonResult.success(ruleResourceEntity);
+    }
+
+
+
     @DeleteMapping("/{id}")
-    public JsonResult<Boolean> removeRuleResourceEntity (@PathVariable String id) throws BaseException {
+    public JsonResult<Boolean> getRuleResourceEntity (@PathVariable String id) throws BaseException {
 
         RuleResourceEntity ruleResourceEntity = ruleResourceService.getById(id);
         if (Objects.isNull(ruleResourceEntity)){
@@ -106,9 +133,6 @@ public class RuleResourceController extends BaseController{
         boolean remove = ruleResourceService.removeById(id);
         return JsonResult.success(remove);
     }
-
-
-
 
 
 

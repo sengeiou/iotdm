@@ -38,6 +38,15 @@ public interface IForwardRuleService extends IService<ForwardRuleEntity> {
      */
     Boolean updateRuleStatus (String id,Boolean status);
 
+    /**
+     * 修改 规则
+     * @param id id
+     * @param ruleLabel 名称
+     * @param description 描述
+     * @return 修改标识
+     */
+    Boolean updateRuleEntity (String id,String ruleLabel,String description);
+
 
     /**
      *  查询租户 转发规则

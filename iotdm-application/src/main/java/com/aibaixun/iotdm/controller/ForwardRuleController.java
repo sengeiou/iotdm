@@ -62,6 +62,22 @@ public class ForwardRuleController extends BaseController{
     }
 
 
+    @PutMapping
+    public JsonResult<Boolean> updateForwardRule (@RequestBody  ForwardRuleEntity forwardRuleEntity) throws BaseException {
+
+        String id = forwardRuleEntity.getId();
+        if (StringUtils.isBlank(id)){
+            throw new BaseException("转发规则不存在", BaseResultCode.GENERAL_ERROR);
+        }
+
+        String ruleLabel = forwardRuleEntity.getRuleLabel();
+        String description = forwardRuleEntity.getDescription();
+        redisRepository.delHashValues(IOT_TENANT_FORWARD_KEY, UserInfoUtil.getTenantIdOfNull());
+        Boolean updateRuleStatus = forwardRuleService.updateRuleEntity(id, ruleLabel,description);
+        return JsonResult.success(updateRuleStatus);
+    }
+
+
 
     @PutMapping("/status")
     public JsonResult<Boolean> updateForwardRuleStatus (@RequestBody @Valid RuleStatusParam statusParam) throws BaseException {

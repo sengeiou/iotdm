@@ -36,4 +36,12 @@ public interface IRuleResourceService extends IService<RuleResourceEntity> {
      */
     List<RuleResourceEntity> listQueryRuleResource (Integer limit, String resourceLabel, ResourceType resourceType);
 
+    /**
+     * 更改资源状态
+     * @param resourceId 资源id
+     * @param resourceStatus 资源状态
+     * @return 修改结果
+     */
+    Boolean updateResourceStatus (String resourceId,Boolean resourceStatus);
+
 }

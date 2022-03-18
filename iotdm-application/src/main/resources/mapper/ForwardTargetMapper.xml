@@ -28,7 +28,7 @@
     </select>
 
 
-    <select id="selectRuleTargetAndResourceByRuleId" resultType="com.aibaixun.iotdm.data.RuleTargetEntityResource">
+    <select id="selectRuleTargetAndResourceByRuleId" resultMap="ruleTargetAndResourceMap">
         SELECT
             ft.id,
             ft.forward_rule_id,

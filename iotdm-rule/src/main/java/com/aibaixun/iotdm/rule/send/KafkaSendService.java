@@ -94,7 +94,7 @@ public class KafkaSendService implements SendService {
             properties.put(ProducerConfig.TRANSACTION_TIMEOUT_CONFIG, config.getConnectTimeOut());
             properties.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, config.getCompressionType());
             properties.put(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, config.getReqTimeout());
-            properties.put(ProducerConfig.MAX_BLOCK_MS_CONFIG, config.getMetaUpdateTs());
+            properties.put(ProducerConfig.MAX_BLOCK_MS_CONFIG, config.getMetadataUpdateTime());
             properties.put(ProducerConfig.BUFFER_MEMORY_CONFIG, config.getBufferSize());
             properties.put(ProducerConfig.BATCH_SIZE_CONFIG, config.getBatchSize());
             properties.put("username", config.getUsername());
