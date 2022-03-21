@@ -13,7 +13,7 @@
             <if test="tenantId != 'NULL'">
                AND d.tenant_id = #{tenantId}
             </if>
-            <if test="productId != null">
+            <if test="productId != null and productId != ''">
                 AND d.product_id = #{productId}
             </if>
 
@@ -37,7 +37,7 @@
         LEFT JOIN  t_product p ON p.id = d.product_id
         WHERE
             d.tenant_id = #{tenantId}
-        AND d.deleted = 0 AND d.invented = 0
+        AND d.deleted = 0
         <if test="deviceStatus != null">
             AND d.device_status = #{deviceStatus}
         </if>

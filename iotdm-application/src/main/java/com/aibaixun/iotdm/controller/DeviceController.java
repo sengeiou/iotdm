@@ -255,7 +255,7 @@ public class DeviceController extends BaseController{
     public JsonResult<Boolean> createInventedDevice(@PathVariable String productId) throws BaseException {
         String deviceSecret = RandomStringUtils.randomAlphanumeric(20);
         String deviceCode = RandomStringUtils.randomAlphanumeric(10);
-        String deviceLabel = "invented"+RandomStringUtils.randomAlphanumeric(10);
+        String deviceLabel = "INVENTED_"+RandomStringUtils.randomAlphanumeric(10);
         checkProductId(productId);
         checkDeviceCode(deviceCode,productId);
         DeviceEntity saveDeviceEntity = new DeviceEntity();

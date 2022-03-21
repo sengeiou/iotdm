@@ -46,7 +46,6 @@ public class ProductEntity extends BaseEntity {
     /**
      * 设备类型
      */
-    @NotBlank(message = "设备类型不能为空")
     private String deviceType;
 
     /**
