@@ -22,6 +22,9 @@ public class MessageBusinessMsg extends AbstractBusinessMsg{
         this.message = message;
     }
 
+    public MessageBusinessMsg() {
+    }
+
     public MessageBusinessMsg(MetaData metaData, Object message) {
         super(metaData);
         this.message = message;

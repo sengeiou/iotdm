@@ -55,7 +55,7 @@ public class DevicePropertyReportController extends BaseController{
         if (Objects.isNull(deviceEntity)){
             throw new BaseException("设备已经被删除,无法查询最新数据",BaseResultCode.GENERAL_ERROR);
         }
-        List<DevicePropertyInfo> devicePropertyInfos = devicePropertyReportService.queryShadowDeviceProperty(deviceId,propertyLabel);
+        List<DevicePropertyInfo> devicePropertyInfos = devicePropertyReportService.queryShadowDeviceProperty(deviceEntity.getProductId(),propertyLabel);
         return JsonResult.success(devicePropertyInfos);
     }
 

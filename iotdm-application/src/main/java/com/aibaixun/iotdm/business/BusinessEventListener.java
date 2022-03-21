@@ -66,7 +66,7 @@ public class BusinessEventListener {
             matchProcessor.doLog(devicePropertyUpEvent.getDeviceId(), BusinessType.DEVICE2PLATFORM, BusinessStep.PLATFORM_RESOLVING_DATA,jsonNode !=null?jsonNode.toString():"{}",true);
         }catch (Exception e){
             log.error("DefaultIotDmEventListener.onDevicePropertyUpEvent >> is error ,message is:{},error is:{}",devicePropertyUpEvent,e.getMessage());
-            matchProcessor.doLog(devicePropertyUpEvent.getDeviceId(), BusinessType.DEVICE2PLATFORM, BusinessStep.PLATFORM_RESOLVING_DATA_ERROR,e.getMessage(),false);
+            matchProcessor.doLog(devicePropertyUpEvent.getDeviceId(), BusinessType.DEVICE2PLATFORM, BusinessStep.DEVICE_REPORT_DATA,e.getMessage(),false);
         }
     }
 

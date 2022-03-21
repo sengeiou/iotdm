@@ -12,6 +12,9 @@ public class MetaData {
 
     private volatile String tenantId;
 
+    public MetaData() {
+    }
+
     public MetaData(String deviceId, String productId) {
         this.deviceId = deviceId;
         this.productId = productId;

@@ -3,12 +3,14 @@ package com.aibaixun.iotdm.msg;
 
 import com.aibaixun.iotdm.transport.SessionId;
 
+import java.io.Serializable;
+
 /**
  * 传输session 信息
  * @author wangxiao@aibaixun.com
  * @date 2022/3/8
  */
-public class TransportSessionInfo {
+public class TransportSessionInfo implements Serializable {
 
     private SessionId sessionId;
 

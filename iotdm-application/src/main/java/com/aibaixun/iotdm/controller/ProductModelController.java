@@ -68,7 +68,7 @@ public class ProductModelController extends BaseController{
         if (!StringUtils.equals(productModelEntity.getCreator(), UserInfoUtil.getUserIdOfNull())){
             throw new BaseException("产品模型必须由创建人删除", BaseResultCode.BAD_PARAMS);
         }
-        boolean remove = productModelService.removeById(modelId);
+        boolean remove = productModelService.removeProductModel(productModelEntity.getProductId(),modelId);
         return JsonResult.success(remove);
     }
 
@@ -87,7 +87,7 @@ public class ProductModelController extends BaseController{
         if (StringUtils.isBlank(productModelEntity.getModelType())){
             productModelEntity.setModelType(productModelEntity.getModelLabel());
         }
-        boolean save = productModelService.save(productModelEntity);
+        boolean save = productModelService.saveProductModelEntity(productModelEntity);
         return JsonResult.success(save);
     }
 

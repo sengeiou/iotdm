@@ -38,6 +38,14 @@ public interface IProductModelService extends IService<ProductModelEntity> {
     Boolean updateProductModel (ProductModelEntity productModelEntity);
 
     /**
+     * 移除产品模型
+     * @param productId 产品id
+     * @param productModelId 模型id
+     * @return result
+     */
+    Boolean removeProductModel(String productId,String productModelId);
+
+    /**
      * 保存模型 属性
      * @param productId  产品id
      * @param modelPropertyEntity 模型属性
@@ -124,4 +132,11 @@ public interface IProductModelService extends IService<ProductModelEntity> {
      * @return 模型命令
      */
     List<ModelCommandEntity> queryModelCommandByModelId(String modelId);
+
+    /**
+     * 保存模型
+     * * @param productModelEntity 模型
+     * @return 结果
+     */
+    Boolean saveProductModelEntity(ProductModelEntity productModelEntity);
 }

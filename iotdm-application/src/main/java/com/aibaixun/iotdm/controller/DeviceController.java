@@ -271,15 +271,6 @@ public class DeviceController extends BaseController{
         return JsonResult.success(save);
     }
 
-
-
-
-
-
-
-
-
-
     private void checkProductId(String productId) throws BaseException {
         ProductEntity productEntity = productService.getById(productId);
         if (Objects.isNull(productEntity)){
@@ -316,4 +307,6 @@ public class DeviceController extends BaseController{
     public void setToDeviceProcessor(ToDeviceProcessor toDeviceProcessor) {
         this.toDeviceProcessor = toDeviceProcessor;
     }
+
+
 }

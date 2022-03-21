@@ -48,6 +48,10 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, DeviceEntity> i
         return baseMapper.countDevice(productId, tenantId);
     }
 
+    @Override
+    public Long countDeviceByProductId(String productId) {
+        return count(Wrappers.<DeviceEntity>lambdaQuery().eq(DeviceEntity::getProductId,productId));
+    }
 
     @Override
     public List<DeviceEntity> listQueryDevice(String productId, Integer limit, String deviceLabel) {
@@ -123,6 +127,7 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, DeviceEntity> i
         queryWrapper.eq(DeviceEntity::getId,clientId)
                 .eq(DeviceEntity::getDeviceCode,username)
                 .eq(DeviceEntity::getDeviceSecret,password)
+                .ne(DeviceEntity::getDeviceStatus,DeviceStatus.STOP)
                 .eq(DeviceEntity::getAuthType, DeviceAuthType.SECRET);
         return getOne(queryWrapper, false);
     }

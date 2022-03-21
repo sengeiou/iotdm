@@ -27,9 +27,9 @@ public interface IDevicePropertyReportService extends IService<DevicePropertyRep
 
     /**
      * 查询 设备影子
-     * @param deviceId 设备id
+     * @param productId 产品id
      * @return 设备属性最新上报数据
      */
-    List<DevicePropertyInfo> queryShadowDeviceProperty(String deviceId,String propertyLabel);
+    List<DevicePropertyInfo> queryShadowDeviceProperty(String productId,String propertyLabel);
 
 }

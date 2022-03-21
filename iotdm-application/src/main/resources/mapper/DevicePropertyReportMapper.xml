@@ -33,7 +33,7 @@
         LEFT JOIN t_model_property mp ON mp.product_model_id = pm.id
         LEFT JOIN t_device_property_report pr ON mp.id = pr.property_id
         WHERE
-            pr.device_id = #{deviceId}
+            pm.product_id = #{productId}
           AND pm.deleted = 0
 
         <if test="propertyLabel != null and propertyLabel != ''">

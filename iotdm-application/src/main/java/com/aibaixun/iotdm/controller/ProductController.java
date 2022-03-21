@@ -10,6 +10,7 @@ import com.aibaixun.iotdm.entity.ProductEntity;
 import com.aibaixun.iotdm.enums.SubjectEvent;
 import com.aibaixun.iotdm.enums.SubjectResource;
 import com.aibaixun.iotdm.event.EntityChangeEvent;
+import com.aibaixun.iotdm.service.IDeviceService;
 import com.aibaixun.iotdm.service.IProductService;
 import com.aibaixun.iotdm.data.ProductEntityInfo;
 import com.aibaixun.iotdm.service.IotDmEventPublisher;
@@ -40,6 +41,8 @@ public class ProductController extends BaseController{
     private RedisRepository redisRepository;
 
     private IotDmEventPublisher iotDmEventPublisher;
+
+    private IDeviceService deviceService;
 
     @GetMapping("/page")
     public JsonResult<Page<ProductEntity>> pageQueryProducts(@RequestParam Integer page,
@@ -90,6 +93,10 @@ public class ProductController extends BaseController{
         if (!StringUtils.equals(pr.getCreator(), UserInfoUtil.getUserIdOfNull())){
             throw new BaseException("产品必须由创建人删除",BaseResultCode.GENERAL_ERROR);
         }
+        Long aLong = deviceService.countDeviceByProductId(id);
+        if (aLong>0){
+            throw new BaseException("产品下还有相关设备，无法删除",BaseResultCode.GENERAL_ERROR);
+        }
         redisRepository.delHashValues(IOT_PRODUCT_TENANT_KEY, id);
         boolean remove = productService.removeById(id);
         if (remove){
@@ -122,5 +129,16 @@ public class ProductController extends BaseController{
     @Autowired
     public void setRedisRepository(RedisRepository redisRepository) {
         this.redisRepository = redisRepository;
+    }
+
+
+    @Autowired
+    public void setIotDmEventPublisher(IotDmEventPublisher iotDmEventPublisher) {
+        this.iotDmEventPublisher = iotDmEventPublisher;
+    }
+
+    @Autowired
+    public void setDeviceService(IDeviceService deviceService) {
+        this.deviceService = deviceService;
     }
 }

@@ -7,6 +7,7 @@ import com.aibaixun.basic.toolkit.HexTool;
 import com.aibaixun.common.util.JsonUtil;
 import com.aibaixun.iotdm.data.BaseParam;
 import com.aibaixun.iotdm.entity.DeviceCommandSendEntity;
+import com.aibaixun.iotdm.entity.DeviceEntity;
 import com.aibaixun.iotdm.entity.ModelCommandEntity;
 import com.aibaixun.iotdm.entity.ProductEntity;
 import com.aibaixun.iotdm.enums.BusinessStep;
@@ -70,8 +71,7 @@ public class Default2DeviceProcessor implements ToDeviceProcessor{
             try {
                 Object o = jsInvokeService.invokeEncodeFunction(productId, deviceConfigTransportData);
                 payload = HexTool.encodeHexStr((byte[]) o);
-            }catch (Exception e){
-                doLog(deviceId,BusinessStep.PLATFORM_RESOLVING_DATA_ERROR,e.getMessage(),false);
+            }catch (Exception ignored){
             }
         }
         ToDeviceConfigEvent toDeviceConfigEvent = new ToDeviceConfigEvent(new SessionId(deviceId, productId), payload);
@@ -107,18 +107,18 @@ public class Default2DeviceProcessor implements ToDeviceProcessor{
         toDeviceCommandData.setModelId(modelCommand.getProductModelId());
         toDeviceCommandData.setParams(toDeviceParam);
         String payload = null;
-        doLog(deviceId,BusinessStep.PLATFORM_RESOLVING_DATA,JsonUtil.toJSONString(toDeviceCommandData),true);
+        doCommandLog(deviceId, JsonUtil.toJSONString(toDeviceCommandData),true);
         if (DataFormat.BINARY.equals(product.getDataFormat())){
             try {
                 Object o = jsInvokeService.invokeEncodeFunction(productId, toDeviceCommandData);
                 payload = HexTool.encodeHexStr((byte[]) o);
             }catch (Exception e){
-                doLog(deviceId,BusinessStep.PLATFORM_RESOLVING_DATA_ERROR,e.getMessage(),false);
+                doCommandLog(deviceId, e.getMessage(),false);
             }
         }else {
             payload = JsonUtil.toJSONString(toDeviceCommandData);
         }
-        doLog(deviceId,BusinessStep.PLATFORM_RESOLVING_DATA_SUCCESS,JsonUtil.toJSONString(toDeviceCommandData),true);
+        doCommandLog(deviceId, JsonUtil.toJSONString(toDeviceCommandData),true);
         DeviceCommandSendEntity deviceCommandSendEntity = new DeviceCommandSendEntity();
         deviceCommandSendEntity.setDeviceId(deviceId);
         deviceCommandSendEntity.setCommandId(commandId);
@@ -139,9 +139,16 @@ public class Default2DeviceProcessor implements ToDeviceProcessor{
         eventPublisher.publishDeviceCloseConnectEvent(new ToDeviceCloseConnectEvent(new SessionId(deviceId,productId)));
     }
 
-    private void  doLog (String deviceId, BusinessStep businessStep, String businessDetails, Boolean messageStatus){
-        deviceLogProcessor.doPlatform2DeviceLLog(deviceId,businessStep,businessDetails,messageStatus);
+    private void doCommandLog(String deviceId, String businessDetails, Boolean messageStatus){
+        deviceLogProcessor.doPlatform2DeviceLLog(deviceId, BusinessStep.PLATFORM_SEND_COMMAND,businessDetails,messageStatus);
     }
+
+
+    @Override
+    public void processFakeDeviceMessage(DeviceEntity deviceEntity, ProductEntity product, String message) {
+        eventPublisher.publishPropertyUpEvent(deviceEntity.getProductId(),deviceEntity.getId(),product.getDataFormat(),message);
+    }
+
 
     @Autowired
     public IDeviceCommandSendService getDeviceCommandSendService() {

@@ -46,7 +46,7 @@
                 LEFT JOIN t_model_command mc ON mc.product_model_id = pm.id
         WHERE
             pm.product_id = #{productId}
-
+          and pm.deleted = 0
         ORDER BY pm.create_time DESC
     </select>
 </mapper>

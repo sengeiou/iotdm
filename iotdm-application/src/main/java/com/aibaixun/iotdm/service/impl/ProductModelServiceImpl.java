@@ -71,6 +71,12 @@ public class ProductModelServiceImpl extends ServiceImpl<ProductModelMapper, Pro
 
     @Override
     @CacheEvict(cacheNames = "IOTDM:PRODUCT_MODEl:",key = "#productId")
+    public Boolean removeProductModel(String productId, String productModelId) {
+        return removeById(productModelId);
+    }
+
+    @Override
+    @CacheEvict(cacheNames = "IOTDM:PRODUCT_MODEl:",key = "#productId")
     public Boolean saveModelProperty(String productId, ModelPropertyEntity modelPropertyEntity) throws BaseException {
         String propertyLabel = modelPropertyEntity.getPropertyLabel();
         String productModelId = modelPropertyEntity.getProductModelId();
@@ -152,7 +158,11 @@ public class ProductModelServiceImpl extends ServiceImpl<ProductModelMapper, Pro
     }
 
 
-
+    @Override
+    @CacheEvict(cacheNames = "IOTDM:PRODUCT_MODEl:",key = "#productModelEntity.productId")
+    public Boolean saveProductModelEntity(ProductModelEntity productModelEntity) {
+        return save(productModelEntity);
+    }
 
     @Autowired
     public void setModelPropertyService(IModelPropertyService modelPropertyService) {

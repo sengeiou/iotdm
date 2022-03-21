@@ -6,6 +6,11 @@ package com.aibaixun.iotdm.enums;
  * @date 2022/3/11
  */
 public enum BusinessStep {
+
+    /**
+     * 设备session
+     */
+    DEVICE_SESSION,
     /**
      * 设备上报数据
      */
@@ -17,17 +22,12 @@ public enum BusinessStep {
     PLATFORM_RESOLVING_DATA,
 
     /**
-     * 平台解析数据 失败
-     */
-    PLATFORM_RESOLVING_DATA_ERROR,
-
-    /**
-     * 平台解析数据 成功
-     */
-    PLATFORM_RESOLVING_DATA_SUCCESS,
-
-    /**
      * 匹配物模型
      */
-    MATCH_MODEL;
+    MATCH_MODEL,
+
+    /**
+     * 平台发送命令
+     */
+    PLATFORM_SEND_COMMAND;
 }

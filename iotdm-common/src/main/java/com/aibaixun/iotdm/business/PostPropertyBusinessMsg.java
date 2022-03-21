@@ -13,6 +13,10 @@ public class PostPropertyBusinessMsg extends AbstractBusinessMsg{
 
     List<TsData> tsData;
 
+
+    public PostPropertyBusinessMsg() {
+    }
+
     public PostPropertyBusinessMsg(MetaData metaData, List<TsData> tsData) {
         super(metaData);
         this.tsData = tsData;

@@ -10,6 +10,9 @@ public abstract class AbstractBusinessMsg {
     private MetaData metaData;
 
 
+    public AbstractBusinessMsg() {
+    }
+
     public AbstractBusinessMsg(MetaData metaData) {
         this.metaData = metaData;
     }

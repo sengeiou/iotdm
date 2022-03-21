@@ -1,6 +1,8 @@
 package com.aibaixun.iotdm.server;
 
 import com.aibaixun.basic.exception.BaseException;
+import com.aibaixun.iotdm.entity.DeviceEntity;
+import com.aibaixun.iotdm.entity.ProductEntity;
 
 import java.util.Map;
 
@@ -44,4 +46,13 @@ public interface ToDeviceProcessor {
      * @param productId 产品id
      */
     void processCloseConnectDevice(String deviceId,String productId);
+
+
+    /**
+     * 设备模拟消息
+     * @param deviceEntity 设备
+     * @param product 产品
+     * @param message 消息
+     */
+    void processFakeDeviceMessage (DeviceEntity deviceEntity, ProductEntity product,String message);
 }

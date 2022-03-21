@@ -35,6 +35,12 @@ public interface IDeviceService extends IService<DeviceEntity> {
      */
     List<KvData<Long>> countDevice(String productId);
 
+    /**
+     * 统计产品下设备
+     * @param productId 产品id
+     * @return 数目
+     */
+    Long  countDeviceByProductId(String productId);
 
     /**
      * 查询设备列表

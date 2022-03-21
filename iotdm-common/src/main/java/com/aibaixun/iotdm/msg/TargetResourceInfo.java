@@ -4,12 +4,14 @@ import com.aibaixun.iotdm.enums.ResourceType;
 import com.aibaixun.iotdm.support.BaseResourceConfig;
 import com.aibaixun.iotdm.support.BaseTargetConfig;
 
+import java.io.Serializable;
+
 /**
  * 转发目标资源信息
  * @author wangxiao@aibaixun.com
  * @date 2022/3/12
  */
-public class TargetResourceInfo {
+public class TargetResourceInfo implements Serializable {
 
 
     public String id;

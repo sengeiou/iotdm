@@ -20,6 +20,10 @@ public enum DeviceStatus {
      */
     INACTIVE,
     /**
+     * STOP
+     */
+    STOP,
+    /**
      * 设备告警
      */
     WARN;
