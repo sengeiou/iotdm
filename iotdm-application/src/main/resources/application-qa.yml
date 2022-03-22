@@ -142,6 +142,11 @@ transport:
       max_payload_size: "${NETTY_MAX_PAYLOAD_SIZE:65536}"
       # 开启keep alive
       so_keep_alive: "${NETTY_SO_KEEPALIVE:false}"
+    ssl:
+      enabled: "${MQTT_SSL_ENABLED:false}"
+      bind_address: "${MQTT_SSL_BIND_ADDRESS:0.0.0.0}"
+      bind_port: "${MQTT_SSL_BIND_PORT:1883}"
+      protocol: "${MQTT_SSL_PROTOCOL:TLSv1.2}"
   limit:
     # ip 限制开关
     ip_limit_enabled: "${TRANSPORT_IP_LIMITS_ENABLED:true}"
