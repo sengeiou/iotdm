@@ -12,7 +12,6 @@ IOTdm:
   label: IotDmApplication
   version: 1.0.0
 
-
 ## mybatis-plus
 mybatis-plus:
   global-config:

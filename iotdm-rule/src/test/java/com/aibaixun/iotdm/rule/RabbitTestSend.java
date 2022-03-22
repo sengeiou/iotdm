@@ -1,43 +1,35 @@
-package com.aibaixun.iotdm.rule.send;
+package com.aibaixun.iotdm.rule;
 
-import com.aibaixun.iotdm.enums.ResourceType;
+import com.aibaixun.common.util.JsonUtil;
 import com.aibaixun.iotdm.rule.pool.PoolResource;
 import com.aibaixun.iotdm.rule.pool.ResourceLruCache;
-import com.aibaixun.iotdm.support.BaseResourceConfig;
-import com.aibaixun.iotdm.support.BaseTargetConfig;
+import com.aibaixun.iotdm.rule.send.RabbitSendService;
 import com.aibaixun.iotdm.support.RabbitResourceConfig;
 import com.aibaixun.iotdm.support.RabbitTargetConfig;
 import com.rabbitmq.client.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
+import static com.aibaixun.iotdm.rule.send.SendService.OBJECT_MAPPER;
+
 /**
  * @author wangxiao@aibaixun.com
- * @date 2022/3/14
+ * @date 2022/3/22
  */
-@Component
-public class RabbitSendService implements SendService{
+public class RabbitTestSend {
 
-    private final Logger log = LoggerFactory.getLogger(RabbitSendService.class);
+    private static ResourceLruCache<String, RabbitConnectionResource> connectionPool;
 
-    private ResourceLruCache<String, RabbitConnectionResource> connectionPool;
-
-    @Value("${bx.rule.rabbit.max-idle-connections}")
-    private Integer maxIdleConnections;
-
-
-    @Override
-    public <T> void doSendMessage(T message, BaseResourceConfig resourceConfig, BaseTargetConfig targetConfig)  {
-
-        RabbitResourceConfig rabbitResourceConfig = (RabbitResourceConfig) resourceConfig;
-        RabbitTargetConfig rabbitTargetConfig = (RabbitTargetConfig) targetConfig;
+    public static void main(String[] args) {
+        connectionPool = new ResourceLruCache<>(10);
+        String resource = "{\"host\": \"172.16.9.10\", \"port\":5672, \"keepLive\": 60, \"password\": \"HzCbwgjY8c51WgYD\", \"username\": \"iotdm\", \"virtualHost\": \"/\", \"resourceType\": \"RABBIT\", \"connectTimeout\": 6000, \"connectPoolSize\": 1000}";
+        RabbitResourceConfig rabbitResourceConfig = JsonUtil.toObject(resource, RabbitResourceConfig.class);
+        RabbitTargetConfig rabbitTargetConfig = new RabbitTargetConfig();
+        rabbitTargetConfig.setExchange("/test");
+        rabbitTargetConfig.setRoutingKey("test");
+        rabbitTargetConfig.setExchangeType(BuiltinExchangeType.TOPIC);
         String host = rabbitResourceConfig.getHost();
         int port = rabbitResourceConfig.getPort();
         String virtualHost = rabbitResourceConfig.getVirtualHost();
@@ -46,7 +38,7 @@ public class RabbitSendService implements SendService{
         Integer connectTimeout = rabbitResourceConfig.getConnectTimeout();
         Integer keepLive = rabbitResourceConfig.getKeepLive();
         RabbitConnectionResource rabbitConnection = connectionPool.get(host+port);
-        if (Objects.isNull(rabbitConnection)){
+        if (Objects.isNull(rabbitConnection)) {
             ConnectionFactory factory = new ConnectionFactory();
             factory.setHost(host);
             factory.setPort(port);
@@ -54,47 +46,36 @@ public class RabbitSendService implements SendService{
             factory.setUsername(username);
             factory.setPassword(password);
             factory.setAutomaticRecoveryEnabled(true);
-            if (Objects.nonNull(connectTimeout)){
-                factory.setConnectionTimeout(connectTimeout*100);
-            }
-            if (Objects.nonNull(keepLive)){
-                factory.setHandshakeTimeout(keepLive*100);
-            }
-
             try {
                 Connection connection = factory.newConnection();
                 rabbitConnection = new RabbitConnectionResource(connection);
                 String exchangeName = rabbitTargetConfig.getExchange();
                 String routingKey = rabbitTargetConfig.getRoutingKey();
                 BuiltinExchangeType exchangeType = rabbitTargetConfig.getExchangeType();
-                if (Objects.isNull(rabbitConnection.channel)){
+                if (Objects.isNull(rabbitConnection.channel)) {
                     return;
                 }
                 Channel channel = rabbitConnection.channel;
-                String data = OBJECT_MAPPER.writeValueAsString(message);
-                channel.exchangeDeclare(exchangeName,exchangeType,true,false,null);
+                String data = OBJECT_MAPPER.writeValueAsString("hello");
+                channel.exchangeDeclare(exchangeName, exchangeType, true, false, null);
                 channel.basicPublish(
                         exchangeName,
                         routingKey,
                         MessageProperties.BASIC,
                         data.getBytes(StandardCharsets.UTF_8));
-            }catch (Exception e){
-                log.error("RabbitSendService.doSendMessage >> create connection is error, msg is:{}",e.getMessage());
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("RabbitSendService.doSendMessage >> create connection is error, msg is:{}"+e.getMessage());
             }
         }
-    }
 
-    @Override
-    @PostConstruct
-    public void init() {
-        registerService(ResourceType.RABBIT,this);
-        connectionPool = new ResourceLruCache<>(maxIdleConnections);
+
     }
 
     static class RabbitConnectionResource implements PoolResource {
-      private final Connection connection;
+        private final Connection connection;
 
-      private final Channel channel;
+        private final Channel channel;
         @Override
         public void releaseResource() {
             try {
@@ -111,6 +92,4 @@ public class RabbitSendService implements SendService{
             this.channel = connection.createChannel();
         }
     }
-
-
 }
