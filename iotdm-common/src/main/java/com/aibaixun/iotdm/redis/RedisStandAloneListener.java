@@ -11,8 +11,8 @@ import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.listener.KeyExpirationEventMessageListener;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.stereotype.Component;
+
 import java.nio.charset.StandardCharsets;
-import java.time.Instant;
 
 import static com.aibaixun.iotdm.constants.DataConstants.EXPIRED_CHANNEL;
 import static com.aibaixun.iotdm.constants.DataConstants.IOT_SESSION_CACHE_KEY_PREFIX;
@@ -56,8 +56,6 @@ public class RedisStandAloneListener extends KeyExpirationEventMessageListener {
     private   boolean checkChannelAndKey (String channel,String key){
         return StringUtils.equals(channel,EXPIRED_CHANNEL) && StringUtils.startsWith(key,IOT_SESSION_CACHE_KEY_PREFIX);
     }
-
-
 
 
     @Autowired
