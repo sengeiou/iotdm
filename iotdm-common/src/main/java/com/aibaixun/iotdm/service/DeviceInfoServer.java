@@ -57,5 +57,11 @@ public interface DeviceInfoServer {
      */
     ListenableFuture<Boolean> toDeviceMessageIsReceived(String deviceId,int msgId);
 
+    /**
+     * redis key 过期
+     * @param redisKey redis key
+     */
+    void onRedisExpirationMessage(String redisKey);
+
 }
 

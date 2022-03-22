@@ -31,13 +31,11 @@ public class RedisClusterListener extends RedisClusterPubSubAdapter  {
     private DeviceInfoServer deviceInfoService;
 
 
-
-
     @Override
     public void message(RedisClusterNode node, Object pattern, Object channel, Object message) {
         log.info("RedisClusterListener.message >> receive redis key expire message ,node:{},channel:{},message:{}", node, channel, message);
         if (checkChannelAndKey(String.valueOf(pattern), String.valueOf(message))) {
-            doExpirationMessage(String.valueOf(message));
+            deviceInfoService.onRedisExpirationMessage(String.valueOf(message));
         }
     }
 
@@ -45,19 +43,6 @@ public class RedisClusterListener extends RedisClusterPubSubAdapter  {
         return StringUtils.equals(channel,EXPIRED_CHANNEL) && StringUtils.startsWith(key,IOT_SESSION_CACHE_KEY_PREFIX);
     }
 
-    /**
-     * 过期时间业务逻辑
-     * @param redisKey redis key
-     */
-    private void  doExpirationMessage(String redisKey){
-        String[] splitStr = redisKey.split(":");
-        int keyMinLength = 4;
-        if (splitStr.length!= keyMinLength){
-            return;
-        }
-        String deviceId = splitStr[3];
-        deviceInfoService.setDeviceStatus2OffOnLine(deviceId,null, Instant.now().toEpochMilli()-1000*60,null);
-    }
 
     @Autowired
     public void setDeviceInfoService(DeviceInfoServer deviceInfoService) {
