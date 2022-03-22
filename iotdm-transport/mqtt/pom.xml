@@ -52,7 +52,6 @@
         <dependency>
             <groupId>com.aibaixun</groupId>
             <artifactId>basic</artifactId>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
 
