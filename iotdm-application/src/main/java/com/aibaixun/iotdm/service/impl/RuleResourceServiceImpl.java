@@ -65,4 +65,9 @@ public class RuleResourceServiceImpl extends ServiceImpl<RuleResourceMapper, Rul
         updateWrapper.set(RuleResourceEntity::getResourceStatus,resourceStatus).eq(RuleResourceEntity::getId,resourceId);
         return update(updateWrapper);
     }
+
+    @Override
+    public Long countResource() {
+        return count(Wrappers.<RuleResourceEntity>lambdaQuery().eq(RuleResourceEntity::getTenantId,UserInfoUtil.getTenantIdOfNull()));
+    }
 }

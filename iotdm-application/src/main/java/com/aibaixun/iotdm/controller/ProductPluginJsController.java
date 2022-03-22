@@ -44,6 +44,7 @@ public class ProductPluginJsController extends BaseController{
     public JsonResult<Boolean> createOrUpdateJsPlugin (@RequestBody @Valid ProductPluginJsEntity productPluginJsEntity){
         String id = productPluginJsEntity.getId();
         boolean result ;
+        productPluginJsService.removeJsPlugin(productPluginJsEntity.getProductId());
         if (StringUtils.isBlank(id)){
             result = productPluginJsService.save(productPluginJsEntity);
         }else {
@@ -79,7 +80,7 @@ public class ProductPluginJsController extends BaseController{
         try {
             if (jsDebugParam.isDecode()){
                 byte[] bytes = HexTool.decodeHex(input);
-                result = defaultJsInvokeService.testEncode(jsDebugParam.getJsScriptBody(),bytes,jsDebugParam.getTopic());
+                result = defaultJsInvokeService.testdecode(jsDebugParam.getJsScriptBody(),bytes,jsDebugParam.getTopic());
             }else {
                 result = defaultJsInvokeService.testEncode(jsDebugParam.getJsScriptBody(),jsDebugParam.getInput(),jsDebugParam.getTopic());
             }

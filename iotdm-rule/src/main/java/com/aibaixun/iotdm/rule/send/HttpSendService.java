@@ -36,6 +36,10 @@ public class HttpSendService implements SendService{
         try {
             HttpResourceConfig httpResourceConfig = (HttpResourceConfig) resourceConfig;
             String host = httpResourceConfig.getHost();
+            String httpPrefix = "http";
+            if (!host.startsWith(httpPrefix)){
+                host = httpPrefix +"://" + host;
+            }
             Map<String, String> headers = httpResourceConfig.getHeaders();
             HttpTargetConfig httpTargetConfig = (HttpTargetConfig) targetConfig;
             HttpMethod httpMethod = httpTargetConfig.getHttpMethod();
@@ -74,12 +78,12 @@ public class HttpSendService implements SendService{
         okHttpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                log.info("HttpSendService.doExecuteHttp is fail,url is:{},message:{}",url,e.getMessage());
+                log.error("HttpSendService.doExecuteHttp is fail,url is:{},message:{}",url,e.getMessage());
             }
 
             @Override
             public void onResponse(Call call, Response response) {
-                log.error("HttpSendService.doExecuteHttp is response,url is:{},response codeis:{}",url,response.code());
+                log.info("HttpSendService.doExecuteHttp is response,url is:{},response codeis:{}",url,response.code());
             }
         });
     }

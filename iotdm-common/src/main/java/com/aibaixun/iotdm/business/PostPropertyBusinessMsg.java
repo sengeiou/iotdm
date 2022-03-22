@@ -21,4 +21,19 @@ public class PostPropertyBusinessMsg extends AbstractBusinessMsg{
         super(metaData);
         this.tsData = tsData;
     }
+
+    public List<TsData> getTsData() {
+        return tsData;
+    }
+
+    public void setTsData(List<TsData> tsData) {
+        this.tsData = tsData;
+    }
+
+    @Override
+    public String toString() {
+        return "PostPropertyBusinessMsg{" +
+                "tsData=" + tsData +
+                '}';
+    }
 }

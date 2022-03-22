@@ -35,7 +35,7 @@ public class RedisClusterListenerConfig {
     }
 
     @Bean(destroyMethod = "close")
-    public StatefulRedisClusterConnection<String,String> statefulRedisClusterConnection(RedisClusterClient redisClusterClient) {
+    public StatefulRedisClusterConnection statefulRedisClusterConnection(RedisClusterClient redisClusterClient) {
         return redisClusterClient.connect();
     }
 

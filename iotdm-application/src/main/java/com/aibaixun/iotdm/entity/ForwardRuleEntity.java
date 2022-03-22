@@ -101,6 +101,8 @@ public class ForwardRuleEntity extends BaseEntity {
         this.deleted = deleted;
     }
 
+
+
     @Override
     public String toString() {
         return "ForwardRule{" +

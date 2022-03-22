@@ -120,6 +120,12 @@ public class ProductController extends BaseController{
         return JsonResult.success(aBoolean);
     }
 
+    @GetMapping("/count")
+    public JsonResult<Long> countProduct() {
+        Long aLong = productService.countProduct();
+        return JsonResult.success(aLong);
+    }
+
     @Autowired
     public void setProductService(IProductService productService) {
         this.productService = productService;

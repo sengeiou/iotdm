@@ -134,7 +134,11 @@ public class RuleResourceController extends BaseController{
         return JsonResult.success(remove);
     }
 
-
+    @GetMapping("/count")
+    public JsonResult<Long> countResource() {
+        Long aLong = ruleResourceService.countResource();
+        return JsonResult.success(aLong);
+    }
 
 
     @Autowired

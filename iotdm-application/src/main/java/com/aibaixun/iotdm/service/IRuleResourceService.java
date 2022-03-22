@@ -44,4 +44,11 @@ public interface IRuleResourceService extends IService<RuleResourceEntity> {
      */
     Boolean updateResourceStatus (String resourceId,Boolean resourceStatus);
 
+
+    /**
+     * 统计资源
+     * @return 数目
+     */
+    Long countResource();
+
 }

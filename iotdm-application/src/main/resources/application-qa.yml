@@ -4,11 +4,11 @@ spring:
     exclude: org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${DATASOURCE_HOST:172.16.9.1}:${DATASOURCE_PORT:3306}/iotdm
-    username: ${DATASOURCE_USERNAME:root}
-    password: ${DATASOURCE_PASSWORD:bxzh123456!}
+    url: jdbc:mysql://${DATASOURCE_HOST:172.16.7.75}:${DATASOURCE_PORT:3306}/iotdm
+    username: ${DATASOURCE_USERNAME:iotdm}
+    password: ${DATASOURCE_PASSWORD:HQeNshtGZV^L}
     hikari:
-      maximumPoolSize: "${SPRING_DATASOURCE_MAXIMUM_POOL_SIZE:16}"
+      maximumPoolSize: "${SPRING_DATASOURCE_MAXIMUM_POOL_SIZE:20}"
       connection-timeout: 60000
       idle-timeout: 600000
       minimum-idle: 1
@@ -41,21 +41,21 @@ spring:
           environment:
             spring:
               rabbitmq:
-                host: 172.16.9.10
+                host: 172.16.7.77
                 username: iotdm
-                password: HzCbwgjY8c51WgYD
+                password: bxzh123456!
                 virtual-host: /
-#          defaultKafka:
-#            type: kafka
-#            environment:
-#              spring:
-#                cloud:
-#                  stream:
-#                    kafka:
-#                      binder:
-#                        brokers: 172.16.20.220:9092,172.16.20.221:9092,172.16.20.222:9092
-#                        zkNodes: 172.16.20.220:2181,172.16.20.221:2181,172.16.20.222:2181
-#                        auto-create-topics: true
+      #          defaultKafka:
+      #            type: kafka
+      #            environment:
+      #              spring:
+      #                cloud:
+      #                  stream:
+      #                    kafka:
+      #                      binder:
+      #                        brokers: 172.16.20.220:9092,172.16.20.221:9092,172.16.20.222:9092
+      #                        zkNodes: 172.16.20.220:2181,172.16.20.221:2181,172.16.20.222:2181
+      #                        auto-create-topics: true
       bindings:
         out_session_data:
           destination: session_data
@@ -142,15 +142,9 @@ transport:
       max_payload_size: "${NETTY_MAX_PAYLOAD_SIZE:65536}"
       # 开启keep alive
       so_keep_alive: "${NETTY_SO_KEEPALIVE:false}"
-    ssl:
-      enabled: "${MQTT_SSL_ENABLED:false}"
-      bind_address: "${MQTT_SSL_BIND_ADDRESS:0.0.0.0}"
-      bind_port: "${MQTT_SSL_BIND_PORT:1883}"
-      protocol: "${MQTT_SSL_PROTOCOL:TLSv1.2}"
-
   limit:
     # ip 限制开关
-    ip_limit_enabled: "${TRANSPORT_IP_LIMITS_ENABLED:false}"
+    ip_limit_enabled: "${TRANSPORT_IP_LIMITS_ENABLED:true}"
     # 限制 过期时间
     ip_block_timeout: "${TRANSPORT_IP_BLOCK_TIMEOUT:60000}"
     # 错误次数
@@ -159,6 +153,3 @@ transport:
     tenant_rate_limit: "${TENANT_RATE_LIMIT:}"
     # 租户限制
     tenant_num_limit: "${TENANT_RATE_LIMIT:90}"
-mybatis-plus:
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

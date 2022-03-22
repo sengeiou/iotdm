@@ -28,4 +28,11 @@ public interface IProductPluginJsService extends IService<ProductPluginJsEntity>
      */
     Boolean uninstallJsPlugin(String productId);
 
+    /**
+     * 移除产品 插件
+     * @param productId 产品id
+     * @return bool
+     */
+    Boolean removeJsPlugin(String productId);
+
 }

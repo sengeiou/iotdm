@@ -104,4 +104,9 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, ProductEntity
         updateWrapper.eq(ProductEntity::getId,productId);
         return update(updateWrapper);
     }
+
+    @Override
+    public Long countProduct() {
+        return count(Wrappers.<ProductEntity>lambdaQuery().eq(ProductEntity::getTenantId,UserInfoUtil.getTenantIdOfNull()));
+    }
 }

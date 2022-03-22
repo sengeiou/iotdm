@@ -21,16 +21,17 @@ public interface SendService {
 
 
      ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-         /**
-          * 发送方法 需要子类实现
-          * @param message 消息
-          * @param resourceConfig 资源配置
-          * @param targetConfig 发送目标配置
-          * @param <T> 消息类型
-          */
-             <T>
 
-    void doSendMessage(T message, BaseResourceConfig resourceConfig, BaseTargetConfig targetConfig) throws JsonProcessingException;
+
+    /**
+     * 发送方法 需要子类实现
+     * @param message 消息
+     * @param resourceConfig 资源配置
+     * @param targetConfig 发送目标配置
+     * @param <T> 消息类型
+     * @throws  JsonProcessingException
+     */
+     <T>void doSendMessage(T message, BaseResourceConfig resourceConfig, BaseTargetConfig targetConfig) throws JsonProcessingException;
 
     /**
      * 需要子类实现 并调用registerService 方法

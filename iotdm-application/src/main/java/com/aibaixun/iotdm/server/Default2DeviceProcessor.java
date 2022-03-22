@@ -150,30 +150,19 @@ public class Default2DeviceProcessor implements ToDeviceProcessor{
     }
 
 
-    @Autowired
-    public IDeviceCommandSendService getDeviceCommandSendService() {
-        return deviceCommandSendService;
-    }
 
     @Autowired
     public void setDeviceCommandSendService(IDeviceCommandSendService deviceCommandSendService) {
         this.deviceCommandSendService = deviceCommandSendService;
     }
 
-    @Autowired
-    public IModelCommandService getModelCommandService() {
-        return modelCommandService;
-    }
+
 
     @Autowired
     public void setModelCommandService(IModelCommandService modelCommandService) {
         this.modelCommandService = modelCommandService;
     }
 
-    @Autowired
-    public IProductService getProductService() {
-        return productService;
-    }
 
     @Autowired
     public void setProductService(IProductService productService) {

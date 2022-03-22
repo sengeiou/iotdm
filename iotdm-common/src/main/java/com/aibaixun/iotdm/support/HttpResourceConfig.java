@@ -26,6 +26,8 @@ public class HttpResourceConfig implements BaseResourceConfig{
     }
 
 
+
+
     public Long getConnectTimeout() {
         return connectTimeout;
     }

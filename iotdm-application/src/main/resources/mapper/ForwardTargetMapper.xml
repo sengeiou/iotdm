@@ -24,7 +24,7 @@
         LEFT JOIN t_forward_rule fr ON fr.id = ft.forward_rule_id
         WHERE
             ft.rule_resource_id = #{resourceId}
-          AND fr.deleted = 0
+          AND fr.deleted = 0 AND fr.rule_status =1
     </select>
 
 

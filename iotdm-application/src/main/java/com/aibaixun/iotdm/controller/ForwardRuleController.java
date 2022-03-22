@@ -120,6 +120,11 @@ public class ForwardRuleController extends BaseController{
 
 
 
+    @GetMapping("/count")
+    public JsonResult<Long> countRule() {
+        Long aLong = forwardRuleService.countRule();
+        return JsonResult.success(aLong);
+    }
 
 
     @Autowired

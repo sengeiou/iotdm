@@ -68,4 +68,9 @@ public class ForwardRuleServiceImpl extends ServiceImpl<ForwardRuleMapper, Forwa
     public List<ForwardRuleInfo> queryForwardRuleByTenantId(String tenantId) {
         return baseMapper.selectForwardRuleByTenantId(tenantId);
     }
+
+    @Override
+    public Long countRule() {
+        return count(Wrappers.<ForwardRuleEntity>lambdaQuery().eq(ForwardRuleEntity::getTenantId,UserInfoUtil.getTenantIdOfNull()));
+    }
 }

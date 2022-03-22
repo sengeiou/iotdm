@@ -33,4 +33,9 @@ public class ProductPluginJsServiceImpl extends ServiceImpl<ProductPluginJsMappe
         updateWrapper.eq(ProductPluginJsEntity::getProductId,productId);
         return update(updateWrapper);
     }
+
+    @Override
+    public Boolean removeJsPlugin(String productId) {
+        return remove(Wrappers.<ProductPluginJsEntity>lambdaQuery().eq(ProductPluginJsEntity::getProductId,productId));
+    }
 }

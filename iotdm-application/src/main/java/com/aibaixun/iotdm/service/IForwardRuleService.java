@@ -54,4 +54,10 @@ public interface IForwardRuleService extends IService<ForwardRuleEntity> {
      * @return 转发规则
      */
     List<ForwardRuleInfo> queryForwardRuleByTenantId(String tenantId);
+
+    /**
+     * 统计规则
+     * @return 数目
+     */
+    Long countRule();
 }

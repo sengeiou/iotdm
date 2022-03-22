@@ -57,6 +57,7 @@ public class BusinessEventListener {
             if (DataFormat.JSON.equals(dataFormat)){
                 jsonNode = JsonUtil.parse(payload);
             }else if (DataFormat.BINARY.equals(dataFormat)){
+                // todo 获取插件时候需要后期重构 设计思路采用工厂模式或者SPI
                 byte [] messageBytes = HexTool.decodeHex(payload);
                 String jsResult = (String)jsInvokeService.invokeDecodeFunction(devicePropertyUpEvent.getProductId(), messageBytes, TopicConstants.PROPERTIES_UP);
                 jsonNode = JsonUtil.parse(jsResult);

@@ -70,6 +70,12 @@ public interface IProductService extends IService<ProductEntity> {
      */
     Boolean updateProduct(String productId,String productLabel,String description);
 
+    /**
+     * 统计产品
+     * @return 数目
+     */
+    Long countProduct();
+
 
 
 }

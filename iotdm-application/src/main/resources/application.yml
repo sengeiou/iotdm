@@ -23,7 +23,6 @@ mybatis-plus:
       logic-delete-value: 1
       logic-not-delete-value: 0
   typeEnumsPackage: com.aibaixun.iotdm.enums
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
 
 
