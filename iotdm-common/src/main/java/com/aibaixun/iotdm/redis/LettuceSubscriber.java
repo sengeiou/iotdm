@@ -13,31 +13,33 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
+import static com.aibaixun.iotdm.constants.DataConstants.EXPIRED_CHANNEL;
+
+/**
+ * redis 订阅
+ * @author wangxiao@aibaixun.com
+ * @date 2022/3/9
+ */
 @Component
 public class LettuceSubscriber extends RedisPubSubAdapter {
  
-    private static Logger logger = LoggerFactory.getLogger(LettuceSubscriber.class);
- 
-    private static final String EXPIRED_CHANNEL = "__keyevent@0__:expired";
- 
+
  
     @Resource
     RedisClusterClient clusterClient;
- 
+
     @Autowired
     private ClusterGrooveAdapter clusterGrooveAdapter;
- 
+
  
     /**
      * 启动监听
      */
     @PostConstruct
     public void startListener() {
-        // 异步订阅
         StatefulRedisClusterPubSubConnection<String, String> pubSubConnection = clusterClient.connectPubSub();
         pubSubConnection.setNodeMessagePropagation(true);
         pubSubConnection.addListener(clusterGrooveAdapter);
- 
         PubSubAsyncNodeSelection<String, String> masters = pubSubConnection.async().masters();
         NodeSelectionPubSubAsyncCommands<String, String> commands = masters.commands();
         commands.subscribe(EXPIRED_CHANNEL);
