@@ -38,22 +38,22 @@ public class DefaultJsInvokeService implements JsInvokeService{
 
     @Override
     public Object eval(String productId, String scriptBody) throws ScriptException {
-        String jsScriptBody = scriptBody.replaceAll("encode",   encodeFunName +productId).replaceAll("decode",   decodeFunName +productId);
+        String jsScriptBody = scriptBody.replaceAll("encode",   encodeFunName +productId)
+                .replaceAll("decode",   decodeFunName +productId);
         return scriptEngine.eval(jsScriptBody);
     }
 
     @Override
     public Object invokeEncodeFunction(String productId, Object... args) throws ScriptException, NoSuchMethodException {
-
         Invocable invocable = (Invocable) scriptEngine;
-        return invocable.invokeFunction (encodeFunName+productId);
+        return invocable.invokeFunction (encodeFunName+productId,args);
 
     }
 
     @Override
     public Object invokeDecodeFunction(String productId, Object... args) throws ScriptException, NoSuchMethodException {
         Invocable invocable = (Invocable) scriptEngine;
-        return invocable.invokeFunction(  decodeFunName+productId);
+        return invocable.invokeFunction(  decodeFunName+productId,args);
     }
 
     @Override
@@ -70,10 +70,10 @@ public class DefaultJsInvokeService implements JsInvokeService{
     }
 
     @Override
-    public String testdecode(String scriptBody, Object... argNames) throws ScriptException, NoSuchMethodException {
+    public String testDecode(String scriptBody, Object... argNames) throws ScriptException, NoSuchMethodException {
         String uuid = RandomStringUtils.randomAlphanumeric(10);
         eval(uuid,scriptBody);
-        Object o =  invokeEncodeFunction(uuid,argNames);
+        Object o =  invokeDecodeFunction(uuid,argNames);
         release(uuid);
         return JsonUtil.toJSONString(o);
     }

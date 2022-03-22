@@ -61,11 +61,6 @@
             <!--IOTdm  start-->
             <dependency>
                 <groupId>com.aibaixun.iotdm</groupId>
-                <artifactId>transport</artifactId>
-                <version>${iotdm.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.aibaixun.iotdm</groupId>
                 <artifactId>common</artifactId>
                 <version>${iotdm.version}</version>
             </dependency>

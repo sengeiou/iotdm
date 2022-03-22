@@ -3,7 +3,7 @@ package com.aibaixun.iotdm.rule.send;
 import com.aibaixun.iotdm.enums.ResourceType;
 import com.aibaixun.iotdm.rule.pool.PoolResource;
 import com.aibaixun.iotdm.support.*;
-import com.fasterxml.jackson.databind.ser.std.StringSerializer;
+import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.kafka.clients.producer.*;
 import org.apache.kafka.common.cache.LRUCache;
 import org.slf4j.Logger;
@@ -46,12 +46,11 @@ public class KafkaSendService implements SendService {
 
             kafkaProducer.send(new ProducerRecord<>(kafkaTargetConfig.getTopic(), OBJECT_MAPPER.writeValueAsString(message)), (recordMetadata, e) -> {
                 if (recordMetadata == null) {
-                    log.error("KafkaSendService.doSendMessage >> is error ,error msg is :{}", e.getMessage());
+                    log.error("KafkaSendService.doSendMessage >> send result is error ,error msg is :{}", e.getMessage());
                 } else {
                     log.info("KafkaSendService.doSendMessage >> is error ,error msg is :{}", e.getMessage());
                 }
             });
-
         } catch (Exception e) {
             log.error("KafkaSendService.doSendMessage >> is error ,error msg is :{}", e.getMessage());
         }
@@ -91,14 +90,26 @@ public class KafkaSendService implements SendService {
             properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, config.getHost());
             properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
             properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-            properties.put(ProducerConfig.TRANSACTION_TIMEOUT_CONFIG, config.getConnectTimeOut());
-            properties.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, config.getCompressionType());
-            properties.put(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, config.getReqTimeout());
-            properties.put(ProducerConfig.MAX_BLOCK_MS_CONFIG, config.getMetadataUpdateTime());
-            properties.put(ProducerConfig.BUFFER_MEMORY_CONFIG, config.getBufferSize());
-            properties.put(ProducerConfig.BATCH_SIZE_CONFIG, config.getBatchSize());
-            properties.put("username", config.getUsername());
-            properties.put("password", config.getPassword());
+            Integer connectTime = Objects.nonNull(config.getConnectTimeout())?config.getConnectTimeout():60;
+            properties.put(ProducerConfig.TRANSACTION_TIMEOUT_CONFIG, connectTime);
+            String compressionType = Objects.nonNull(config.getCompressionType())?config.getCompressionType():"gzip";
+            properties.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, compressionType);
+            Integer reqTimeout  = Objects.nonNull(config.getReqTimeout())?config.getReqTimeout():60;
+            properties.put(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, reqTimeout);
+            Integer metaUpdateTime  = Objects.nonNull(config.getMetadataUpdateTime())?config.getMetadataUpdateTime():60;
+            properties.put(ProducerConfig.MAX_BLOCK_MS_CONFIG, metaUpdateTime);
+            if (Objects.nonNull(config.getBufferSize())){
+                properties.put(ProducerConfig.BUFFER_MEMORY_CONFIG, config.getBufferSize());
+            }
+            if (Objects.nonNull(config.getBatchSize())){
+                properties.put(ProducerConfig.BATCH_SIZE_CONFIG, config.getBatchSize());
+            }
+            if (Objects.nonNull(config.getUsername())){
+                properties.put("username", config.getUsername());
+            }
+            if (Objects.nonNull(config.getPassword())){
+                properties.put("password", config.getPassword());
+            }
             KafkaProducer<String, String> producer = new KafkaProducer<>(properties);
             kafkaConnectionResource = new KafkaConnectionResource(producer);
             kafkaConnections.put(host,kafkaConnectionResource);

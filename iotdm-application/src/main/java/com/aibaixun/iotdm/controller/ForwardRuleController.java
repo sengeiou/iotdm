@@ -55,7 +55,12 @@ public class ForwardRuleController extends BaseController{
 
 
     @PostMapping
-    public JsonResult<String> createForwardRule (@RequestBody @Valid ForwardRuleEntity forwardRuleEntity) {
+    public JsonResult<String> createForwardRule (@RequestBody @Valid ForwardRuleEntity forwardRuleEntity) throws BaseException {
+        String ruleLabel = forwardRuleEntity.getRuleLabel();
+        ForwardRuleEntity forwardRuleEntity1 = forwardRuleService.queryByRuleLabel(ruleLabel);
+        if (Objects.nonNull(forwardRuleEntity1)){
+            throw new BaseException("转发规则名称重复", BaseResultCode.GENERAL_ERROR);
+        }
         forwardRuleService.save(forwardRuleEntity);
         String id = forwardRuleEntity.getId();
         return JsonResult.success(id);

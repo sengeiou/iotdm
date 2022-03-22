@@ -51,10 +51,6 @@
         </dependency>
         <dependency>
             <groupId>com.aibaixun.iotdm</groupId>
-            <artifactId>transport</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.aibaixun.iotdm</groupId>
             <artifactId>rule</artifactId>
         </dependency>
         <dependency>

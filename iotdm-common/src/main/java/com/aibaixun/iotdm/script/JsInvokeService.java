@@ -26,8 +26,10 @@ public interface JsInvokeService {
      * @param scriptBody 函数题
      * @param argNames 参数名称
      * @return 函数名称
+     * @throws ScriptException
+     * @throws NoSuchMethodException
      */
-    String testdecode(String scriptBody, Object... argNames) throws ScriptException, NoSuchMethodException;
+    String testDecode(String scriptBody, Object... argNames) throws ScriptException, NoSuchMethodException;
 
     /**
      * 执行js body 返回 函数名称

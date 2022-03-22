@@ -42,3 +42,29 @@ iotdm
 # 原来是""空
 notify-keyspace-events "Ex"
 ```
+2. decode 需要js 插件解析
+```js
+var jsonObj = {};
+var uint8Array = new Uint8Array(payload.length);
+for (var i = 0; i < payload.length; i++) {
+	uint8Array[i] = payload[i] & 0xff;
+}
+var dataView = new DataView(uint8Array.buffer, 0);
+var tem = dataView.getInt8(0);
+jsonObj = {
+	"tem": tem
+};
+return JSON.stringify(jsonObj);
+```
+3. encode js
+```js
+{
+	"toDeviceType": "COMMAND", // 枚举类 分别是 COMMAND，CONFIG，OTA
+	"commandLabel": "", //命令名称
+	"modelId": "" //模型id  允许为空
+	"params": {
+		"key1": "value1",
+		"key2": 10
+	}
+}
+```

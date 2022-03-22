@@ -73,4 +73,10 @@ public class ForwardRuleServiceImpl extends ServiceImpl<ForwardRuleMapper, Forwa
     public Long countRule() {
         return count(Wrappers.<ForwardRuleEntity>lambdaQuery().eq(ForwardRuleEntity::getTenantId,UserInfoUtil.getTenantIdOfNull()));
     }
+
+
+    @Override
+    public ForwardRuleEntity queryByRuleLabel(String ruleLabel) {
+        return getOne(Wrappers.<ForwardRuleEntity>lambdaQuery().eq(ForwardRuleEntity::getRuleLabel,ruleLabel),false);
+    }
 }

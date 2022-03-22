@@ -13,6 +13,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.script.Invocable;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import javax.validation.Valid;
 
 /**
@@ -68,7 +72,6 @@ public class ProductPluginJsController extends BaseController{
         }catch (Exception e){
             return JsonResult.failed(e.getMessage());
         }
-
         return JsonResult.success(uninstallRes);
     }
 
@@ -80,7 +83,7 @@ public class ProductPluginJsController extends BaseController{
         try {
             if (jsDebugParam.isDecode()){
                 byte[] bytes = HexTool.decodeHex(input);
-                result = defaultJsInvokeService.testdecode(jsDebugParam.getJsScriptBody(),bytes,jsDebugParam.getTopic());
+                result = defaultJsInvokeService.testDecode(jsDebugParam.getJsScriptBody(),bytes,jsDebugParam.getTopic());
             }else {
                 result = defaultJsInvokeService.testEncode(jsDebugParam.getJsScriptBody(),jsDebugParam.getInput(),jsDebugParam.getTopic());
             }
@@ -102,4 +105,5 @@ public class ProductPluginJsController extends BaseController{
     public void setDefaultJsInvokeService(DefaultJsInvokeService defaultJsInvokeService) {
         this.defaultJsInvokeService = defaultJsInvokeService;
     }
+
 }

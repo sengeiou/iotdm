@@ -18,11 +18,11 @@ public class KafkaResourceConfig implements BaseResourceConfig{
 
     private String password;
 
-    private Long metadataUpdateTime;
+    private Integer metadataUpdateTime;
 
-    private Long reqTimeout;
+    private Integer reqTimeout;
 
-    private Long connectTimeOut;
+    private Integer connectTimeout;
 
     private String compressionType;
 
@@ -60,28 +60,28 @@ public class KafkaResourceConfig implements BaseResourceConfig{
         this.password = password;
     }
 
-    public Long getMetadataUpdateTime() {
+    public Integer getMetadataUpdateTime() {
         return metadataUpdateTime;
     }
 
-    public void setMetadataUpdateTime(Long metadataUpdateTime) {
+    public void setMetadataUpdateTime(Integer metadataUpdateTime) {
         this.metadataUpdateTime = metadataUpdateTime;
     }
 
-    public Long getReqTimeout() {
+    public Integer getReqTimeout() {
         return reqTimeout;
     }
 
-    public void setReqTimeout(Long reqTimeout) {
+    public void setReqTimeout(Integer reqTimeout) {
         this.reqTimeout = reqTimeout;
     }
 
-    public Long getConnectTimeOut() {
-        return connectTimeOut;
+    public Integer getConnectTimeout() {
+        return connectTimeout;
     }
 
-    public void setConnectTimeOut(Long connectTimeOut) {
-        this.connectTimeOut = connectTimeOut;
+    public void setConnectTimeout(Integer connectTimeout) {
+        this.connectTimeout = connectTimeout;
     }
 
     public String getCompressionType() {

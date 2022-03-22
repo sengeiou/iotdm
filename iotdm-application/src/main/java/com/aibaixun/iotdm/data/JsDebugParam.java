@@ -16,7 +16,6 @@ public class JsDebugParam {
     @NotBlank(message = "jsScript脚本不允许为空")
     private String jsScriptBody;
 
-    @NotBlank(message = "主题不允许为空")
     private String topic;
 
     @NotNull
