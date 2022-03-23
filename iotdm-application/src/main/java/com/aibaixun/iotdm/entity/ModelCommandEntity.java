@@ -1,6 +1,7 @@
 package com.aibaixun.iotdm.entity;
 
 import com.aibaixun.iotdm.data.BaseParam;
+import com.aibaixun.iotdm.mybatis.BaseParamListTypeHandler;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
@@ -35,13 +36,13 @@ public class ModelCommandEntity extends BaseEntity {
     /**
      * 参数
      */
-    @TableField(typeHandler = JacksonTypeHandler.class)
+    @TableField(typeHandler = BaseParamListTypeHandler.class)
     private List<BaseParam>  params;
 
     /**
      * 返回结果
      */
-    @TableField(typeHandler = JacksonTypeHandler.class)
+    @TableField(typeHandler = BaseParamListTypeHandler.class)
     private List<BaseParam> responses;
 
     /**
