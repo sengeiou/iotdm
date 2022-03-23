@@ -18,8 +18,8 @@
         <collection property="commands" ofType="com.aibaixun.iotdm.entity.ModelCommandEntity">
             <id column="mcid" property="id" />
             <result column="command_label" property="commandLabel" />
-            <result column="params" property="params" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
-            <result column="responses" property="responses" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+            <result column="params" property="params" typeHandler="com.aibaixun.iotdm.mybatis.BaseParamListTypeHandler"/>
+            <result column="responses" property="responses" typeHandler="com.aibaixun.iotdm.mybatis.BaseParamListTypeHandler"/>
             <result column="mcdescription" property="description" />
         </collection>
     </resultMap>
