@@ -87,7 +87,8 @@ public class DeviceTraceController extends BaseController{
         List<MessageTraceEntity> messageTraceEntities = messageTraceService.queryMessageTrace(deviceId, businessType,messageStatus);
         Long ttl = ((Long) redisRepository.getHashValues(DataConstants.IOT_DEVICE_DEBUG_CACHE_KEY , deviceId));
         if (Objects.isNull(ttl) || ttl < Instant.now().toEpochMilli()){
-            redisRepository.putHashValue(DataConstants.IOT_DEVICE_DEBUG_CACHE_KEY,deviceId,ttl );
+            long value = Instant.now().toEpochMilli() + 10000;
+            redisRepository.putHashValue(DataConstants.IOT_DEVICE_DEBUG_CACHE_KEY,deviceId,value );
         }
         return JsonResult.success(messageTraceEntities);
     }
