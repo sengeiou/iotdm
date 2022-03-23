@@ -70,7 +70,6 @@ public class HttpSendService implements SendService{
 
         Request.Builder builder= new Request.Builder();
         builder.url(url).method(method,RequestBody.create(mediaType, data));
-
         for (Map.Entry<String, String> stringStringEntry : headers.entrySet()) {
             builder.addHeader(stringStringEntry.getKey(), stringStringEntry.getValue());
         }

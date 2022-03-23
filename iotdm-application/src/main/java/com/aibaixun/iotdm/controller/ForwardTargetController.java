@@ -53,6 +53,11 @@ public class ForwardTargetController extends BaseController{
 
     @PostMapping
     public JsonResult<Boolean> createRuleForwardTarget (@RequestBody @Valid ForwardTargetEntity forwardTargetEntity) throws BaseException {
+        Long aLong = forwardTargetService.countTargetByRuleId(forwardTargetEntity.getForwardRuleId());
+        final  int maxTargetNum = 10;
+        if (aLong>=maxTargetNum){
+            throw new BaseException("转发目标不允许超过10", BaseResultCode.GENERAL_ERROR);
+        }
         checkResourceAndRule(forwardTargetEntity);
         redisRepository.delHashValues(IOT_TENANT_FORWARD_KEY, UserInfoUtil.getTenantIdOfNull());
         boolean save = forwardTargetService.save(forwardTargetEntity);
@@ -69,7 +74,7 @@ public class ForwardTargetController extends BaseController{
         }
         checkResourceAndRule(forwardTargetEntity);
         redisRepository.delHashValues(IOT_TENANT_FORWARD_KEY, UserInfoUtil.getTenantIdOfNull());
-        boolean save = forwardTargetService.save(forwardTargetEntity);
+        boolean save = forwardTargetService.updateById(forwardTargetEntity);
         return JsonResult.success(save);
     }
 

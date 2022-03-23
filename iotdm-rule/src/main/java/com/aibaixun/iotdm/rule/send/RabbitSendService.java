@@ -55,10 +55,10 @@ public class RabbitSendService implements SendService{
             factory.setPassword(password);
             factory.setAutomaticRecoveryEnabled(true);
             if (Objects.nonNull(connectTimeout)){
-                factory.setConnectionTimeout(connectTimeout*100);
+                factory.setConnectionTimeout(connectTimeout*1000);
             }
             if (Objects.nonNull(keepLive)){
-                factory.setHandshakeTimeout(keepLive*100);
+                factory.setHandshakeTimeout(keepLive*1000);
             }
 
             try {

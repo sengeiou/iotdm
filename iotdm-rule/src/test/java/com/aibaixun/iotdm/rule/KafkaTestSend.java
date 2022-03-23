@@ -2,7 +2,6 @@ package com.aibaixun.iotdm.rule;
 
 import com.aibaixun.common.util.JsonUtil;
 import com.aibaixun.iotdm.rule.pool.PoolResource;
-import com.aibaixun.iotdm.rule.send.KafkaSendService;
 import com.aibaixun.iotdm.support.KafkaResourceConfig;
 import com.aibaixun.iotdm.support.KafkaTargetConfig;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -26,20 +25,17 @@ public class KafkaTestSend {
 
     public static void main(String[] args) throws JsonProcessingException {
         kafkaConnections =  new LRUCache<>(10);
-        String kafkaConfig = "{\"host\": \"172.16.9.136:9092\", \"password\": null, \"username\": null, \"batchSize\": null, \"bufferSize\": null, \"reqTimeout\": null, \"resourceType\": \"KAFKA\", \"connectTimeout\": null, \"compressionType\": \"gzip\", \"metadataUpdateTime\": null}";
+        String kafkaConfig = "{\"host\": \"172.16.7.136:9092\", \"password\": null, \"username\": null, \"batchSize\": null, \"bufferSize\": null, \"reqTimeout\": null, \"resourceType\": \"KAFKA\", \"connectTimeout\": null, \"compressionType\": \"gzip\", \"metadataUpdateTime\": null}";
         KafkaResourceConfig kafkaResourceConfig = JsonUtil.toObject(kafkaConfig, KafkaResourceConfig.class);
-        String kafkaTargetConfig = "{\"topic\": \"test123\", \"messageKey\": \"none\", \"produceType\": \"random\", \"resourceType\": \"KAFKA\", \"produceStrategy\": \"async\"}";
+        String kafkaTargetConfig = "{\"topic\": \"mykafka\", \"messageKey\": \"none\", \"produceType\": \"random\", \"resourceType\": \"KAFKA\", \"produceStrategy\": \"async\"}";
         KafkaTargetConfig targetConfig = JsonUtil.toObject(kafkaTargetConfig, KafkaTargetConfig.class);
         KafkaProducer<String,String> kafkaProducer = generateClient(kafkaResourceConfig);
         String message = "hello";
-        kafkaProducer.send(new ProducerRecord<>(targetConfig.getTopic(), OBJECT_MAPPER.writeValueAsString(message)), new Callback() {
-            @Override
-            public void onCompletion(RecordMetadata recordMetadata, Exception e) {
-                if (e== null){
-                    System.out.println("success");
-                }else {
-                    System.out.println(e.getMessage());
-                }
+        kafkaProducer.send(new ProducerRecord<>(targetConfig.getTopic(), OBJECT_MAPPER.writeValueAsString(message)), (recordMetadata, e) -> {
+            if (e== null){
+                System.out.println("success");
+            }else {
+                System.out.println(e.getMessage());
             }
         });
     }
