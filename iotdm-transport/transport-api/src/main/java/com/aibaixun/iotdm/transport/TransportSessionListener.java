@@ -22,9 +22,10 @@ public interface TransportSessionListener {
 
     /**
      * 设备配置下发请求
+     * @param sendId 发送id
      * @param payload 命令数据
      */
-    void on2DeviceControlReq(String payload);
+    void on2DeviceControlReq(Integer sendId,String payload);
 
     /**
      * 关闭会话

@@ -127,9 +127,9 @@ public class DefaultTransportServer implements TransportService {
 
 
     @Override
-    public void processMessageUp(SessionId sessionId,  String payload, TransportServiceCallback<Void> callback) {
+    public void processMessageUp(SessionId sessionId, DataFormat dataFormat, String payload, TransportServiceCallback<Void> callback) {
         if (checkSessionAndLimit(sessionId)){
-            ListenableFuture<Void> listenableFuture = Futures.submit(() -> iotDmEventPublisher.publishMessageUpEvent(sessionId.getProductId(), sessionId.getDeviceId(), payload), MoreExecutors.directExecutor());
+            ListenableFuture<Void> listenableFuture = Futures.submit(() -> iotDmEventPublisher.publishMessageUpEvent(sessionId.getProductId(), sessionId.getDeviceId(), dataFormat,payload), MoreExecutors.directExecutor());
             AsyncCallbackTemplate.withCallback(listenableFuture,callback::onSuccess,callback::onError,MoreExecutors.directExecutor());
         }
     }
@@ -184,6 +184,11 @@ public class DefaultTransportServer implements TransportService {
             ListenableFuture<Void> listenableFuture = Futures.submit(() -> iotDmEventPublisher.publishControlReqEvent(sessionId.getProductId(), sessionId.getDeviceId(), dataFormat, payload), MoreExecutors.directExecutor());
             AsyncCallbackTemplate.withCallback(listenableFuture,callback::onSuccess,callback::onError,MoreExecutors.directExecutor());
         }
+    }
+
+    @Override
+    public void processControlIsSend(Integer sendId, int msgId) {
+         Futures.submit(() -> deviceInfoService.setControlMsgId(sendId,msgId), MoreExecutors.directExecutor());
     }
 
     /**

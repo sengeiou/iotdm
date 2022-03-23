@@ -17,6 +17,7 @@ public class DeviceOtaRespEvent {
 
     private String payload;
 
+
     public String getDeviceId() {
         return deviceId;
     }
@@ -51,6 +52,8 @@ public class DeviceOtaRespEvent {
 
     public DeviceOtaRespEvent() {
     }
+
+
 
     public DeviceOtaRespEvent(String deviceId, String productId, DataFormat dataFormat, String payload) {
         this.deviceId = deviceId;

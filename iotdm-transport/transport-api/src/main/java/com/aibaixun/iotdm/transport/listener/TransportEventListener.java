@@ -69,7 +69,7 @@ public class TransportEventListener {
             return;
         }
         String payload = deviceControlEvent.getPayload();
-        sessionMeta.getListener().on2DeviceControlReq(payload);
+        sessionMeta.getListener().on2DeviceControlReq(deviceControlEvent.getSendId(),payload);
     }
 
     @EventListener

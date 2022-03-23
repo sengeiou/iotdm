@@ -82,8 +82,10 @@ public class DefaultDeviceInfoServer extends BaseSqlInfoServer implements Device
         return sqlExecutorService.submit(()->deviceCommandSendService.updateDeviceCommandStatus2Received(deviceId, msgId));
     }
 
-
-
+    @Override
+    public void setControlMsgId(Integer sendId, Integer msgId) {
+        sqlExecutorService.submit(()->deviceCommandSendService.updateDeviceCommandToSetMsgId(sendId, msgId));
+    }
 
     @Override
     public void onRedisExpirationMessage(String redisKey) {

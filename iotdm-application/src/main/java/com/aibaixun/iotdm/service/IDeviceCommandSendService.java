@@ -1,10 +1,9 @@
 package com.aibaixun.iotdm.service;
 
 import com.aibaixun.iotdm.entity.DeviceCommandSendEntity;
+import com.aibaixun.iotdm.enums.SendStatus;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-
-import java.util.List;
 
 /**
  * <p>
@@ -39,5 +38,23 @@ public interface IDeviceCommandSendService extends IService<DeviceCommandSendEnt
      * @return 状态
      */
     Boolean updateDeviceCommandStatus2Received(String deviceId,Integer msgId);
+
+    /**
+     * 设置msg is
+     * @param sendId 发送id
+     * @param msgId 消息id
+     * @return 修改结果
+     */
+    Boolean updateDeviceCommandToSetMsgId(Integer sendId, Integer msgId);
+
+
+    /**
+     * 修改设备
+     * @param deviceId 设备id
+     * @param reqId 请求id
+     * @param targetStatus 目标状态
+     * @return 修改结果
+     */
+    Boolean updateDeviceCommand(String deviceId, Integer reqId, SendStatus targetStatus);
 
 }

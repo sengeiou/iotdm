@@ -63,5 +63,13 @@ public interface DeviceInfoServer {
      */
     void onRedisExpirationMessage(String redisKey);
 
+
+    /**
+     * 设置 命令发送id
+     * @param sendId send id
+     * @param msgId 消息id
+     */
+    void setControlMsgId(Integer sendId,Integer msgId);
+
 }
 

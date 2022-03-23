@@ -80,24 +80,12 @@ public class ToDeviceController extends BaseController{
             return JsonResult.failed("设备不存在或者设备不在线");
         }
         ProductEntity product = productService.getById(deviceEntity.getProductId());
-        String messageStr = message.getMessage();
-        toDeviceProcessor.processFakeDeviceMessage(deviceEntity,product,bin2hex(messageStr));
+        toDeviceProcessor.processFakeDeviceMessage(deviceEntity,product,message.getMessage());
         return JsonResult.successJustMsg("设备模拟消息已经发送，但不代表会执行成功");
     }
 
 
-    private String bin2hex(String input) {
-        StringBuilder sb = new StringBuilder();
-        int len = input.length();
 
-        for (int i = 0; i < len / 4; i++){
-            String temp = input.substring(i * 4, (i + 1) * 4);
-            int tempInt = Integer.parseInt(temp, 2);
-            String tempHex = Integer.toHexString(tempInt).toUpperCase();
-            sb.append(tempHex);
-        }
-        return sb.toString();
-    }
     /**
      * 监测设备存在 与是否在线
      * @param deviceEntity device

@@ -81,10 +81,11 @@ public interface TransportService {
     /**
      * 设备上报消息信息
      * @param sessionId session 信息
+     * @param dataFormat 数据格式
      * @param payload 负载内容
      * @param callback 回调函数
      */
-    void  processMessageUp(SessionId sessionId, String payload,TransportServiceCallback<Void> callback);
+    void  processMessageUp(SessionId sessionId, DataFormat dataFormat,String payload,TransportServiceCallback<Void> callback);
 
 
     /**
@@ -136,5 +137,12 @@ public interface TransportService {
      * @param payload 负载内容
      */
     void  processControlReqUp(SessionId sessionId, DataFormat dataFormat,String payload,TransportServiceCallback<Void> callback);
+
+    /**
+     * 命令控制 反馈msg id
+     * @param sendId 发送id
+     * @param msgId 消息id
+     */
+    void processControlIsSend(Integer sendId,int msgId);
 
 }

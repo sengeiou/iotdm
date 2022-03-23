@@ -148,6 +148,8 @@ public class DeviceCommandSendEntity extends BaseEntity {
         this.msgId = msgId;
     }
 
+
+
     @Override
     public String toString() {
         return "DeviceCommandSend{" +

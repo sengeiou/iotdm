@@ -502,7 +502,7 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
      */
     private void  processMessageUp(ChannelHandlerContext channelHandlerContext,MqttPublishMessage mqttPublishMessage,int msgId) {
         String payload = getHexPayload(mqttPublishMessage.payload());
-        transportService.processMessageUp(deviceSessionCtx.getSessionId(),  payload, pubAckCallback(channelHandlerContext,msgId));
+        transportService.processMessageUp(deviceSessionCtx.getSessionId(),deviceSessionCtx.getDataFormat(),  payload, pubAckCallback(channelHandlerContext,msgId));
         transportService.reportActivity(deviceSessionCtx.getSessionId());
     }
 
@@ -672,13 +672,16 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
     }
 
     @Override
-    public void on2DeviceControlReq(String payload) {
+    public void on2DeviceControlReq(Integer sendId, String payload) {
         if (StringUtils.isBlank(payload)){
             return;
         }
         MqttPublishMessage publishMessage = getMqttPublishMessage(payload, CONTROL_REQ);
+        int i = publishMessage.variableHeader().packetId();
         deviceSessionCtx.getChannel().writeAndFlush(publishMessage);
+        transportService.processControlIsSend(sendId,i);
     }
+
 
 
     @Override

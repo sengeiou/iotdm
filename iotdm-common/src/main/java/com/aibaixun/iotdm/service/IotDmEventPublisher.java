@@ -36,9 +36,10 @@ public interface IotDmEventPublisher {
      * 消息发布事件
      * @param productId 产品id
      * @param deviceId 设备id
+     * @param dataFormat 数据格式
      * @param payload 负载
      */
-    void publishMessageUpEvent(String productId,String deviceId, String payload);
+    void publishMessageUpEvent(String productId,String deviceId, DataFormat dataFormat,String payload);
 
 
     /**

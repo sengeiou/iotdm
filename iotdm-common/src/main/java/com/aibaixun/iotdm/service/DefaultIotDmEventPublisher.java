@@ -33,8 +33,8 @@ public class DefaultIotDmEventPublisher implements IotDmEventPublisher {
     }
 
     @Override
-    public void publishMessageUpEvent(String productId, String deviceId, String payload) {
-        applicationEventPublisher.publishEvent(new DeviceMessageUpEvent(deviceId,productId,payload));
+    public void publishMessageUpEvent(String productId, String deviceId, DataFormat dataFormat,String payload) {
+        applicationEventPublisher.publishEvent(new DeviceMessageUpEvent(deviceId,productId,dataFormat,payload));
     }
 
 

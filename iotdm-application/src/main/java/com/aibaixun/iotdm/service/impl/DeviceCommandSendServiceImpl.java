@@ -59,4 +59,25 @@ public class DeviceCommandSendServiceImpl extends ServiceImpl<DeviceCommandSendM
         updateWrapper.set(DeviceCommandSendEntity::getSendStatus, SendStatus.SEND_ARRIVE).set(DeviceCommandSendEntity::getRespTs, Instant.now().toEpochMilli());
         return update(updateWrapper);
     }
+
+    @Override
+    public Boolean updateDeviceCommandToSetMsgId(Integer sendId, Integer msgId) {
+        LambdaUpdateWrapper<DeviceCommandSendEntity> updateWrapper = Wrappers.lambdaUpdate();
+        updateWrapper.eq(DeviceCommandSendEntity::getReqId,sendId)
+                .eq(DeviceCommandSendEntity::getSendStatus, SendStatus.SEND)
+                .set(DeviceCommandSendEntity::getMsgId,msgId)
+                .set(DeviceCommandSendEntity::getRespTs, Instant.now().toEpochMilli());
+        return update(updateWrapper);
+    }
+
+
+    @Override
+    public Boolean updateDeviceCommand(String deviceId, Integer reqId, SendStatus targetStatus) {
+        LambdaUpdateWrapper<DeviceCommandSendEntity> updateWrapper = Wrappers.<DeviceCommandSendEntity>lambdaUpdate()
+                .eq(DeviceCommandSendEntity::getDeviceId,deviceId)
+                .eq(DeviceCommandSendEntity::getReqId,reqId)
+                .eq(DeviceCommandSendEntity::getSendStatus, SendStatus.SEND_ARRIVE);
+        updateWrapper.set(DeviceCommandSendEntity::getSendStatus, targetStatus);
+        return update(updateWrapper);
+    }
 }

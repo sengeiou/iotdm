@@ -9,7 +9,17 @@ import com.aibaixun.iotdm.transport.SessionId;
  */
 public class ToDeviceOtaEvent extends BaseToDeviceEvent {
 
+    private Integer sendId;
+
     public ToDeviceOtaEvent(SessionId sessionId, String payload) {
         super(sessionId, payload);
+    }
+
+    public Integer getSendId() {
+        return sendId;
+    }
+
+    public void setSendId(Integer sendId) {
+        this.sendId = sendId;
     }
 }

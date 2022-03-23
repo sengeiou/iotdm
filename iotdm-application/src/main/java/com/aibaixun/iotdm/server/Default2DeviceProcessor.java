@@ -14,6 +14,7 @@ import com.aibaixun.iotdm.enums.DataFormat;
 import com.aibaixun.iotdm.event.ToDeviceCloseConnectEvent;
 import com.aibaixun.iotdm.event.ToDeviceConfigEvent;
 import com.aibaixun.iotdm.event.ToDeviceControlEvent;
+import com.aibaixun.iotdm.event.ToDeviceOtaEvent;
 import com.aibaixun.iotdm.script.JsInvokeService;
 import com.aibaixun.iotdm.service.*;
 import com.aibaixun.iotdm.support.ToDeviceCommandTransportData;
@@ -86,11 +87,12 @@ public class Default2DeviceProcessor implements ToDeviceProcessor{
 
     @Override
     public void processOta(String deviceId, String productId, String otaId) {
-
+        eventPublisher.publish2DeviceOtaReqEvent(new ToDeviceOtaEvent(new SessionId(deviceId,productId),""));
     }
 
     @Override
     public void processControl(String deviceId, String productId, String commandId, Map<String, Object> params) throws BaseException {
+        int reqId = ThreadLocalRandom.current().nextInt(2<<12);
         ProductEntity product = productService.getById(productId);
         if (Objects.isNull(product)){
             throw new BaseException("产品不存在", BaseResultCode.GENERAL_ERROR);
@@ -108,6 +110,7 @@ public class Default2DeviceProcessor implements ToDeviceProcessor{
                 toDeviceParam.put(paramLabel,o);
             }
         }
+        toDeviceParam.put("reqId",reqId);
         ToDeviceCommandTransportData toDeviceCommandData = new ToDeviceCommandTransportData(ToDeviceType.COMMAND);
         toDeviceCommandData.setCommandLabel(modelCommand.getCommandLabel());
         toDeviceCommandData.setModelId(modelCommand.getProductModelId());
@@ -131,11 +134,11 @@ public class Default2DeviceProcessor implements ToDeviceProcessor{
         deviceCommandSendEntity.setCommandLabel(modelCommand.getCommandLabel());
         deviceCommandSendEntity.setParams(payload);
         deviceCommandSendEntity.setTs(Instant.now().toEpochMilli());
-        deviceCommandSendEntity.setReqId(ThreadLocalRandom.current().nextInt(2<< 10));
+        deviceCommandSendEntity.setReqId(reqId);
         deviceCommandSendEntity.setSendStatus(SendStatus.SEND);
         deviceCommandSendService.save(deviceCommandSendEntity);
         ToDeviceControlEvent toDeviceControlEvent = new ToDeviceControlEvent(new SessionId(deviceId, productId), payload);
-        toDeviceControlEvent.setSendId(deviceCommandSendEntity.getId());
+        toDeviceControlEvent.setSendId(reqId);
         eventPublisher.publish2ControlReqEvent(toDeviceControlEvent);
     }
 
@@ -152,6 +155,9 @@ public class Default2DeviceProcessor implements ToDeviceProcessor{
 
     @Override
     public void processFakeDeviceMessage(DeviceEntity deviceEntity, ProductEntity product, String message) {
+        if (DataFormat.BINARY.equals(product.getDataFormat())){
+            message = bin2hex(message);
+        }
         eventPublisher.publishPropertyUpEvent(deviceEntity.getProductId(),deviceEntity.getId(),product.getDataFormat(),message);
     }
 
@@ -194,5 +200,19 @@ public class Default2DeviceProcessor implements ToDeviceProcessor{
     @Autowired
     public void setEventPublisher(IotDmEventPublisher eventPublisher) {
         this.eventPublisher = eventPublisher;
+    }
+
+
+    private String bin2hex(String input) {
+        StringBuilder sb = new StringBuilder();
+        int len = input.length();
+        int hexMask = 4;
+        for (int i = 0; i < len / hexMask; i++){
+            String temp = input.substring(i * 4, (i + 1) * 4);
+            int tempInt = Integer.parseInt(temp, 2);
+            String tempHex = Integer.toHexString(tempInt).toUpperCase();
+            sb.append(tempHex);
+        }
+        return sb.toString();
     }
 }

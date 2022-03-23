@@ -1,5 +1,7 @@
 package com.aibaixun.iotdm.event;
 
+import com.aibaixun.iotdm.enums.DataFormat;
+
 /**
  * 消息上报
  * @author wangxiao@aibaixun.com
@@ -9,9 +11,13 @@ public class DeviceMessageUpEvent extends BaseDataEvent{
 
     private String payload;
 
-    public DeviceMessageUpEvent(String deviceId, String productId, String payload) {
+    private DataFormat dataFormat;
+
+
+    public DeviceMessageUpEvent(String deviceId, String productId,  DataFormat dataFormat,String payload) {
         super(deviceId, productId);
         this.payload = payload;
+        this.dataFormat = dataFormat;
     }
 
     public DeviceMessageUpEvent() {
@@ -25,6 +31,14 @@ public class DeviceMessageUpEvent extends BaseDataEvent{
         this.payload = payload;
     }
 
+
+    public DataFormat getDataFormat() {
+        return dataFormat;
+    }
+
+    public void setDataFormat(DataFormat dataFormat) {
+        this.dataFormat = dataFormat;
+    }
 
     @Override
     public String toString() {
