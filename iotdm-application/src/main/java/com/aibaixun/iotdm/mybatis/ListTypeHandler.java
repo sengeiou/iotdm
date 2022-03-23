@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 集合 json 映射类
  * @author wangxiao@aibaixun.com
  * @date 2022/3/23
  */

@@ -1,7 +1,7 @@
 package com.aibaixun.iotdm.service.impl;
 
 import com.aibaixun.iotdm.entity.DeviceCommandSendEntity;
-import com.aibaixun.iotdm.enums.CommandSendStatus;
+import com.aibaixun.iotdm.enums.SendStatus;
 import com.aibaixun.iotdm.mapper.DeviceCommandSendMapper;
 import com.aibaixun.iotdm.service.IDeviceCommandSendService;
 import com.aibaixun.iotdm.util.UserInfoUtil;
@@ -14,7 +14,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -56,8 +55,8 @@ public class DeviceCommandSendServiceImpl extends ServiceImpl<DeviceCommandSendM
     @Override
     public Boolean updateDeviceCommandStatus2Received(String deviceId, Integer msgId) {
         LambdaUpdateWrapper<DeviceCommandSendEntity> updateWrapper = Wrappers.lambdaUpdate();
-        updateWrapper.eq(DeviceCommandSendEntity::getDeviceId,deviceId).eq(DeviceCommandSendEntity::getMsgId,msgId).eq(DeviceCommandSendEntity::getSendStatus, CommandSendStatus.SEND);
-        updateWrapper.set(DeviceCommandSendEntity::getSendStatus,CommandSendStatus.SEND_ARRIVE).set(DeviceCommandSendEntity::getRespTs, Instant.now().toEpochMilli());
+        updateWrapper.eq(DeviceCommandSendEntity::getDeviceId,deviceId).eq(DeviceCommandSendEntity::getMsgId,msgId).eq(DeviceCommandSendEntity::getSendStatus, SendStatus.SEND);
+        updateWrapper.set(DeviceCommandSendEntity::getSendStatus, SendStatus.SEND_ARRIVE).set(DeviceCommandSendEntity::getRespTs, Instant.now().toEpochMilli());
         return update(updateWrapper);
     }
 }

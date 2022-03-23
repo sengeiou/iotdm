@@ -45,11 +45,12 @@ public class DefaultIotDmEventPublisher implements IotDmEventPublisher {
     }
 
 
-
     @Override
-    public void publishConfigRespUpEvent(String productId,String deviceId,  DataFormat dataFormat, String payload) {
-        logger.warn("配置更改结果，deviceId:{},payload:{}",deviceId,payload);
+    public void publishConfigRespUpEvent(String productId, String deviceId) {
+        applicationEventPublisher.publishEvent(new ConfigRespEvent(deviceId,productId));
     }
+
+
 
     @Override
     public void publishOtaRespUpEvent(String productId, String deviceId, DataFormat dataFormat, String payload) {

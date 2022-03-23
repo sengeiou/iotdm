@@ -6,21 +6,16 @@ import com.aibaixun.basic.result.BaseResultCode;
 import com.aibaixun.basic.toolkit.HexTool;
 import com.aibaixun.common.util.JsonUtil;
 import com.aibaixun.iotdm.data.BaseParam;
-import com.aibaixun.iotdm.entity.DeviceCommandSendEntity;
-import com.aibaixun.iotdm.entity.DeviceEntity;
-import com.aibaixun.iotdm.entity.ModelCommandEntity;
-import com.aibaixun.iotdm.entity.ProductEntity;
+import com.aibaixun.iotdm.data.ToDeviceConfigParam;
+import com.aibaixun.iotdm.entity.*;
 import com.aibaixun.iotdm.enums.BusinessStep;
-import com.aibaixun.iotdm.enums.CommandSendStatus;
+import com.aibaixun.iotdm.enums.SendStatus;
 import com.aibaixun.iotdm.enums.DataFormat;
 import com.aibaixun.iotdm.event.ToDeviceCloseConnectEvent;
 import com.aibaixun.iotdm.event.ToDeviceConfigEvent;
 import com.aibaixun.iotdm.event.ToDeviceControlEvent;
 import com.aibaixun.iotdm.script.JsInvokeService;
-import com.aibaixun.iotdm.service.IDeviceCommandSendService;
-import com.aibaixun.iotdm.service.IModelCommandService;
-import com.aibaixun.iotdm.service.IProductService;
-import com.aibaixun.iotdm.service.IotDmEventPublisher;
+import com.aibaixun.iotdm.service.*;
 import com.aibaixun.iotdm.support.ToDeviceCommandTransportData;
 import com.aibaixun.iotdm.support.ToDeviceConfigTransportData;
 import com.aibaixun.iotdm.support.ToDeviceType;
@@ -57,15 +52,21 @@ public class Default2DeviceProcessor implements ToDeviceProcessor{
 
     private IotDmEventPublisher eventPublisher;
 
+    private IDeviceConfigSendService deviceConfigSendService;
 
     @Override
-    public void processConfig(String deviceId, String productId, String host, Integer port) throws BaseException {
-
+    public void processConfig(ToDeviceConfigParam toDeviceConfigParam,String productId) throws BaseException {
+        String deviceId = toDeviceConfigParam.getDeviceId();
         ProductEntity product = productService.getById(productId);
         if (Objects.isNull(product)){
             throw new BaseException("产品不存在", BaseResultCode.GENERAL_ERROR);
         }
-        ToDeviceConfigTransportData deviceConfigTransportData = new ToDeviceConfigTransportData(ToDeviceType.CONFIG,host,port);
+        String host = toDeviceConfigParam.getHost();
+        Integer port = toDeviceConfigParam.getPort();
+        String username = toDeviceConfigParam.getUsername();
+        String clientId = toDeviceConfigParam.getClientId();
+        String password = toDeviceConfigParam.getPassword();
+        ToDeviceConfigTransportData deviceConfigTransportData = new ToDeviceConfigTransportData(ToDeviceType.CONFIG,host,port,clientId,username,password);
         String payload = JsonUtil.toJSONString(deviceConfigTransportData);
         if (DataFormat.BINARY.equals(product.getDataFormat())){
             try {
@@ -75,6 +76,11 @@ public class Default2DeviceProcessor implements ToDeviceProcessor{
             }
         }
         ToDeviceConfigEvent toDeviceConfigEvent = new ToDeviceConfigEvent(new SessionId(deviceId, productId), payload);
+        DeviceConfigSendEntity deviceConfigSendEntity = new DeviceConfigSendEntity();
+        deviceConfigSendEntity.setDeviceId(deviceId);
+        deviceConfigSendEntity.setPayload(payload);
+        deviceConfigSendEntity.setSendStatus(SendStatus.SEND);
+        deviceConfigSendService.saveOrUpdateConfigSend(deviceConfigSendEntity);
         eventPublisher.publish2DeviceConfigReqEvent(toDeviceConfigEvent);
     }
 
@@ -126,7 +132,7 @@ public class Default2DeviceProcessor implements ToDeviceProcessor{
         deviceCommandSendEntity.setParams(payload);
         deviceCommandSendEntity.setTs(Instant.now().toEpochMilli());
         deviceCommandSendEntity.setReqId(ThreadLocalRandom.current().nextInt(2<< 10));
-        deviceCommandSendEntity.setSendStatus(CommandSendStatus.SEND);
+        deviceCommandSendEntity.setSendStatus(SendStatus.SEND);
         deviceCommandSendService.save(deviceCommandSendEntity);
         ToDeviceControlEvent toDeviceControlEvent = new ToDeviceControlEvent(new SessionId(deviceId, productId), payload);
         toDeviceControlEvent.setSendId(deviceCommandSendEntity.getId());
@@ -178,6 +184,11 @@ public class Default2DeviceProcessor implements ToDeviceProcessor{
     @Autowired
     public void setDeviceLogProcessor(DeviceLogProcessor deviceLogProcessor) {
         this.deviceLogProcessor = deviceLogProcessor;
+    }
+
+    @Autowired
+    public void setDeviceConfigSendService(IDeviceConfigSendService deviceConfigSendService) {
+        this.deviceConfigSendService = deviceConfigSendService;
     }
 
     @Autowired

@@ -4,7 +4,6 @@ import com.aibaixun.iotdm.data.BaseParam;
 import com.aibaixun.iotdm.mybatis.BaseParamListTypeHandler;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 
 import javax.validation.constraints.NotBlank;
 import java.util.List;

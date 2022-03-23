@@ -1,12 +1,7 @@
 package com.aibaixun.iotdm.entity;
 
-import com.aibaixun.iotdm.enums.CommandSendStatus;
-import com.aibaixun.iotdm.data.BaseParam;
-import com.baomidou.mybatisplus.annotation.TableField;
+import com.aibaixun.iotdm.enums.SendStatus;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
-
-import java.util.List;
 
 
 /**
@@ -64,7 +59,7 @@ public class DeviceCommandSendEntity extends BaseEntity {
     /**
      * 发送状态
      */
-    private CommandSendStatus sendStatus;
+    private SendStatus sendStatus;
 
     /**
      * mqtt 消息id
@@ -137,11 +132,11 @@ public class DeviceCommandSendEntity extends BaseEntity {
         this.reqId = reqId;
     }
 
-    public CommandSendStatus getSendStatus() {
+    public SendStatus getSendStatus() {
         return sendStatus;
     }
 
-    public void setSendStatus(CommandSendStatus sendStatus) {
+    public void setSendStatus(SendStatus sendStatus) {
         this.sendStatus = sendStatus;
     }
 

@@ -45,10 +45,8 @@ public interface IotDmEventPublisher {
      * 发布设备配置更改修改反馈事件
      * @param productId 产品id
      * @param deviceId 设备id
-     * @param dataFormat 数据格式
-     * @param payload 负载
      */
-    void  publishConfigRespUpEvent(String productId,String deviceId,  DataFormat dataFormat, String payload);
+    void  publishConfigRespUpEvent(String productId,String deviceId);
 
 
 

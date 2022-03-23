@@ -315,7 +315,7 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
                    processMessageUp(channelHandlerContext,mqttPublishMessage,msgId);
                    break;
                case CONFIG_RESP:
-                   processConfigRespUp(channelHandlerContext,mqttPublishMessage,msgId);
+                   processConfigRespUp(channelHandlerContext, msgId);
                    break;
                case OTA_RESP:
                    processOtaRespUp(channelHandlerContext,mqttPublishMessage,msgId);
@@ -509,13 +509,10 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
     /**
      * 配置上报反馈
      * @param channelHandlerContext ctx
-     * @param mqttPublishMessage mqtt 消息发布
      * @param msgId 消息 id
      */
-    public void processConfigRespUp(ChannelHandlerContext channelHandlerContext,MqttPublishMessage mqttPublishMessage,int msgId){
-        String payload = getPayload(mqttPublishMessage);
-        transportService.processConfigRespUp(deviceSessionCtx.getSessionId(), deviceSessionCtx.getDataFormat(), payload,
-                pubAckCallback(channelHandlerContext,msgId));
+    public void processConfigRespUp(ChannelHandlerContext channelHandlerContext, int msgId){
+        transportService.processConfigRespUp(deviceSessionCtx.getSessionId(), pubAckCallback(channelHandlerContext,msgId));
     }
 
     /**
@@ -663,7 +660,6 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
         }
         MqttPublishMessage publishMessage = getMqttPublishMessage(payload, CONFIG_REQ);
         deviceSessionCtx.getChannel().writeAndFlush(publishMessage);
-
     }
 
     @Override

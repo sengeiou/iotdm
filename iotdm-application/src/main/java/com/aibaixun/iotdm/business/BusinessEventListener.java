@@ -6,10 +6,7 @@ import com.aibaixun.iotdm.constants.TopicConstants;
 import com.aibaixun.iotdm.enums.BusinessStep;
 import com.aibaixun.iotdm.enums.BusinessType;
 import com.aibaixun.iotdm.enums.DataFormat;
-import com.aibaixun.iotdm.event.DeviceMessageUpEvent;
-import com.aibaixun.iotdm.event.DevicePropertyUpEvent;
-import com.aibaixun.iotdm.event.DeviceSessionEvent;
-import com.aibaixun.iotdm.event.EntityChangeEvent;
+import com.aibaixun.iotdm.event.*;
 import com.aibaixun.iotdm.script.JsInvokeService;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.slf4j.Logger;
@@ -97,8 +94,13 @@ public class BusinessEventListener {
     @EventListener
     @Async("taskExecutor")
     public void onEntityChangeEvent(EntityChangeEvent entityChangeEvent){
-        log.info(String.valueOf(entityChangeEvent));
         entityProcessor.doProcessEntityChangeEvent(entityChangeEvent);
+    }
+
+    @EventListener
+    @Async("taskExecutor")
+    public void onConfigRespEvent(ConfigRespEvent configRespEvent){
+        entityProcessor.doProcessConfigRespEvent(configRespEvent);
     }
 
 

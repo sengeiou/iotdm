@@ -105,11 +105,9 @@ public interface TransportService {
     /**
      * 设备上报配置更改反馈
      * @param sessionId session 信息
-     * @param payload 负载内容
-     * @param dataFormat 数据格式
      * @param callback 回调函数
      */
-    void  processConfigRespUp(SessionId sessionId,  DataFormat dataFormat,String payload,TransportServiceCallback<Void> callback);
+    void  processConfigRespUp(SessionId sessionId,  TransportServiceCallback<Void> callback);
 
     /**
      * 设备上报OTA更改反馈

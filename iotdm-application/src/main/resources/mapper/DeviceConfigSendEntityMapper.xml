@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aibaixun.iotdm.mapper.DeviceConfigSendEntityMapper">
+
+
+
+    <insert id="saveOrUpdateConfigSend" parameterType="com.aibaixun.iotdm.entity.DeviceConfigSendEntity">
+        INSERT INTO t_device_config_send
+        (device_id, payload, send_status,create_time, update_time,  creator,tenant_id)                                                                                                                                                                                                                                          property_value, ts)
+        VALUES
+        (#{entity.deviceId},#{entity.payload},#{entity.sendStatus},#{entity.createTime},#{entity.updateTime},#{entity.creator},#{entity.tenantId})
+        ON DUPLICATE KEY UPDATE
+        payload =VALUES( payload )
+        <if test="entity.payload != null and entity.payload != ''">
+            ,send_status =VALUES(send_status)
+        </if>
+        <if test="entity.sendStatus!= null ">
+            ,send_status =VALUES(send_status)
+        </if>
+        <if test="entity.createTime!= null ">
+            ,create_time =VALUES(create_time)
+        </if>
+        <if test="entity.updateTime != null ">
+            ,update_time =VALUES(update_time)
+        </if>
+
+    </insert>
+</mapper>

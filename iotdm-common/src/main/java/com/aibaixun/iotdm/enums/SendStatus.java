@@ -1,14 +1,14 @@
 package com.aibaixun.iotdm.enums;
 
 /**
- * 命令发送结果
+ * 发送结果
  * @author wangxiao@aibaixun.com
  * @date 2022/3/3
  */
-public enum CommandSendStatus {
+public enum SendStatus {
 
     /**
-     * 已经发送
+     * 已发送
      */
     SEND,
 

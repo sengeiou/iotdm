@@ -1,6 +1,7 @@
 package com.aibaixun.iotdm.server;
 
 import com.aibaixun.basic.exception.BaseException;
+import com.aibaixun.iotdm.data.ToDeviceConfigParam;
 import com.aibaixun.iotdm.entity.DeviceEntity;
 import com.aibaixun.iotdm.entity.ProductEntity;
 
@@ -14,13 +15,11 @@ public interface ToDeviceProcessor {
 
     /**
      * 修改设备配置
-     * @param deviceId 设备id
-     * @param host 连接地址
+     * @param toDeviceConfigParam 设备配置参数
      * @param productId 产品id
-     * @param port 连接端口
      * @throws BaseException
      */
-    void  processConfig(String deviceId,String productId,String host,Integer port) throws BaseException;
+    void  processConfig(ToDeviceConfigParam toDeviceConfigParam,String productId) throws BaseException;
 
     /**
      * 处理ota 消息

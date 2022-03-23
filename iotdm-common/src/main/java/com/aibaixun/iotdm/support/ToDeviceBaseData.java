@@ -7,8 +7,6 @@ package com.aibaixun.iotdm.support;
  */
 public abstract class ToDeviceBaseData {
 
-
-
     private final ToDeviceType toDeviceType;
 
     public ToDeviceBaseData(ToDeviceType toDeviceType) {

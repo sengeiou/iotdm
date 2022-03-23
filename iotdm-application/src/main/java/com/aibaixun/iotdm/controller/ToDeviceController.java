@@ -55,7 +55,7 @@ public class ToDeviceController extends BaseController{
         if (checkDevice(deviceEntity)){
             return JsonResult.failed("设备不存在或者设备不在线");
         }
-        toDeviceProcessor.processConfig(deviceId,deviceEntity.getProductId(),deviceConfigParam.getHost(),deviceConfigParam.getPort());
+        toDeviceProcessor.processConfig(deviceConfigParam,deviceEntity.getProductId());
         return JsonResult.successJustMsg("设备命令已经发送，但不代表会执行成功");
     }
 
