@@ -3,13 +3,15 @@ package com.aibaixun.iotdm.data;
 import com.aibaixun.iotdm.enums.DataType;
 import com.aibaixun.iotdm.enums.ParamScope;
 
+import java.io.Serializable;
+
 /**
  * 基础参数
  * <p>主要使用场景是命令下发</p>
  * @author wangxiao@aibaixun.com
  * @date 2022/3/3
  */
-public class BaseParam {
+public class BaseParam implements Serializable {
 
     private String paramLabel;
 
