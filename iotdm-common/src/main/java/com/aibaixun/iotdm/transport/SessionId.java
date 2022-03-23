@@ -3,11 +3,13 @@ package com.aibaixun.iotdm.transport;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.io.Serializable;
+
 /**
  * @author wangxiao@aibaixun.com
  * @date 2022/3/15
  */
-public final class SessionId {
+public final class SessionId implements Serializable {
 
     private String deviceId;
 
