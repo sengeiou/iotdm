@@ -27,6 +27,7 @@ public class DeviceConfigSendServiceTest {
         deviceConfigSendEntity.setPayload("payload");
         deviceConfigSendEntity.setSendStatus(SendStatus.SEND);
         deviceConfigSendService.saveOrUpdateConfigSend(deviceConfigSendEntity);
+        deviceConfigSendService.updateDeviceConfigSend("deviceId",SendStatus.SEND_ARRIVE);
     }
 
 

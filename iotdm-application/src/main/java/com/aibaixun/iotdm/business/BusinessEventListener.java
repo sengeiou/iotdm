@@ -104,6 +104,21 @@ public class BusinessEventListener {
     }
 
 
+    @EventListener
+    @Async("taskExecutor")
+    public void onOtaRespEvent(DeviceOtaRespEvent deviceOtaRespEvent){
+
+    }
+
+
+
+    @EventListener
+    @Async("taskExecutor")
+    public void onControlRespEvent(DeviceControlRespEvent deviceControlRespEvent){
+
+    }
+
+
     @Autowired
     public void setJsInvokeService(JsInvokeService jsInvokeService) {
         this.jsInvokeService = jsInvokeService;

@@ -20,6 +20,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * <p>
@@ -32,6 +34,7 @@ import java.util.Objects;
 @Service
 public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, DeviceEntity> implements IDeviceService {
 
+    private static final Pattern LINE_PATTERN = Pattern.compile("[A-Z]");
 
     @Override
     public DeviceEntity queryById(String id) {
@@ -71,6 +74,8 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, DeviceEntity> i
 
     @Override
     public Page<DeviceEntityInfo> pageQueryDeviceInfos(Integer page, Integer pageSize, DeviceStatus deviceStatus, String searchKey, String searchValue) {
+
+        searchKey = humpToLine2(searchKey);
         return baseMapper.selectPageDeviceInfo(Page.of(page,pageSize),UserInfoUtil.getTenantIdOfNull(),deviceStatus,searchKey,searchValue);
     }
 
@@ -151,5 +156,16 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, DeviceEntity> i
         }
         return update(updateWrapper);
     }
+
+    private  String humpToLine2(String str) {
+        Matcher matcher = LINE_PATTERN.matcher(str);
+        StringBuilder sb = new StringBuilder();
+        while (matcher.find()) {
+            matcher.appendReplacement(sb, "_" + matcher.group(0).toLowerCase());
+        }
+        matcher.appendTail(sb);
+        return sb.toString();
+    }
+
 
 }

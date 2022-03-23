@@ -54,13 +54,13 @@ public class DefaultIotDmEventPublisher implements IotDmEventPublisher {
 
     @Override
     public void publishOtaRespUpEvent(String productId, String deviceId, DataFormat dataFormat, String payload) {
-        logger.warn("OTA更改结果，deviceId:{},payload:{}",deviceId,payload);
+        applicationEventPublisher.publishEvent(new DeviceOtaRespEvent(deviceId,productId,dataFormat,payload));
     }
 
 
     @Override
     public void publishControlRespEvent(String productId, String deviceId, DataFormat dataFormat, String payload) {
-        logger.warn("命令执行结果改结果，deviceId:{},payload:{}",deviceId,payload);
+        applicationEventPublisher.publishEvent(new DeviceControlRespEvent(deviceId,productId,dataFormat,payload));
     }
 
     @Override

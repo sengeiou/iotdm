@@ -29,7 +29,9 @@ public class DeviceConfigSendServiceImpl extends ServiceImpl<DeviceConfigSendEnt
 
     @Override
     public Boolean updateDeviceConfigSend(String deviceId, SendStatus sendStatus) {
-        return update(Wrappers.<DeviceConfigSendEntity>lambdaUpdate().eq(DeviceConfigSendEntity::getDeviceId,deviceId)
+        return update(Wrappers.<DeviceConfigSendEntity>lambdaUpdate()
+                .eq(DeviceConfigSendEntity::getSendStatus,SendStatus.SEND)
+                .eq(DeviceConfigSendEntity::getDeviceId,deviceId)
                 .set(DeviceConfigSendEntity::getSendStatus,sendStatus));
     }
 }

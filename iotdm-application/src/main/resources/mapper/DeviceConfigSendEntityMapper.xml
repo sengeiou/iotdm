@@ -6,7 +6,7 @@
 
     <insert id="saveOrUpdateConfigSend" parameterType="com.aibaixun.iotdm.entity.DeviceConfigSendEntity">
         INSERT INTO t_device_config_send
-        (device_id, payload, send_status,create_time, update_time,  creator,tenant_id)                                                                                                                                                                                                                                          property_value, ts)
+        (device_id, payload, send_status,create_time, update_time,  creator,tenant_id)
         VALUES
         (#{entity.deviceId},#{entity.payload},#{entity.sendStatus},#{entity.createTime},#{entity.updateTime},#{entity.creator},#{entity.tenantId})
         ON DUPLICATE KEY UPDATE
