@@ -42,7 +42,7 @@
             AND d.device_status = #{deviceStatus}
         </if>
         <if test="searchKey != null and searchKey != '' and searchValue != null and searchValue != ''">
-            AND ${searchKey} like  CONCAT('%',#{searchValue})
+            AND ${searchKey} like  CONCAT(#{searchValue},'%')
         </if>
         ORDER BY d.create_time DESC
 
