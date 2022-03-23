@@ -155,8 +155,8 @@ public class DeviceController extends BaseController{
         if ( !secretBlank && StringUtils.equals(deviceSecret,deviceParam.getConfirmSecret())){
             throw new BaseException("设备密钥不一致",BaseResultCode.BAD_PARAMS);
         }
-        if (deviceParam.getAuthType().equals(DeviceAuthType.SECRET)){
-            deviceSecret = secretBlank? RandomStringUtils.randomAlphanumeric(20): Base64Util.decode(deviceSecret);
+        if (deviceParam.getAuthType().equals(DeviceAuthType.SECRET)&& !secretBlank ){
+            deviceSecret = RandomStringUtils.randomAlphanumeric(20);
         }
         String deviceCode = deviceParam.getDeviceCode();
         String productId = deviceParam.getProductId();
