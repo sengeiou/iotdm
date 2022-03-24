@@ -2,7 +2,7 @@ package com.aibaixun.iotdm.service.impl;
 
 import com.aibaixun.iotdm.entity.DeviceConfigSendEntity;
 import com.aibaixun.iotdm.enums.SendStatus;
-import com.aibaixun.iotdm.mapper.DeviceConfigSendEntityMapper;
+import com.aibaixun.iotdm.mapper.DeviceConfigSendMapper;
 import com.aibaixun.iotdm.service.IDeviceConfigSendService;
 import com.aibaixun.iotdm.util.UserInfoUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
  * @date 2022/3/23
  */
 @Service
-public class DeviceConfigSendServiceImpl extends ServiceImpl<DeviceConfigSendEntityMapper, DeviceConfigSendEntity> implements IDeviceConfigSendService {
+public class DeviceConfigSendServiceImpl extends ServiceImpl<DeviceConfigSendMapper, DeviceConfigSendEntity> implements IDeviceConfigSendService {
 
     @Override
     public void saveOrUpdateConfigSend(DeviceConfigSendEntity deviceConfigSendEntity) {

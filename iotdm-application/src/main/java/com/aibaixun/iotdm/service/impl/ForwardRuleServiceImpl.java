@@ -76,7 +76,7 @@ public class ForwardRuleServiceImpl extends ServiceImpl<ForwardRuleMapper, Forwa
 
 
     @Override
-    public ForwardRuleEntity queryByRuleLabel(String ruleLabel) {
-        return getOne(Wrappers.<ForwardRuleEntity>lambdaQuery().eq(ForwardRuleEntity::getRuleLabel,ruleLabel),false);
+    public Long countByRuleLabel(String ruleLabel) {
+        return count(Wrappers.<ForwardRuleEntity>lambdaQuery().eq(ForwardRuleEntity::getRuleLabel,ruleLabel));
     }
 }

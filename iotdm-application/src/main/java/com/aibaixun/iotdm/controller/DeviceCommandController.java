@@ -30,9 +30,7 @@ public class DeviceCommandController extends BaseController{
                                                               @RequestParam(required = false) Long endTs,
                                                               @RequestParam(required = false) Integer page,
                                                               @RequestParam(required = false) Integer pageSize) throws BaseException {
-
         checkPage(page, pageSize);
-
         Page<DeviceCommandSendEntity> deviceCommandSendEntities = deviceCommandSendService.pageQueryDeviceCommandSend(deviceId,
                 commandLabel, commandId, startTs, endTs, page,pageSize);
         return JsonResult.success(deviceCommandSendEntities);

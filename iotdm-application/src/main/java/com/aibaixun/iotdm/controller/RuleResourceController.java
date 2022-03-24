@@ -18,8 +18,6 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Objects;
 
-import static com.aibaixun.iotdm.constants.DataConstants.IOT_TENANT_FORWARD_KEY;
-
 /**
  * 规则资源 web api
  * @author wangxiao@aibaixun.com
@@ -40,7 +38,6 @@ public class RuleResourceController extends BaseController{
     public JsonResult<Page<RuleResourceEntity>> pageQueryRuleResourceEntity (@RequestParam Integer page,
                                                                  @RequestParam Integer pageSize,
                                                                  @RequestParam(required = false)String resourceLabel) throws BaseException {
-
         checkPage(page,pageSize);
         Page<RuleResourceEntity> ruleResourceEntityPage = ruleResourceService.pageQueryRuleResource(page, pageSize, resourceLabel);
         return JsonResult.success(ruleResourceEntityPage);
@@ -63,9 +60,8 @@ public class RuleResourceController extends BaseController{
     @PostMapping
     public JsonResult<Boolean> createRuleResourceEntity (@RequestBody @Valid RuleResourceEntity ruleResourceEntity) throws BaseException {
 
-        if (Objects.isNull(ruleResourceEntity.getConfiguration())){
-            throw new BaseException("资源id配置项不允许为空", BaseResultCode.BAD_PARAMS);
-        }
+
+        checkEntityParam(ruleResourceEntity.getConfiguration(),"资源配置项不允许为空");
         if (Objects.isNull(ruleResourceEntity.getResourceType())){
             ruleResourceEntity.setResourceType(ruleResourceEntity.getConfiguration().getResourceType());
         }
@@ -78,9 +74,7 @@ public class RuleResourceController extends BaseController{
     @PutMapping
     public JsonResult<Boolean> updateRuleResourceEntity (@RequestBody @Valid RuleResourceEntity ruleResourceEntity) throws BaseException {
         String id = ruleResourceEntity.getId();
-        if (StringUtils.isBlank(id)){
-            throw new BaseException("资源id不允许为空", BaseResultCode.BAD_PARAMS);
-        }
+        checkParameterValue(id,"资源id不允许为空");
         Long resourceUseNum = forwardTargetService.countTargetByResourceId(id);
         if (resourceUseNum > 0){
             throw new BaseException("资源正在被使用，无法修改",BaseResultCode.GENERAL_ERROR);
@@ -94,9 +88,7 @@ public class RuleResourceController extends BaseController{
     public JsonResult<Boolean> updateRuleResourceStatus (@RequestBody @Valid UpdateRuleResourceStatusParam updateRuleResourceStatusParam) throws BaseException {
         String id = updateRuleResourceStatusParam.getResourceId();
         RuleResourceEntity ruleResourceEntity = ruleResourceService.getById(id);
-        if (Objects.isNull(ruleResourceEntity)){
-            throw new BaseException("资源不存在，无法更改", BaseResultCode.BAD_PARAMS);
-        }
+        checkEntity(ruleResourceEntity,"资源不存在，无法更改");
         Long resourceUseNum = forwardTargetService.countTargetByResourceId(id);
         if (resourceUseNum > 0){
             throw new BaseException("资源正在被使用，无法修改",BaseResultCode.GENERAL_ERROR);
@@ -120,9 +112,7 @@ public class RuleResourceController extends BaseController{
     public JsonResult<Boolean> getRuleResourceEntity (@PathVariable String id) throws BaseException {
 
         RuleResourceEntity ruleResourceEntity = ruleResourceService.getById(id);
-        if (Objects.isNull(ruleResourceEntity)){
-            throw new BaseException("资源不存在，无法删除",BaseResultCode.GENERAL_ERROR);
-        }
+        checkEntity(ruleResourceEntity,"资源不存在，无法移除");
         Long resourceUseNum = forwardTargetService.countTargetByResourceId(id);
         if (resourceUseNum > 0){
             throw new BaseException("资源正在被使用，无法删除",BaseResultCode.GENERAL_ERROR);

@@ -74,7 +74,7 @@ public class ToDeviceController extends BaseController{
 
     @PostMapping("/fake-message")
     public JsonResult<Boolean> fakeDeviceMessage (@RequestBody @Valid DeviceFakeMessage message){
-        String deviceId = message.getDeviceId();;
+        String deviceId = message.getDeviceId();
         DeviceEntity deviceEntity = getById(deviceId);
         if (checkDevice(deviceEntity)){
             return JsonResult.failed("设备不存在或者设备不在线");

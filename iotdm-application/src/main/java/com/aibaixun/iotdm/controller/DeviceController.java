@@ -3,6 +3,7 @@ package com.aibaixun.iotdm.controller;
 import com.aibaixun.basic.exception.BaseException;
 import com.aibaixun.basic.result.BaseResultCode;
 import com.aibaixun.basic.result.JsonResult;
+import com.aibaixun.iotdm.data.*;
 import com.aibaixun.iotdm.entity.DeviceEntity;
 import com.aibaixun.iotdm.entity.ProductEntity;
 import com.aibaixun.iotdm.enums.*;
@@ -10,9 +11,7 @@ import com.aibaixun.iotdm.event.EntityChangeEvent;
 import com.aibaixun.iotdm.server.ToDeviceProcessor;
 import com.aibaixun.iotdm.service.IDeviceService;
 import com.aibaixun.iotdm.service.IProductService;
-import com.aibaixun.iotdm.data.*;
 import com.aibaixun.iotdm.service.IotDmEventPublisher;
-import com.aibaixun.iotdm.util.Base64Util;
 import com.aibaixun.iotdm.util.UserInfoUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -101,9 +100,7 @@ public class DeviceController extends BaseController{
     @GetMapping("/{id}")
     public JsonResult<DeviceEntityInfo> queryDeviceById(@PathVariable String id) throws BaseException {
         DeviceEntity deviceEntity = deviceService.queryById(id);
-        if (Objects.isNull(deviceEntity)){
-            throw new BaseException("设备不存在，无法查询", BaseResultCode.GENERAL_ERROR);
-        }
+        checkEntity(deviceEntity,"设备不存在，无法查询");
         String productId = deviceEntity.getProductId();
         ProductEntity productEntity = productService.getById(productId);
         return JsonResult.success(new DeviceEntityInfo(deviceEntity,Objects.nonNull(productEntity)? productEntity.getProductLabel():NULL_STR));
@@ -114,9 +111,7 @@ public class DeviceController extends BaseController{
     public JsonResult<Boolean> updateDeviceLabel (@RequestBody @Valid UpdateDeviceLabelParam updateDeviceLabelParam) throws BaseException {
         String deviceId = updateDeviceLabelParam.getDeviceId();
         DeviceEntity deviceEntity = deviceService.queryById(deviceId);
-        if (Objects.isNull(deviceEntity)){
-            throw new BaseException("设备不存在，无法更改", BaseResultCode.GENERAL_ERROR);
-        }
+        checkEntity(deviceEntity,"设备不存在，无法修改");
         String deviceLabel = updateDeviceLabelParam.getDeviceLabel();
         if (Objects.equals(deviceEntity.getDeviceLabel(),deviceLabel)){
             throw new BaseException("设备已经是当前名称，无法进行修改", BaseResultCode.GENERAL_ERROR);
@@ -130,9 +125,7 @@ public class DeviceController extends BaseController{
     public JsonResult<Boolean> updateDeviceStatus (@RequestBody @Valid UpdateDeviceStatusParam updateDeviceStatusParam) throws BaseException {
         String deviceId = updateDeviceStatusParam.getDeviceId();
         DeviceEntity deviceEntity = deviceService.queryById(deviceId);
-        if (Objects.isNull(deviceEntity)){
-            throw new BaseException("设备不存在，无法更改", BaseResultCode.GENERAL_ERROR);
-        }
+        checkEntity(deviceEntity,"设备不存在，无法修改");
         DeviceStatus deviceStatus = updateDeviceStatusParam.getDeviceStatus();
         if (Objects.equals(deviceEntity.getDeviceStatus(),deviceStatus)){
             throw new BaseException("设备已经是当前状态，无法进行修改", BaseResultCode.GENERAL_ERROR);
@@ -183,9 +176,7 @@ public class DeviceController extends BaseController{
     @DeleteMapping("/{id}")
     public JsonResult<Boolean> removeDevice (@PathVariable String id) throws BaseException {
         DeviceEntity deviceEntity = deviceService.getById(id);
-        if (Objects.isNull(deviceEntity)){
-            throw new BaseException("设备不存在",BaseResultCode.GENERAL_ERROR);
-        }
+        checkEntity(deviceEntity,"设备不存在，无法移除");
         if (!StringUtils.equals(deviceEntity.getCreator(), UserInfoUtil.getUserIdOfNull())){
             throw new BaseException("设备必须由创建人删除",BaseResultCode.GENERAL_ERROR);
         }
@@ -203,9 +194,7 @@ public class DeviceController extends BaseController{
     @DeleteMapping
     public JsonResult<Boolean> removeDevices(@RequestBody String [] ids ) throws BaseException {
         List<DeviceEntity> deviceEntities = deviceService.listByIds(Arrays.asList(ids));
-        if (Objects.isNull(deviceEntities)){
-            throw new BaseException("设备不存在",BaseResultCode.GENERAL_ERROR);
-        }
+        checkEntities(deviceEntities,"设备列表信息为空，无法移除");
         List<String> collectIds = deviceEntities.stream().filter(e -> StringUtils.equals(e.getCreator(), UserInfoUtil.getUserIdOfNull())).map(DeviceEntity::getId).collect(Collectors.toList());
         boolean batchRemove = deviceService.removeBatchByIds(collectIds);
         return JsonResult.successWithMsg("只能移除本人创建的设备，已经过滤了非本人创建的设备",batchRemove);
@@ -216,10 +205,7 @@ public class DeviceController extends BaseController{
     public JsonResult<Boolean> createSubDevice (@RequestBody @Valid SubDeviceParam subDeviceParam) throws BaseException {
         String gatewayId = subDeviceParam.getGatewayId();
         DeviceEntity byId = deviceService.getById(gatewayId);
-        if (Objects.isNull(byId)){
-            throw new BaseException("网关设备不存在",BaseResultCode.BAD_PARAMS);
-        }
-
+        checkEntity(byId,"网关设备不存在，无法创建子设备");
         String productId = subDeviceParam.getProductId();
         checkProductId(productId);
         String deviceCode = subDeviceParam.getDeviceCode();
@@ -273,9 +259,7 @@ public class DeviceController extends BaseController{
 
     private void checkProductId(String productId) throws BaseException {
         ProductEntity productEntity = productService.getById(productId);
-        if (Objects.isNull(productEntity)){
-            throw new BaseException("所属产品不存在",BaseResultCode.GENERAL_ERROR);
-        }
+        checkEntity(productEntity,"设备所属产品不存在");
     }
 
     private void checkDeviceCode (String deviceCode,String productId) throws BaseException {

@@ -57,8 +57,8 @@ public class ForwardRuleController extends BaseController{
     @PostMapping
     public JsonResult<String> createForwardRule (@RequestBody @Valid ForwardRuleEntity forwardRuleEntity) throws BaseException {
         String ruleLabel = forwardRuleEntity.getRuleLabel();
-        ForwardRuleEntity forwardRuleEntity1 = forwardRuleService.queryByRuleLabel(ruleLabel);
-        if (Objects.nonNull(forwardRuleEntity1)){
+        Long aLong = forwardRuleService.countByRuleLabel(ruleLabel);
+        if (aLong >1){
             throw new BaseException("转发规则名称重复", BaseResultCode.GENERAL_ERROR);
         }
         forwardRuleService.save(forwardRuleEntity);
@@ -71,10 +71,7 @@ public class ForwardRuleController extends BaseController{
     public JsonResult<Boolean> updateForwardRule (@RequestBody  ForwardRuleEntity forwardRuleEntity) throws BaseException {
 
         String id = forwardRuleEntity.getId();
-        if (StringUtils.isBlank(id)){
-            throw new BaseException("转发规则不存在", BaseResultCode.GENERAL_ERROR);
-        }
-
+        checkParameterValue(id,"转发规则id不允许为空");
         String ruleLabel = forwardRuleEntity.getRuleLabel();
         String description = forwardRuleEntity.getDescription();
         redisRepository.delHashValues(IOT_TENANT_FORWARD_KEY, UserInfoUtil.getTenantIdOfNull());
@@ -90,9 +87,7 @@ public class ForwardRuleController extends BaseController{
         Boolean status = statusParam.getStatus();
         String forwardRuleId = statusParam.getForwardRuleId();
         ForwardRuleEntity forwardRuleEntity = forwardRuleService.getById(forwardRuleId);
-        if (Objects.isNull(forwardRuleEntity)){
-            throw new BaseException("转发规则不存在", BaseResultCode.GENERAL_ERROR);
-        }
+        checkEntity(forwardRuleEntity,"转发规则不存在,无法修改");
         if (Objects.equals(status, forwardRuleEntity.getRuleStatus())){
             throw new BaseException("转发规则状态与当前状态一致，不需要更改", BaseResultCode.GENERAL_ERROR);
         }
@@ -108,9 +103,7 @@ public class ForwardRuleController extends BaseController{
     @DeleteMapping("/{id}")
     public JsonResult<Boolean> removeForwardRule (@PathVariable String id) throws BaseException {
         ForwardRuleEntity forwardRuleEntity = forwardRuleService.getById(id);
-        if (Objects.isNull(forwardRuleEntity)){
-            throw new BaseException("转发规则不存在", BaseResultCode.GENERAL_ERROR);
-        }
+        checkEntity(forwardRuleEntity,"转发规则不存在,无法移除");
         if (forwardRuleEntity.getRuleStatus()){
             throw new BaseException("转发规则正在运行，无法停止", BaseResultCode.GENERAL_ERROR);
         }

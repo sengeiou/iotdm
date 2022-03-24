@@ -75,7 +75,7 @@ public class ProductController extends BaseController{
         String productLabel = productEntity.getProductLabel();
         ProductEntity checkProductEntity = productService.queryProductByLabel(productLabel);
         if (Objects.nonNull(checkProductEntity)){
-            throw new BaseException("当前租户下已有同名产品", BaseResultCode.BAD_PARAMS);
+            throw new BaseException("当前租户下已有同名产品", BaseResultCode.GENERAL_ERROR);
         }
         boolean saveResult = productService.save(productEntity);
         if (saveResult){
@@ -87,9 +87,7 @@ public class ProductController extends BaseController{
     @DeleteMapping("/{id}")
     public JsonResult<Boolean> removeProduct (@PathVariable String id) throws BaseException {
         ProductEntity pr = productService.getById(id);
-        if (Objects.isNull(pr)){
-            throw new BaseException("产品不存在无法删除",BaseResultCode.GENERAL_ERROR);
-        }
+        checkEntity(pr,"产品不存在,无法删除");
         if (!StringUtils.equals(pr.getCreator(), UserInfoUtil.getUserIdOfNull())){
             throw new BaseException("产品必须由创建人删除",BaseResultCode.GENERAL_ERROR);
         }
@@ -109,9 +107,7 @@ public class ProductController extends BaseController{
     @PutMapping
     public JsonResult<Boolean> updateProduct (@RequestBody @Valid UpdateProductParam updateProductParam) throws BaseException {
         ProductEntity pr = productService.getById(updateProductParam.getId());
-        if (Objects.isNull(pr)){
-            throw new BaseException("产品不存在无法更改",BaseResultCode.GENERAL_ERROR);
-        }
+        checkEntity(pr,"产品不存在,无法更改");
         ProductEntity checkProductEntity = productService.queryProductByLabel(updateProductParam.getProductLabel());
         if (Objects.nonNull(checkProductEntity)){
             throw new BaseException("当前租户下已有同名产品", BaseResultCode.BAD_PARAMS);

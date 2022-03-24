@@ -51,9 +51,7 @@ public class DeviceGroupController extends BaseController{
     @DeleteMapping("/{id}")
     public JsonResult<Boolean> removeDeviceGroup (@PathVariable String id) throws BaseException {
         DeviceGroupEntity deviceGroupEntity = deviceGroupService.getById(id);
-        if (Objects.isNull(deviceGroupEntity)){
-            throw new BaseException("设备分组不存在无法删除", BaseResultCode.BAD_PARAMS);
-        }
+        checkEntity(deviceGroupEntity,"设备分组不存在无法删除");
         Long countSubGroup = deviceGroupService.countSubGroup(id);
         if (countSubGroup>0){
             throw new BaseException("该群组下面包含子群组,请删除后再重试", BaseResultCode.GENERAL_ERROR);

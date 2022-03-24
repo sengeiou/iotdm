@@ -1,7 +1,6 @@
 package com.aibaixun.iotdm.controller;
 
 import com.aibaixun.basic.exception.BaseException;
-import com.aibaixun.basic.result.BaseResultCode;
 import com.aibaixun.basic.result.JsonResult;
 import com.aibaixun.common.redis.util.RedisRepository;
 import com.aibaixun.iotdm.constants.DataConstants;
@@ -40,9 +39,7 @@ public class DeviceTraceController extends BaseController{
     @GetMapping("/debug/{deviceId}")
     public JsonResult<Boolean>  debugDevice(@PathVariable String deviceId) throws BaseException {
         DeviceEntity deviceEntity = deviceService.getById(deviceId);
-        if (Objects.isNull(deviceEntity)){
-            throw new BaseException("设备信息不存在，无法在线调试", BaseResultCode.GENERAL_ERROR);
-        }
+        checkEntity(deviceEntity,"设备信息不存在，无法在线调试");
         long ttl = Instant.now().toEpochMilli() + DEFAULT_DEVICE_DEBUG_TTL;
         redisRepository.putHashValue(DataConstants.IOT_DEVICE_DEBUG_CACHE_KEY,deviceId,ttl );
         redisRepository.getRedisTemplate().expire(DataConstants.IOT_DEVICE_DEBUG_CACHE_KEY,4, TimeUnit.DAYS);
@@ -54,9 +51,7 @@ public class DeviceTraceController extends BaseController{
 
         Long ttl = traceDeviceParam.getTtl();
         DeviceEntity deviceEntity = deviceService.getById(traceDeviceParam.getDeviceId());
-        if (Objects.isNull(deviceEntity)){
-            throw new BaseException("设备信息不存在，无法在线调试", BaseResultCode.GENERAL_ERROR);
-        }
+        checkEntity(deviceEntity,"设备信息不存在，无法获取消息追踪时间");
         long value = Instant.now().toEpochMilli() + ttl*1000;
         redisRepository.putHashValue(DataConstants.IOT_DEVICE_DEBUG_CACHE_KEY,traceDeviceParam.getDeviceId(),value );
         redisRepository.getRedisTemplate().expire(DataConstants.IOT_DEVICE_DEBUG_CACHE_KEY,4, TimeUnit.DAYS);

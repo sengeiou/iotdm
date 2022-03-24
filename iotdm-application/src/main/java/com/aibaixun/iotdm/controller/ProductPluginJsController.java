@@ -1,22 +1,17 @@
 package com.aibaixun.iotdm.controller;
 
 import com.aibaixun.basic.exception.BaseException;
-import com.aibaixun.basic.result.BaseResultCode;
 import com.aibaixun.basic.result.JsonResult;
 import com.aibaixun.basic.toolkit.HexTool;
 import com.aibaixun.common.util.JsonUtil;
+import com.aibaixun.iotdm.data.JsDebugParam;
 import com.aibaixun.iotdm.entity.ProductPluginJsEntity;
 import com.aibaixun.iotdm.script.DefaultJsInvokeService;
 import com.aibaixun.iotdm.service.IProductPluginJsService;
-import com.aibaixun.iotdm.data.JsDebugParam;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.script.Invocable;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 import javax.validation.Valid;
 
 /**
@@ -36,9 +31,7 @@ public class ProductPluginJsController extends BaseController{
 
     @GetMapping
     public JsonResult<ProductPluginJsEntity> queryJsPlugin (@RequestParam String productId) throws BaseException {
-        if (StringUtils.isBlank(productId)){
-            throw new BaseException("产品id不存在", BaseResultCode.BAD_PARAMS);
-        }
+        checkParameterValue(productId,"产品id不允许为空");
         ProductPluginJsEntity pluginJs = productPluginJsService.queryByProductPluginJs(productId);
         return JsonResult.success(pluginJs);
     }

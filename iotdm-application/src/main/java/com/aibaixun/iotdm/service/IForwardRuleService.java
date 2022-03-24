@@ -66,5 +66,5 @@ public interface IForwardRuleService extends IService<ForwardRuleEntity> {
      * @param ruleLabel 规则名称
      * @return 规则
      */
-    ForwardRuleEntity queryByRuleLabel(String ruleLabel);
+    Long countByRuleLabel(String ruleLabel);
 }

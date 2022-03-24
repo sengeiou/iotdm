@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Param;
  * @author wangxiao@aibaixun.com
  * @date 2022/3/23
  */
-public interface DeviceConfigSendEntityMapper extends BaseMapper<DeviceConfigSendEntity> {
+public interface DeviceConfigSendMapper extends BaseMapper<DeviceConfigSendEntity> {
 
     /**
      * 保存或更新数据

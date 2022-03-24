@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * 产品模型 Web Api
@@ -47,9 +46,7 @@ public class ProductModelController extends BaseController{
     @PutMapping
     public JsonResult<Boolean> updateProductModel(@RequestBody @Valid ProductModelEntity productModelEntity) throws BaseException {
         String id = productModelEntity.getId();
-        if (StringUtils.isBlank(id)){
-            throw new BaseException("被更改的产品模型不存在id", BaseResultCode.BAD_PARAMS);
-        }
+        checkParameterValue(id,"被更改的产品模型不存在id");
         boolean updateResult = productModelService.updateProductModel(productModelEntity);
         return JsonResult.success(updateResult);
     }
@@ -58,13 +55,9 @@ public class ProductModelController extends BaseController{
 
     @DeleteMapping("/{modelId}")
     public JsonResult<Boolean> removeProductModel(@PathVariable String modelId) throws BaseException {
-        if (StringUtils.isBlank(modelId)){
-            throw new BaseException("产品模型id不允许为空", BaseResultCode.BAD_PARAMS);
-        }
+        checkParameterValue(modelId,"产品模型id不允许为空");
         ProductModelEntity productModelEntity = productModelService.getById(modelId);
-        if (Objects.isNull(productModelEntity)){
-            throw new BaseException("产品模型id不允许为空", BaseResultCode.BAD_PARAMS);
-        }
+        checkEntity(productModelEntity,"产品模型不存在，无法移除");
         if (!StringUtils.equals(productModelEntity.getCreator(), UserInfoUtil.getUserIdOfNull())){
             throw new BaseException("产品模型必须由创建人删除", BaseResultCode.BAD_PARAMS);
         }
@@ -77,13 +70,9 @@ public class ProductModelController extends BaseController{
     @PostMapping
     public JsonResult<Boolean> createProductModel (@RequestBody @Valid ProductModelEntity productModelEntity) throws BaseException {
         String productId = productModelEntity.getProductId();
-        if (StringUtils.isBlank(productId)){
-            throw new BaseException("产品id不允许为空", BaseResultCode.BAD_PARAMS);
-        }
+        checkParameterValue(productId,"产品id不允许为空");
         ProductEntity productEntity = productService.getById(productId);
-        if (Objects.isNull(productEntity)){
-            throw new BaseException("创建的模型的产品不存在", BaseResultCode.GENERAL_ERROR);
-        }
+        checkEntity(productEntity,"产品信息不存在，无法创建");
         if (StringUtils.isBlank(productModelEntity.getModelType())){
             productModelEntity.setModelType(productModelEntity.getModelLabel());
         }
@@ -104,9 +93,7 @@ public class ProductModelController extends BaseController{
     public JsonResult<Boolean> createModelProperty(@RequestBody @Valid ModelPropertyEntity modelPropertyEntity) throws BaseException {
         String productModelId = modelPropertyEntity.getProductModelId();
         ProductModelEntity modelEntity = productModelService.getById(productModelId);
-        if (Objects.isNull(modelEntity)){
-            throw new BaseException("创建的模型属性的产品不存在", BaseResultCode.GENERAL_ERROR);
-        }
+        checkEntity(modelEntity,"产品模型不存在，无法创建");
         String productId = modelEntity.getProductId();
         Boolean aBoolean = productModelService.saveModelProperty(productId, modelPropertyEntity);
         return JsonResult.success(aBoolean);
@@ -115,13 +102,9 @@ public class ProductModelController extends BaseController{
     @DeleteMapping("/property/{id}")
     public JsonResult<Boolean> removeModelProperty(@PathVariable String id) throws BaseException {
         ModelPropertyEntity byId = productModelService.getModelPropertyByPropertyId(id);
-        if (Objects.isNull(byId)){
-            throw new BaseException("模型下属性已经不存在无法删除", BaseResultCode.GENERAL_ERROR);
-        }
+        checkEntity(byId,"属性不存在，无法移除");
         ProductModelEntity modelEntity = productModelService.getById(byId.getProductModelId());
-        if (Objects.isNull(modelEntity)){
-            throw new BaseException("删除的模型属性的产品不存在", BaseResultCode.GENERAL_ERROR);
-        }
+        checkEntity(modelEntity,"产品模型不存在，无法移除");
         String productId = modelEntity.getProductId();
         Boolean aBoolean = productModelService.removeModelProperty(productId, id);
         return JsonResult.success(aBoolean);
@@ -130,14 +113,10 @@ public class ProductModelController extends BaseController{
     @PutMapping("/property")
     public JsonResult<Boolean> updateModelProperty(@RequestBody @Valid ModelPropertyEntity modelPropertyEntity) throws BaseException {
         String modelPropertyEntityId = modelPropertyEntity.getId();
-        if (StringUtils.isBlank(modelPropertyEntityId)) {
-            throw new BaseException("模型属性id为空不允许更改", BaseResultCode.BAD_PARAMS);
-        }
+        checkParameterValue(modelPropertyEntityId,"属性id不允许为空");
         String productModelId = modelPropertyEntity.getProductModelId();
         ProductModelEntity modelEntity = productModelService.getById(productModelId);
-        if (Objects.isNull(modelEntity)){
-            throw new BaseException("更改的模型属性的产品不存在", BaseResultCode.GENERAL_ERROR);
-        }
+        checkEntity(modelEntity,"产品模型不存在，无法修改");
         Boolean aBoolean = productModelService.updateModelProperty(modelEntity.getProductId(), modelPropertyEntity);
         return JsonResult.success(aBoolean);
     }
@@ -153,9 +132,7 @@ public class ProductModelController extends BaseController{
     public JsonResult<Boolean> createModelCommand(@RequestBody @Valid ModelCommandEntity modelCommandEntity) throws BaseException {
         String productModelId = modelCommandEntity.getProductModelId();
         ProductModelEntity modelEntity = productModelService.getById(productModelId);
-        if (Objects.isNull(modelEntity)){
-            throw new BaseException("创建的模型命令的产品不存在", BaseResultCode.GENERAL_ERROR);
-        }
+        checkEntity(modelEntity,"产品模型不存在，无法创建");
         String productId = modelEntity.getProductId();
         Boolean aBoolean = productModelService.saveModelCommand(productId, modelCommandEntity);
         return JsonResult.success(aBoolean);
@@ -164,13 +141,9 @@ public class ProductModelController extends BaseController{
     @DeleteMapping("/command/{id}")
     public JsonResult<Boolean> removeModelCommand(@PathVariable String id) throws BaseException {
         ModelCommandEntity byId = productModelService.getModelCommandByPropertyId(id);
-        if (Objects.isNull(byId)){
-            throw new BaseException("模型下命令已经不存在无法删除", BaseResultCode.GENERAL_ERROR);
-        }
+        checkEntity(byId,"命令不存在，无法移除");
         ProductModelEntity modelEntity = productModelService.getById(byId.getProductModelId());
-        if (Objects.isNull(modelEntity)){
-            throw new BaseException("删除的模型命令的产品不存在", BaseResultCode.GENERAL_ERROR);
-        }
+        checkEntity(modelEntity,"产品模型不存在，无法移除");
         String productId = modelEntity.getProductId();
         Boolean aBoolean = productModelService.removeModelCommand(productId, id);
         return JsonResult.success(aBoolean);
@@ -179,14 +152,10 @@ public class ProductModelController extends BaseController{
     @PutMapping("/command")
     public JsonResult<Boolean> updateModelCommand(@RequestBody @Valid ModelCommandEntity modelCommandEntity) throws BaseException {
         String modelPropertyEntityId = modelCommandEntity.getId();
-        if (StringUtils.isBlank(modelPropertyEntityId)) {
-            throw new BaseException("模型命令id为空不允许更改", BaseResultCode.BAD_PARAMS);
-        }
+        checkParameterValue(modelPropertyEntityId,"命令id不允许为空");
         String productModelId = modelCommandEntity.getProductModelId();
         ProductModelEntity modelEntity = productModelService.getById(productModelId);
-        if (Objects.isNull(modelEntity)){
-            throw new BaseException("更改的模型命令的产品不存在", BaseResultCode.GENERAL_ERROR);
-        }
+        checkEntity(modelEntity,"产品模型不存在，无法修改");
         Boolean aBoolean = productModelService.updateModelCommand(modelEntity.getProductId(), modelCommandEntity);
         return JsonResult.success(aBoolean);
     }
