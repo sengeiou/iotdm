@@ -36,7 +36,7 @@ public class OtaPackageController extends BaseController{
         return JsonResult.success(otaPackage.getId());
     }
 
-
+ 
 
     @PostMapping("/file")
     public JsonResult<Boolean> createOtaPackageFile(@RequestParam String otaPackageId,
