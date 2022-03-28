@@ -8,7 +8,7 @@
         <result column="forward_rule_id" property="forwardRuleId" />
         <result column="rule_resource_id" property="ruleResourceId" />
         <result column="configuration" property="configuration" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler" />
-        <association property="ruleResource" javaType="com.aibaixun.iotdm.entity.RuleResourceEntity">
+        <association property="ruleResource" javaType="com.aibaixun.iotdm.entity.RuleResourceEntity" notNullColumn="resource_id">
             <result column="resource_id" property="id" />
             <result column="resource_label" property="resourceLabel" />
             <result column="resource_configuration" property="configuration" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler" />

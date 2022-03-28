@@ -7,7 +7,7 @@
     <id column="id" property="ruleId" />
     <result column="subject_resource" property="subjectResource" />
     <result column="subject_event" property="subjectEvent" />
-    <collection property="targetResourceInfos" ofType="com.aibaixun.iotdm.msg.TargetResourceInfo">
+    <collection property="targetResourceInfos" ofType="com.aibaixun.iotdm.msg.TargetResourceInfo" notNullColumn="tempid">
       <id column="tempid" property="id" />
       <result column="resource_type" property="resourceType"/>
       <result column="target_config" property="targetConfig" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler" />
