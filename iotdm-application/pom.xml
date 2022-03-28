@@ -44,6 +44,10 @@
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.aibaixun</groupId>
+            <artifactId>spring-boot-starter-prometheus</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>mysql</groupId>

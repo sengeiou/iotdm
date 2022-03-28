@@ -45,7 +45,12 @@
                 <artifactId>spring-boot-starter-redis</artifactId>
                 <version>${baixun.version}</version>
             </dependency>
-            <!--BaiXun parent start-->
+            <dependency>
+                <groupId>com.aibaixun</groupId>
+                <artifactId>spring-boot-starter-prometheus</artifactId>
+                <version>${baixun.version}</version>
+            </dependency>
+            <!--BaiXun parent end-->
             <!--mybatis and mysql start-->
             <dependency>
                 <groupId>com.baomidou</groupId>
