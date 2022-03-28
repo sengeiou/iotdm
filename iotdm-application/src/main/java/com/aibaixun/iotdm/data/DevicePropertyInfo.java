@@ -3,12 +3,14 @@ package com.aibaixun.iotdm.data;
 import com.aibaixun.iotdm.enums.DataType;
 import com.aibaixun.iotdm.enums.ParamScope;
 
+import java.io.Serializable;
+
 /**
  * 设备属性
  * @author wangxiao@aibaixun.com
  * @date 2022/3/4
  */
-public class DevicePropertyInfo {
+public class DevicePropertyInfo implements Serializable {
 
     private String propertyId;
 
