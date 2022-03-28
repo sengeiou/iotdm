@@ -3,10 +3,14 @@ package com.aibaixun.iotdm.rule.send;
 import com.aibaixun.iotdm.enums.ResourceType;
 import com.aibaixun.iotdm.rule.pool.PoolResource;
 import com.aibaixun.iotdm.rule.pool.ResourceLruCache;
-import com.aibaixun.iotdm.support.*;
+import com.aibaixun.iotdm.support.BaseResourceConfig;
+import com.aibaixun.iotdm.support.BaseTargetConfig;
+import com.aibaixun.iotdm.support.KafkaResourceConfig;
+import com.aibaixun.iotdm.support.KafkaTargetConfig;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
-import org.apache.kafka.clients.producer.*;
-import org.apache.kafka.common.cache.LRUCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,14 +49,11 @@ public class KafkaSendService implements SendService {
             KafkaProducer<String,String> kafkaProducer = generateClient(kafkaResourceConfig);
             KafkaTargetConfig kafkaTargetConfig = (KafkaTargetConfig) targetConfig;
 
-            kafkaProducer.send(new ProducerRecord<>(kafkaTargetConfig.getTopic(), OBJECT_MAPPER.writeValueAsString(message)), new Callback() {
-                @Override
-                public void onCompletion(RecordMetadata recordMetadata, Exception e) {
-                    if (e != null) {
-                        log.error("KafkaSendService.doSendMessage >> send result is error ,error msg is :{}", e.getMessage());
-                    } else {
-                        log.info("KafkaSendService.doSendMessage >> is success , recordMetadata is :{}", recordMetadata);
-                    }
+            kafkaProducer.send(new ProducerRecord<>(kafkaTargetConfig.getTopic(), OBJECT_MAPPER.writeValueAsString(message)), (recordMetadata, e) -> {
+                if (e != null) {
+                    log.error("KafkaSendService.doSendMessage >> send result is error ,error msg is :{}", e.getMessage());
+                } else {
+                    log.info("KafkaSendService.doSendMessage >> is success , recordMetadata is :{}", recordMetadata);
                 }
             });
         } catch (Exception e) {
