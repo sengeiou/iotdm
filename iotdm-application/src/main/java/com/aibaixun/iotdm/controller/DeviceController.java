@@ -144,11 +144,11 @@ public class DeviceController extends BaseController{
     public JsonResult<Boolean> createDevice (@RequestBody @Valid DeviceParam deviceParam) throws BaseException {
 
         String deviceSecret = deviceParam.getDeviceSecret();
-        boolean secretBlank = StringUtils.isNotBlank(deviceSecret);
-        if ( !secretBlank && StringUtils.equals(deviceSecret,deviceParam.getConfirmSecret())){
+        boolean secretEmpty = StringUtils.isEmpty(deviceSecret);
+        if ( !secretEmpty && !StringUtils.equals(deviceSecret,deviceParam.getConfirmSecret())){
             throw new BaseException("设备密钥不一致",BaseResultCode.BAD_PARAMS);
         }
-        if (deviceParam.getAuthType().equals(DeviceAuthType.SECRET)&& !secretBlank ){
+        if (deviceParam.getAuthType().equals(DeviceAuthType.SECRET)&& secretEmpty ){
             deviceSecret = RandomStringUtils.randomAlphanumeric(20);
         }
         String deviceCode = deviceParam.getDeviceCode();
