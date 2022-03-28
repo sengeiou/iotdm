@@ -155,9 +155,6 @@ public class Default2DeviceProcessor implements ToDeviceProcessor{
 
     @Override
     public void processFakeDeviceMessage(DeviceEntity deviceEntity, ProductEntity product, String message) {
-        if (DataFormat.BINARY.equals(product.getDataFormat())){
-            message = bin2hex(message);
-        }
         eventPublisher.publishPropertyUpEvent(deviceEntity.getProductId(),deviceEntity.getId(),product.getDataFormat(),message);
     }
 
@@ -202,17 +199,4 @@ public class Default2DeviceProcessor implements ToDeviceProcessor{
         this.eventPublisher = eventPublisher;
     }
 
-
-    private String bin2hex(String input) {
-        StringBuilder sb = new StringBuilder();
-        int len = input.length();
-        int hexMask = 4;
-        for (int i = 0; i < len / hexMask; i++){
-            String temp = input.substring(i * 4, (i + 1) * 4);
-            int tempInt = Integer.parseInt(temp, 2);
-            String tempHex = Integer.toHexString(tempInt).toUpperCase();
-            sb.append(tempHex);
-        }
-        return sb.toString();
-    }
 }
