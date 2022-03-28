@@ -1,11 +1,13 @@
 package com.aibaixun.iotdm.event;
 
 
+import java.io.Serializable;
+
 /**
  * @author wangxiao@aibaixun.com
  * @date 2022/3/10
  */
-public abstract class BaseDataEvent {
+public abstract class BaseDataEvent implements Serializable {
 
     private String deviceId;
 

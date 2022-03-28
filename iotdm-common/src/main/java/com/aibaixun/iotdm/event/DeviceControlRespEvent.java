@@ -2,12 +2,14 @@ package com.aibaixun.iotdm.event;
 
 import com.aibaixun.iotdm.enums.DataFormat;
 
+import java.io.Serializable;
+
 /**
  * 设备 命令反馈
  * @author wangxiao@aibaixun.com
  * @date 2022/3/23
  */
-public class DeviceControlRespEvent {
+public class DeviceControlRespEvent implements Serializable {
 
     private String deviceId;
 

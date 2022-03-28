@@ -3,6 +3,7 @@ package com.aibaixun.iotdm.event;
 import com.aibaixun.iotdm.enums.SubjectEvent;
 import com.aibaixun.iotdm.enums.SubjectResource;
 
+import java.io.Serializable;
 import java.time.Instant;
 
 /**
@@ -10,7 +11,7 @@ import java.time.Instant;
  * @author wangxiao@aibaixun.com
  * @date 2022/3/14
  */
-public class EntityChangeEvent {
+public class EntityChangeEvent implements Serializable {
 
     public SubjectResource subjectResource;
 

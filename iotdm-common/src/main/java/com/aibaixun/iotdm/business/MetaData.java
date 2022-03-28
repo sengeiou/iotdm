@@ -1,10 +1,12 @@
 package com.aibaixun.iotdm.business;
 
+import java.io.Serializable;
+
 /**
  * @author wangxiao@aibaixun.com
  * @date 2022/3/10
  */
-public class MetaData {
+public class MetaData implements Serializable {
 
     private String deviceId;
 

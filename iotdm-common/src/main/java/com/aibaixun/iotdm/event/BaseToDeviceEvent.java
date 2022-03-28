@@ -2,11 +2,13 @@ package com.aibaixun.iotdm.event;
 
 import com.aibaixun.iotdm.transport.SessionId;
 
+import java.io.Serializable;
+
 /**
  * @author wangxiao@aibaixun.com
  * @date 2022/3/16
  */
-public abstract class BaseToDeviceEvent {
+public abstract class BaseToDeviceEvent implements Serializable {
 
 
     private final SessionId sessionId;

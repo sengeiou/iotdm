@@ -10,8 +10,6 @@ public class TsData implements Serializable {
 
     private Long ts;
 
-
-
     private String tsLabel;
 
     private String tsValue;

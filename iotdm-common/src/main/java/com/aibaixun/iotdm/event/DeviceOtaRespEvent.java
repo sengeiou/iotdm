@@ -2,12 +2,14 @@ package com.aibaixun.iotdm.event;
 
 import com.aibaixun.iotdm.enums.DataFormat;
 
+import java.io.Serializable;
+
 /**
  * ota 升级反馈
  * @author wangxiao@aibaixun.com
  * @date 2022/3/23
  */
-public class DeviceOtaRespEvent {
+public class DeviceOtaRespEvent implements Serializable {
 
     private String deviceId;
 
