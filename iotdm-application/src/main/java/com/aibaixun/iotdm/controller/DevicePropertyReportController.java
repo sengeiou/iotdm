@@ -44,7 +44,7 @@ public class DevicePropertyReportController extends BaseController{
         checkParameterValue(deviceId,"设备id不允许为空");
         DeviceEntity deviceEntity = deviceService.getById(deviceId);
         checkEntity(deviceEntity,"设备已经被删除,无法查询最新数据");
-        List<DevicePropertyInfo> devicePropertyInfos = devicePropertyReportService.queryShadowDeviceProperty(deviceEntity.getProductId(),propertyLabel);
+        List<DevicePropertyInfo> devicePropertyInfos = devicePropertyReportService.queryShadowDeviceProperty(deviceEntity.getProductId(),propertyLabel,deviceId);
         return JsonResult.success(devicePropertyInfos);
     }
 

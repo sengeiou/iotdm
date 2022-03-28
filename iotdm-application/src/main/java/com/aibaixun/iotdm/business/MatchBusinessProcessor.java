@@ -68,7 +68,7 @@ public class MatchBusinessProcessor extends AbstractReportProcessor<PrePropertyB
             doLog(deviceId, BusinessType.DEVICE2PLATFORM, BusinessStep.MATCH_MODEL,"Match Model property is empty"+e.getMessage(),false);
         }
 
-        propertyReportService.saveOrUpdateBatch(reportEntities);
+        propertyReportService.saveOrUpdateBatchDeviceProperties(deviceId,reportEntities);
         doLog(deviceId, BusinessType.DEVICE2PLATFORM, BusinessStep.MATCH_MODEL, JsonUtil.toJSONString(reportEntities),true);
         queueProcessor.doProcessProperty(new PostPropertyBusinessMsg(prePropertyBusinessMsg.getMetaData(),toTsData(reportEntities)));
     }

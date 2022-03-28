@@ -29,9 +29,10 @@ public interface DevicePropertyReportMapper extends BaseMapper<DevicePropertyRep
      * 设备影子数据查询
      * @param productId 产品id
      * @param propertyLabel 属性名称
+     * @param deviceId 设备id
      * @return 最新设备属性信息
      */
-    List<DevicePropertyInfo> selectShadowDeviceProperty(@Param("productId") String productId,@Param("propertyLabel") String propertyLabel);
+    List<DevicePropertyInfo> selectShadowDeviceProperty(@Param("productId") String productId,@Param("propertyLabel") String propertyLabel,@Param("deviceId") String deviceId);
 
     /**
      * 保存更新

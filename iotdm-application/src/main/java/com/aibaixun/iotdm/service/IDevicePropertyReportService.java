@@ -4,6 +4,7 @@ import com.aibaixun.iotdm.entity.DevicePropertyReportEntity;
 import com.aibaixun.iotdm.data.DevicePropertyInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -29,8 +30,17 @@ public interface IDevicePropertyReportService extends IService<DevicePropertyRep
      * 查询 设备影子
      * @param productId 产品id
      * @param propertyLabel 属性名称
+     * @param deviceId 设备id
      * @return 设备属性最新上报数据
      */
-    List<DevicePropertyInfo> queryShadowDeviceProperty(String productId,String propertyLabel);
+    List<DevicePropertyInfo> queryShadowDeviceProperty(String productId,String propertyLabel,String deviceId);
+
+
+    /**
+     * 设备数据 更改或者删除
+     * @param deviceId 设备id
+     * @param entityList 实体数据
+     */
+    void saveOrUpdateBatchDeviceProperties(String deviceId, Collection<DevicePropertyReportEntity> entityList);
 
 }

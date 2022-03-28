@@ -5,6 +5,8 @@ import com.aibaixun.iotdm.mapper.DevicePropertyReportMapper;
 import com.aibaixun.iotdm.service.IDevicePropertyReportService;
 import com.aibaixun.iotdm.data.DevicePropertyInfo;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -25,23 +27,24 @@ public class DevicePropertyReportServiceImpl extends ServiceImpl<DevicePropertyR
 
 
     @Override
+    @Cacheable(cacheNames = "IOTDM:DEVICE_LATEST:",key = "#deviceId",unless = "#result == null ")
     public List<DevicePropertyInfo> queryLatestDeviceProperty(String deviceId) {
         return baseMapper.selectLatestDeviceProperty(deviceId);
     }
 
 
     @Override
-    public List<DevicePropertyInfo> queryShadowDeviceProperty(String productId,String propertyLabel) {
-        return baseMapper.selectShadowDeviceProperty(productId,propertyLabel);
+    public List<DevicePropertyInfo> queryShadowDeviceProperty(String productId,String propertyLabel,String deviceId) {
+        return baseMapper.selectShadowDeviceProperty(productId,propertyLabel,deviceId);
     }
 
     @Override
-    public boolean saveOrUpdateBatch(Collection<DevicePropertyReportEntity> entityList) {
+    @CacheEvict(cacheNames = "IOTDM:DEVICE_LATEST:",key = "#deviceId")
+    public void saveOrUpdateBatchDeviceProperties(String deviceId, Collection<DevicePropertyReportEntity> entityList) {
         if (CollectionUtils.isEmpty(entityList)){
-            return false;
+            return;
         }
         int size = entityList.size();
         int i = baseMapper.saveOrUpdateBatch(new ArrayList<>(entityList));
-        return size ==i;
     }
 }

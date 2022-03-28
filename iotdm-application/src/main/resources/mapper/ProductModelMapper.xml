@@ -7,7 +7,7 @@
         <result property="modelLabel" column="model_label"/>
         <result property="modelType" column="model_type"/>
         <result property="description" column="description"/>
-        <collection property="properties" ofType="com.aibaixun.iotdm.entity.ModelPropertyEntity">
+        <collection property="properties" ofType="com.aibaixun.iotdm.entity.ModelPropertyEntity" notNullColumn="mpid">
            <id column="mpid" property="id" />
             <result column="property_label" property="propertyLabel" />
             <result column="data_type" property="dataType" />
@@ -15,11 +15,9 @@
             <result column="mpdescription" property="description" />
         </collection>
 
-        <collection property="commands" ofType="com.aibaixun.iotdm.entity.ModelCommandEntity">
+        <collection property="commands" ofType="com.aibaixun.iotdm.entity.ModelCommandEntity" notNullColumn="mcid">
             <id column="mcid" property="id" />
             <result column="command_label" property="commandLabel" />
-<!--            <result column="params" property="params" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>-->
-<!--            <result column="responses" property="responses" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>-->
             <result column="params" property="params" typeHandler="com.aibaixun.iotdm.mybatis.BaseParamListTypeHandler"/>
             <result column="responses" property="responses" typeHandler="com.aibaixun.iotdm.mybatis.BaseParamListTypeHandler"/>
             <result column="mcdescription" property="description" />

@@ -37,7 +37,7 @@
         WHERE
             pm.product_id = #{productId}
           AND pm.deleted = 0
-
+        ANd pr.device_id = #{deviceId}
         <if test="propertyLabel != null and propertyLabel != ''">
             AND     mp.property_label LIKE concat(#{propertyLabel},'%')
         </if>
