@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+import java.io.Serializable;
+
 /**
  * @author wangxiao@aibaixun.com
  * @date 2022/3/7
@@ -21,7 +23,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = RabbitTargetConfig.class, name = "RABBIT"),
         @JsonSubTypes.Type(value = MySqlTargetConfig.class, name = "MYSQL")
 })
-public interface BaseTargetConfig {
+public interface BaseTargetConfig extends Serializable {
 
     /**
      * 获取资源类型

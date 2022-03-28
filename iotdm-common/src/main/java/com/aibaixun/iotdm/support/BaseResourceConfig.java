@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+import java.io.Serializable;
+
 /**
  * 资源 配置
  * @author wangxiao@aibaixun.com
@@ -23,7 +25,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = RabbitResourceConfig.class, name = "RABBIT"),
         @JsonSubTypes.Type(value = MySqlResourceConfig.class, name = "MYSQL")
 })
-public interface BaseResourceConfig {
+public interface BaseResourceConfig extends Serializable {
 
     /**
      * 获取资源类型
