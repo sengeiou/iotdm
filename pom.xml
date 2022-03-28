@@ -113,13 +113,13 @@
         <repository>
             <id>alimaven</id>
             <name>aliyun maven</name>
-            <url>http://maven.aliyun.com/nexus/content/repositories/central/</url>
+            <url>https://maven.aliyun.com/nexus/content/repositories/central/</url>
         </repository>
     </repositories>
 
     <developers>
         <developer>
-            <name>WangXiao</name>
+            <name>Wang Xiao</name>
             <email>wangxiao@aibaixun.com</email>
         </developer>
     </developers>
