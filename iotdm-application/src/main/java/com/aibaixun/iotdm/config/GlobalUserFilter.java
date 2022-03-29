@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 /**
+ * 用户拦截过滤器
  * @author wangxiao@aibaixun.com
  * @date 2022/3/14
  */
