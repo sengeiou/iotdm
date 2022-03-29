@@ -29,8 +29,8 @@ public class MessageTraceServiceImpl extends ServiceImpl<MessageTraceMapper, Mes
 
 
     @Override
-    public List<MessageTraceEntity> queryMessageTrace(String deviceId,  BusinessType businessType, Boolean messageStatus) {
-        LambdaQueryWrapper<MessageTraceEntity> queryWrapper = getQueryWrapper(deviceId, businessType, messageStatus);
+    public List<MessageTraceEntity> queryMessageTrace(String deviceId,  BusinessType businessType, Boolean messageStatus,Boolean debugDevice) {
+        LambdaQueryWrapper<MessageTraceEntity> queryWrapper = getQueryWrapper(deviceId, businessType, messageStatus,debugDevice);
         queryWrapper.last(" LIMIT 20");
         return list(queryWrapper);
     }
@@ -38,22 +38,25 @@ public class MessageTraceServiceImpl extends ServiceImpl<MessageTraceMapper, Mes
 
     @Override
     public Page<MessageTraceEntity> pageQueryMessageTrace(String deviceId, BusinessType businessType, Boolean messageStatus, Integer page, Integer pageSize) {
-        LambdaQueryWrapper<MessageTraceEntity> queryWrapper = getQueryWrapper(deviceId, businessType, messageStatus);
+        LambdaQueryWrapper<MessageTraceEntity> queryWrapper = getQueryWrapper(deviceId, businessType, messageStatus,false);
         return page(Page.of(page,pageSize),queryWrapper);
     }
 
-    private LambdaQueryWrapper<MessageTraceEntity> getQueryWrapper(String deviceId, BusinessType businessType, Boolean messageStatus) {
-        LambdaQueryWrapper<MessageTraceEntity> q = Wrappers.<MessageTraceEntity>lambdaQuery()
+    private LambdaQueryWrapper<MessageTraceEntity> getQueryWrapper(String deviceId, BusinessType businessType, Boolean messageStatus,Boolean debugDevice) {
+        LambdaQueryWrapper<MessageTraceEntity> queryWrapper = Wrappers.<MessageTraceEntity>lambdaQuery()
                 .eq(MessageTraceEntity::getDeviceId, deviceId)
                 .orderByDesc(MessageTraceEntity::getCreateTime);
         if (Objects.nonNull(businessType)){
-            q.eq(MessageTraceEntity::getBusinessType,businessType);
+            queryWrapper.eq(MessageTraceEntity::getBusinessType,businessType);
         }
-
+        if (debugDevice){
+            // 在线调试查看5秒内数据
+            queryWrapper.ge(MessageTraceEntity::getCreateTime,Instant.now().toEpochMilli()-8000);
+        }
         if (Objects.nonNull(messageStatus)){
-            q.eq(MessageTraceEntity::getMessageStatus,messageStatus);
+            queryWrapper.eq(MessageTraceEntity::getMessageStatus,messageStatus);
         }
-        return q;
+        return queryWrapper;
     }
 
     @Override
