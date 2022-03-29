@@ -14,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -38,16 +40,15 @@ public class ForwardServiceImpl implements ForwardService{
 
     @Override
     public <T> void sendMessage(T message, List<ForwardRuleInfo> forwardRuleInfos){
-        if (CollectionUtils.isEmpty(forwardRuleInfos)){
-            return ;
-        }
-        List<TargetResourceInfo> allForwardTargetInfo = getAllForwardTargetInfo(forwardRuleInfos);
-        if (CollectionUtils.isEmpty(allForwardTargetInfo)){
-            return ;
-        }
-        for (TargetResourceInfo targetResourceInfo : allForwardTargetInfo) {
-            log.info("ForwardServiceImpl.sendMessage >> ruleLabel:{},resourceLabel:{}",targetResourceInfo.getRuleLabel(),targetResourceInfo.getResourceLabel());
-            doSendMessage(message,targetResourceInfo.getResourceType(),targetResourceInfo.getResourceConfig(), targetResourceInfo.getTargetConfig());
+        List<TargetResourceInfo> allForwardTargetInfo = beforeSendMessage(forwardRuleInfos);
+        try {
+            for (TargetResourceInfo targetResourceInfo : allForwardTargetInfo) {
+                log.info("ForwardServiceImpl.sendMessage >> ruleLabel:{},resourceLabel:{}",targetResourceInfo.getRuleLabel(),targetResourceInfo.getResourceLabel());
+                doSendMessage(message,targetResourceInfo.getResourceType(),targetResourceInfo.getResourceConfig(), targetResourceInfo.getTargetConfig());
+            }
+            afterSendMessage(message);
+        }catch (Exception e){
+            caughtSendMessage(e);
         }
     }
 
@@ -83,7 +84,24 @@ public class ForwardServiceImpl implements ForwardService{
     }
 
 
+    @Override
+    public List<TargetResourceInfo> beforeSendMessage(List<ForwardRuleInfo> forwardRuleInfos) {
+        log.info("ForwardServiceImpl.beforeSendMessage >>> startTime is:{}", Instant.now().toEpochMilli());
+        if (CollectionUtils.isEmpty(forwardRuleInfos)){
+            return Collections.emptyList();
+        }
+        return getAllForwardTargetInfo(forwardRuleInfos);
+    }
 
+    @Override
+    public void caughtSendMessage(Exception e) {
+        log.error("ForwardServiceImpl.caughtSendMessage >>> error message is:{}", e.getMessage());
+    }
+
+    @Override
+    public <T> void afterSendMessage(T message) {
+        log.info("ForwardServiceImpl.afterSendMessage >>> endTime is:{}", Instant.now().toEpochMilli());
+    }
 
     @Autowired
     public void setRuleExecutorService(RuleExecutorService ruleExecutorService) {
