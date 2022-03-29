@@ -28,6 +28,8 @@ public interface IMessageTraceService extends IService<MessageTraceEntity> {
      */
     List<MessageTraceEntity> queryMessageTrace (String deviceId,BusinessType businessType,Boolean messageStatus);
 
+
+
     /**
      * 查询设备消息
      * @param deviceId 设备id

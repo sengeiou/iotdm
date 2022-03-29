@@ -21,6 +21,7 @@ public class ProductEntityInfo extends ProductEntity {
         setDescription(productEntity.getDescription());
         setProtocolType(productEntity.getProtocolType());
         setDataFormat(productEntity.getDataFormat());
+        setCreateTime(productEntity.getCreateTime());
         this.models = models;
     }
 }

@@ -30,28 +30,22 @@ public class MessageTraceServiceImpl extends ServiceImpl<MessageTraceMapper, Mes
 
     @Override
     public List<MessageTraceEntity> queryMessageTrace(String deviceId,  BusinessType businessType, Boolean messageStatus) {
-        long ts =  Instant.now().toEpochMilli()-10000;
-        LambdaQueryWrapper<MessageTraceEntity> q = Wrappers.<MessageTraceEntity>lambdaQuery()
-                .eq(MessageTraceEntity::getDeviceId, deviceId)
-                .ge(MessageTraceEntity::getCreateTime, ts)
-                .orderByDesc(MessageTraceEntity::getCreateTime);
-
-        if (Objects.nonNull(businessType)){
-            q.eq(MessageTraceEntity::getBusinessType,businessType);
-        }
-
-        if (Objects.nonNull(messageStatus)){
-            q.eq(MessageTraceEntity::getMessageStatus,messageStatus);
-        }
-        return list(q);
+        LambdaQueryWrapper<MessageTraceEntity> queryWrapper = getQueryWrapper(deviceId, businessType, messageStatus);
+        queryWrapper.last(" LIMIT 20");
+        return list(queryWrapper);
     }
+
 
     @Override
     public Page<MessageTraceEntity> pageQueryMessageTrace(String deviceId, BusinessType businessType, Boolean messageStatus, Integer page, Integer pageSize) {
+        LambdaQueryWrapper<MessageTraceEntity> queryWrapper = getQueryWrapper(deviceId, businessType, messageStatus);
+        return page(Page.of(page,pageSize),queryWrapper);
+    }
+
+    private LambdaQueryWrapper<MessageTraceEntity> getQueryWrapper(String deviceId, BusinessType businessType, Boolean messageStatus) {
         LambdaQueryWrapper<MessageTraceEntity> q = Wrappers.<MessageTraceEntity>lambdaQuery()
                 .eq(MessageTraceEntity::getDeviceId, deviceId)
                 .orderByDesc(MessageTraceEntity::getCreateTime);
-
         if (Objects.nonNull(businessType)){
             q.eq(MessageTraceEntity::getBusinessType,businessType);
         }
@@ -59,7 +53,7 @@ public class MessageTraceServiceImpl extends ServiceImpl<MessageTraceMapper, Mes
         if (Objects.nonNull(messageStatus)){
             q.eq(MessageTraceEntity::getMessageStatus,messageStatus);
         }
-        return page(Page.of(page,pageSize),q);
+        return q;
     }
 
     @Override
@@ -72,4 +66,7 @@ public class MessageTraceServiceImpl extends ServiceImpl<MessageTraceMapper, Mes
         messageTraceEntity.setMessageStatus(messageStatus);
         save(messageTraceEntity);
     }
+
+
+
 }

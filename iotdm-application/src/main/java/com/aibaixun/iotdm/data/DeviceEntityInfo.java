@@ -24,7 +24,9 @@ public class DeviceEntityInfo extends DeviceEntity {
         setNodeType(deviceEntity.getNodeType());
         setAuthType(deviceEntity.getAuthType());
         setDeviceSecret(deviceEntity.getDeviceSecret());
-
+        setCreateTime(deviceEntity.getCreateTime());
+        setLastConnectTs(deviceEntity.getLastConnectTs());
+        setLastActivityTs(deviceEntity.getLastActivityTs());
     }
 
     public String getProductLabel() {

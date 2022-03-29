@@ -33,11 +33,10 @@
         FROM
             t_product_model pm
         LEFT JOIN t_model_property mp ON mp.product_model_id = pm.id
-        LEFT JOIN t_device_property_report pr ON mp.id = pr.property_id
+        LEFT JOIN t_device_property_report pr ON mp.id = pr.property_id  ANd pr.device_id = #{deviceId}
         WHERE
             pm.product_id = #{productId}
           AND pm.deleted = 0
-        ANd pr.device_id = #{deviceId}
         <if test="propertyLabel != null and propertyLabel != ''">
             AND     mp.property_label LIKE concat(#{propertyLabel},'%')
         </if>

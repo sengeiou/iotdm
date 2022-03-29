@@ -77,13 +77,13 @@ public class DeviceTraceController extends BaseController{
     @GetMapping("/{deviceId}")
     public JsonResult<List<MessageTraceEntity>> getDeviceTraceMessage (@PathVariable String deviceId,
                                                                        @RequestParam(required = false) Boolean messageStatus,
-                                                                       @RequestParam(required = false)BusinessType businessType) {
+                                                                       @RequestParam(required = false) BusinessType businessType) {
 
         List<MessageTraceEntity> messageTraceEntities = messageTraceService.queryMessageTrace(deviceId, businessType,messageStatus);
-        Long ttl = ((Long) redisRepository.getHashValues(DataConstants.IOT_DEVICE_DEBUG_CACHE_KEY , deviceId));
-        if (Objects.isNull(ttl) || ttl < Instant.now().toEpochMilli()){
+        Long diffTtl = ((Long) redisRepository.getHashValues(DataConstants.IOT_DEVICE_DEBUG_CACHE_KEY , deviceId));
+        if (Objects.isNull(diffTtl) || diffTtl < Instant.now().toEpochMilli()){
             long value = Instant.now().toEpochMilli() + 10000;
-            redisRepository.putHashValue(DataConstants.IOT_DEVICE_DEBUG_CACHE_KEY,deviceId,value );
+            redisRepository.putHashValue(DataConstants.IOT_DEVICE_DEBUG_CACHE_KEY,deviceId,value);
         }
         return JsonResult.success(messageTraceEntities);
     }
