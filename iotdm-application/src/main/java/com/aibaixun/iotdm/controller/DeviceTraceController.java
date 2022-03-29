@@ -76,14 +76,11 @@ public class DeviceTraceController extends BaseController{
 
 
     @GetMapping("/{deviceId}")
-    public JsonResult<Page<MessageTraceEntity>> getDeviceTraceMessage (@PathVariable String deviceId,
+    public JsonResult<List<MessageTraceEntity>> getDeviceTraceMessage (@PathVariable String deviceId,
                                                                        @RequestParam(required = false) Boolean messageStatus,
-                                                                       @RequestParam(required = false)BusinessType businessType,
-                                                                       @RequestParam Integer page,
-                                                                       @RequestParam Integer pageSize) throws BaseException {
+                                                                       @RequestParam(required = false)BusinessType businessType) {
 
-        checkPage(page,pageSize);
-        Page<MessageTraceEntity> messageTraceEntities = messageTraceService.pageQueryMessageTrace(deviceId, businessType,messageStatus,page,pageSize);
+        List<MessageTraceEntity> messageTraceEntities = messageTraceService.queryMessageTrace(deviceId, businessType,messageStatus);
         Long ttl = ((Long) redisRepository.getHashValues(DataConstants.IOT_DEVICE_DEBUG_CACHE_KEY , deviceId));
         if (Objects.isNull(ttl) || ttl < Instant.now().toEpochMilli()){
             long value = Instant.now().toEpochMilli() + 10000;
