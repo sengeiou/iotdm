@@ -38,11 +38,19 @@ public interface IProductService extends IService<ProductEntity> {
 
     /**
      * 产品名称查询 产品
+     * @param productId 产品id
      * @param productLabel 产品名称
      * @return 产品
      */
-    ProductEntity queryProductByLabel(String productLabel);
+    Long countProductByLabel(String productId,String productLabel);
 
+
+    /**
+     * 产品名称查询 产品
+     * @param productLabel 产品名称
+     * @return 产品
+     */
+    Long countProductByLabel(String productLabel);
 
     /**
      * 查询产品名称

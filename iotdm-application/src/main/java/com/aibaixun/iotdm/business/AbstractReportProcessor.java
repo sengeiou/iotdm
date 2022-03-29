@@ -22,9 +22,7 @@ public abstract class AbstractReportProcessor<P extends AbstractBusinessMsg,M ex
 
     private DeviceLogProcessor deviceLogProcessor;
 
-
     protected IDevicePropertyReportService propertyReportService;
-
 
     protected IDeviceMessageReportService messageReportService;
 

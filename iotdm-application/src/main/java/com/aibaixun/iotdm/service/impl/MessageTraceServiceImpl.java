@@ -7,6 +7,7 @@ import com.aibaixun.iotdm.mapper.MessageTraceMapper;
 import com.aibaixun.iotdm.service.IMessageTraceService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
@@ -29,8 +30,6 @@ public class MessageTraceServiceImpl extends ServiceImpl<MessageTraceMapper, Mes
 
     @Override
     public List<MessageTraceEntity> queryMessageTrace(String deviceId,  BusinessType businessType, Boolean messageStatus) {
-
-
         long ts =  Instant.now().toEpochMilli()-10000;
         LambdaQueryWrapper<MessageTraceEntity> q = Wrappers.<MessageTraceEntity>lambdaQuery()
                 .eq(MessageTraceEntity::getDeviceId, deviceId)
@@ -45,6 +44,22 @@ public class MessageTraceServiceImpl extends ServiceImpl<MessageTraceMapper, Mes
             q.eq(MessageTraceEntity::getMessageStatus,messageStatus);
         }
         return list(q);
+    }
+
+    @Override
+    public Page<MessageTraceEntity> pageQueryMessageTrace(String deviceId, BusinessType businessType, Boolean messageStatus, Integer page, Integer pageSize) {
+        LambdaQueryWrapper<MessageTraceEntity> q = Wrappers.<MessageTraceEntity>lambdaQuery()
+                .eq(MessageTraceEntity::getDeviceId, deviceId)
+                .orderByDesc(MessageTraceEntity::getCreateTime);
+
+        if (Objects.nonNull(businessType)){
+            q.eq(MessageTraceEntity::getBusinessType,businessType);
+        }
+
+        if (Objects.nonNull(messageStatus)){
+            q.eq(MessageTraceEntity::getMessageStatus,messageStatus);
+        }
+        return page(Page.of(page,pageSize),q);
     }
 
     @Override

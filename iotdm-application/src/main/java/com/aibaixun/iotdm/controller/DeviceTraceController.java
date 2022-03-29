@@ -10,6 +10,7 @@ import com.aibaixun.iotdm.entity.MessageTraceEntity;
 import com.aibaixun.iotdm.enums.BusinessType;
 import com.aibaixun.iotdm.service.IDeviceService;
 import com.aibaixun.iotdm.service.IMessageTraceService;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -75,11 +76,14 @@ public class DeviceTraceController extends BaseController{
 
 
     @GetMapping("/{deviceId}")
-    public JsonResult<List<MessageTraceEntity>> getDeviceTraceMessage (@PathVariable String deviceId,
+    public JsonResult<Page<MessageTraceEntity>> getDeviceTraceMessage (@PathVariable String deviceId,
                                                                        @RequestParam(required = false) Boolean messageStatus,
-                                                                       @RequestParam(required = false)BusinessType businessType){
+                                                                       @RequestParam(required = false)BusinessType businessType,
+                                                                       @RequestParam Integer page,
+                                                                       @RequestParam Integer pageSize) throws BaseException {
 
-        List<MessageTraceEntity> messageTraceEntities = messageTraceService.queryMessageTrace(deviceId, businessType,messageStatus);
+        checkPage(page,pageSize);
+        Page<MessageTraceEntity> messageTraceEntities = messageTraceService.pageQueryMessageTrace(deviceId, businessType,messageStatus,page,pageSize);
         Long ttl = ((Long) redisRepository.getHashValues(DataConstants.IOT_DEVICE_DEBUG_CACHE_KEY , deviceId));
         if (Objects.isNull(ttl) || ttl < Instant.now().toEpochMilli()){
             long value = Instant.now().toEpochMilli() + 10000;

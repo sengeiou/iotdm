@@ -5,6 +5,7 @@ import com.aibaixun.basic.exception.BaseException;
 import com.aibaixun.basic.result.BaseResultCode;
 import com.aibaixun.basic.result.JsonResult;
 import com.aibaixun.common.redis.util.RedisRepository;
+import com.aibaixun.iotdm.data.ProductEntityInfo;
 import com.aibaixun.iotdm.data.UpdateProductParam;
 import com.aibaixun.iotdm.entity.ProductEntity;
 import com.aibaixun.iotdm.enums.SubjectEvent;
@@ -12,7 +13,6 @@ import com.aibaixun.iotdm.enums.SubjectResource;
 import com.aibaixun.iotdm.event.EntityChangeEvent;
 import com.aibaixun.iotdm.service.IDeviceService;
 import com.aibaixun.iotdm.service.IProductService;
-import com.aibaixun.iotdm.data.ProductEntityInfo;
 import com.aibaixun.iotdm.service.IotDmEventPublisher;
 import com.aibaixun.iotdm.util.UserInfoUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Objects;
 
 import static com.aibaixun.iotdm.constants.DataConstants.IOT_PRODUCT_TENANT_KEY;
 
@@ -73,8 +72,8 @@ public class ProductController extends BaseController{
     @PostMapping
     public JsonResult<Boolean> createProduct(@RequestBody @Valid ProductEntity productEntity) throws BaseException {
         String productLabel = productEntity.getProductLabel();
-        ProductEntity checkProductEntity = productService.queryProductByLabel(productLabel);
-        if (Objects.nonNull(checkProductEntity)){
+        Long checkProductEntity = productService.countProductByLabel(productLabel);
+        if (checkProductEntity > 0){
             throw new BaseException("当前租户下已有同名产品", BaseResultCode.GENERAL_ERROR);
         }
         boolean saveResult = productService.save(productEntity);
@@ -108,8 +107,8 @@ public class ProductController extends BaseController{
     public JsonResult<Boolean> updateProduct (@RequestBody @Valid UpdateProductParam updateProductParam) throws BaseException {
         ProductEntity pr = productService.getById(updateProductParam.getId());
         checkEntity(pr,"产品不存在,无法更改");
-        ProductEntity checkProductEntity = productService.queryProductByLabel(updateProductParam.getProductLabel());
-        if (Objects.nonNull(checkProductEntity)){
+        long checkProductEntity = productService.countProductByLabel(updateProductParam.getId(),updateProductParam.getProductLabel());
+        if (checkProductEntity >0){
             throw new BaseException("当前租户下已有同名产品", BaseResultCode.BAD_PARAMS);
         }
         Boolean aBoolean = productService.updateProduct(updateProductParam.getId(), updateProductParam.getProductLabel(), updateProductParam.getDescription());

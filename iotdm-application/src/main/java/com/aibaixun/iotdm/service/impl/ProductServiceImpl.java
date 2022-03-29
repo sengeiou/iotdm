@@ -64,12 +64,19 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, ProductEntity
     }
 
     @Override
-    public ProductEntity queryProductByLabel(String productLabel) {
+    public Long countProductByLabel(String productId, String productLabel) {
         LambdaQueryWrapper<ProductEntity> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(ProductEntity::getProductLabel,productLabel);
-        return getOne(queryWrapper,false);
+        queryWrapper.ne(ProductEntity::getId,productId);
+        return count(queryWrapper);
     }
 
+    @Override
+    public Long countProductByLabel(String productLabel) {
+        LambdaQueryWrapper<ProductEntity> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(ProductEntity::getProductLabel,productLabel);
+        return count(queryWrapper);
+    }
 
     @Override
     public Map<String, String> queryProductLabelByIds(List<String> productIds) {

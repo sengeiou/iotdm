@@ -3,6 +3,7 @@ package com.aibaixun.iotdm.service;
 import com.aibaixun.iotdm.entity.MessageTraceEntity;
 import com.aibaixun.iotdm.enums.BusinessStep;
 import com.aibaixun.iotdm.enums.BusinessType;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -26,6 +27,17 @@ public interface IMessageTraceService extends IService<MessageTraceEntity> {
      * @return 消息数据
      */
     List<MessageTraceEntity> queryMessageTrace (String deviceId,BusinessType businessType,Boolean messageStatus);
+
+    /**
+     * 查询设备消息
+     * @param deviceId 设备id
+     * @param businessType 业务类型
+     * @param messageStatus 消息状态
+     * @param page 分页
+     * @param pageSize 分页
+     * @return 消息数据
+     */
+    Page<MessageTraceEntity> pageQueryMessageTrace (String deviceId, BusinessType businessType, Boolean messageStatus, Integer page, Integer pageSize);
 
 
     /**

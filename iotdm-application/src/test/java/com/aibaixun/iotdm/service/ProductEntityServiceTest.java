@@ -40,8 +40,8 @@ public class ProductEntityServiceTest {
         productEntity.setDescription("单元测试产生产品");
         productEntity.setDataFormat(DataFormat.BINARY);
         productEntity.setProtocolType(ProtocolType.MQTT);
-        boolean product1 = createProduct(productEntity);
-        logger.info(String.valueOf(product1));
+//        boolean product1 = createProduct(productEntity);
+//        logger.info(String.valueOf(product1));
     }
 
 
@@ -60,14 +60,14 @@ public class ProductEntityServiceTest {
     }
 
 
-    private  boolean createProduct (ProductEntity productEntity) throws BaseException {
-        String productLabel = productEntity.getProductLabel();
-        ProductEntity checkProductEntity = productService.queryProductByLabel(productLabel);
-        if (Objects.nonNull(checkProductEntity)){
-            throw new BaseException("当前租户下已有同名产品", BaseResultCode.BAD_PARAMS);
-        }
-        return productService.save(productEntity);
-    }
+//    private  boolean createProduct (ProductEntity productEntity) throws BaseException {
+//        String productLabel = productEntity.getProductLabel();
+//        ProductEntity checkProductEntity = productService.queryProductByLabel(productLabel);
+//        if (Objects.nonNull(checkProductEntity)){
+//            throw new BaseException("当前租户下已有同名产品", BaseResultCode.BAD_PARAMS);
+//        }
+//        return productService.save(productEntity);
+//    }
 
 
 
