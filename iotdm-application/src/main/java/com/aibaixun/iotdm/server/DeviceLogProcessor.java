@@ -26,18 +26,18 @@ public class DeviceLogProcessor {
     private IMessageTraceService messageTraceService;
 
     public  void doDevice2PlatformLog(String deviceId,  BusinessStep businessStep, String businessDetails, Boolean messageStatus  ) {
-      doLog(deviceId, businessStep,businessDetails,messageStatus);
+      doLog(deviceId,BusinessType.DEVICE2PLATFORM, businessStep,businessDetails,messageStatus);
     }
 
 
     public  void doPlatform2DeviceLLog(String deviceId,  BusinessStep businessStep, String businessDetails, Boolean messageStatus ) {
-        doLog(deviceId, businessStep,businessDetails,messageStatus);
+        doLog(deviceId,BusinessType.PLATFORM2DEVICE, businessStep,businessDetails,messageStatus);
     }
 
-    private void doLog(String deviceId, BusinessStep businessStep, String businessDetails, Boolean messageStatus){
+    private void doLog(String deviceId,BusinessType businessType, BusinessStep businessStep, String businessDetails, Boolean messageStatus){
         Long ttl = ((Long) redisRepository.getHashValues(DataConstants.IOT_DEVICE_DEBUG_CACHE_KEY , deviceId));
         if (Objects.nonNull(ttl) && ttl > Instant.now().getEpochSecond()){
-            Futures.submit(()-> messageTraceService.logDeviceMessageTrace(deviceId,BusinessType.DEVICE2PLATFORM,businessStep,businessDetails,messageStatus), MoreExecutors.directExecutor());
+            Futures.submit(()-> messageTraceService.logDeviceMessageTrace(deviceId,businessType,businessStep,businessDetails,messageStatus), MoreExecutors.directExecutor());
         }
     }
 

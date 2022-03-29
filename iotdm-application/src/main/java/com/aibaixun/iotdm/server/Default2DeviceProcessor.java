@@ -62,12 +62,14 @@ public class Default2DeviceProcessor implements ToDeviceProcessor{
         if (Objects.isNull(product)){
             throw new BaseException("产品不存在", BaseResultCode.GENERAL_ERROR);
         }
+
         String host = toDeviceConfigParam.getHost();
         Integer port = toDeviceConfigParam.getPort();
         String username = toDeviceConfigParam.getUsername();
         String clientId = toDeviceConfigParam.getClientId();
         String password = toDeviceConfigParam.getPassword();
         ToDeviceConfigTransportData deviceConfigTransportData = new ToDeviceConfigTransportData(ToDeviceType.CONFIG,host,port,clientId,username,password);
+
         String payload = JsonUtil.toJSONString(deviceConfigTransportData);
         if (DataFormat.BINARY.equals(product.getDataFormat())){
             try {
@@ -151,6 +153,8 @@ public class Default2DeviceProcessor implements ToDeviceProcessor{
     private void doCommandLog(String deviceId, String businessDetails, Boolean messageStatus){
         deviceLogProcessor.doPlatform2DeviceLLog(deviceId, BusinessStep.PLATFORM_SEND_COMMAND,businessDetails,messageStatus);
     }
+
+
 
 
     @Override

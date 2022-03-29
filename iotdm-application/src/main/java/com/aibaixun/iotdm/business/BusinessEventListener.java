@@ -52,15 +52,15 @@ public class BusinessEventListener {
         String payload = devicePropertyUpEvent.getPayload();
         DataFormat dataFormat = devicePropertyUpEvent.getDataFormat();
         JsonNode jsonNode = null;
-        matchProcessor.doLog(devicePropertyUpEvent.getDeviceId(), BusinessType.PLATFORM2DEVICE, BusinessStep.DEVICE_REPORT_DATA,payload,true);
+        matchProcessor.doLog(devicePropertyUpEvent.getDeviceId(), BusinessType.DEVICE2PLATFORM, BusinessStep.DEVICE_REPORT_DATA,payload,true);
         try {
             jsonNode = invokePluginMethod(dataFormat,payload, devicePropertyUpEvent.getProductId(), TopicConstants.PROPERTIES_UP);
             PrePropertyBusinessMsg prePropertyBusinessMsg = new PrePropertyBusinessMsg(new MetaData(devicePropertyUpEvent.getDeviceId(), devicePropertyUpEvent.getProductId()), jsonNode);
             matchProcessor.doProcessProperty(prePropertyBusinessMsg);
-            matchProcessor.doLog(devicePropertyUpEvent.getDeviceId(), BusinessType.PLATFORM2DEVICE, BusinessStep.PLATFORM_RESOLVING_DATA,jsonNode !=null?jsonNode.toString():"{}",true);
+            matchProcessor.doLog(devicePropertyUpEvent.getDeviceId(), BusinessType.DEVICE2PLATFORM, BusinessStep.PLATFORM_RESOLVING_DATA,jsonNode !=null?jsonNode.toString():"{}",true);
         }catch (Exception e){
             log.error("DefaultIotDmEventListener.onDevicePropertyUpEvent >> is error ,message is:{},error is:{}",devicePropertyUpEvent,e.getMessage());
-            matchProcessor.doLog(devicePropertyUpEvent.getDeviceId(), BusinessType.PLATFORM2DEVICE, BusinessStep.DEVICE_REPORT_DATA,e.getMessage(),false);
+            matchProcessor.doLog(devicePropertyUpEvent.getDeviceId(), BusinessType.DEVICE2PLATFORM, BusinessStep.DEVICE_REPORT_DATA,e.getMessage(),false);
         }
     }
 
@@ -72,15 +72,15 @@ public class BusinessEventListener {
         log.info("DefaultIotDmEventListener.onDeviceMessageUpEvent >>  ,message is:{}",deviceMessageUpEvent);
         String payload = deviceMessageUpEvent.getPayload();
         DataFormat dataFormat = deviceMessageUpEvent.getDataFormat();
-        matchProcessor.doLog(deviceMessageUpEvent.getDeviceId(), BusinessType.PLATFORM2DEVICE, BusinessStep.DEVICE_REPORT_DATA,payload,true);
+        matchProcessor.doLog(deviceMessageUpEvent.getDeviceId(), BusinessType.DEVICE2PLATFORM, BusinessStep.DEVICE_REPORT_DATA,payload,true);
         try {
             JsonNode jsonNode = invokePluginMethod(dataFormat,payload, deviceMessageUpEvent.getProductId(), TopicConstants.MESSAGE_UP);
             matchProcessor.doProcessMessage(new MessageBusinessMsg(new MetaData(deviceMessageUpEvent.getDeviceId(), deviceMessageUpEvent.getProductId()),jsonNode));
-            matchProcessor.doLog(deviceMessageUpEvent.getDeviceId(), BusinessType.PLATFORM2DEVICE, BusinessStep.PLATFORM_RESOLVING_DATA,jsonNode !=null?jsonNode.toString():"{}",true);
+            matchProcessor.doLog(deviceMessageUpEvent.getDeviceId(), BusinessType.DEVICE2PLATFORM, BusinessStep.PLATFORM_RESOLVING_DATA,jsonNode !=null?jsonNode.toString():"{}",true);
         }catch (Exception e){
             log.error("DefaultIotDmEventListener.onDeviceMessageUpEvent >> is error ,message is:{},error is:{}",deviceMessageUpEvent,e.getMessage());
             matchProcessor.doProcessMessage(new MessageBusinessMsg(new MetaData(deviceMessageUpEvent.getDeviceId(), deviceMessageUpEvent.getProductId()),payload));
-            matchProcessor.doLog(deviceMessageUpEvent.getDeviceId(), BusinessType.PLATFORM2DEVICE, BusinessStep.PLATFORM_RESOLVING_DATA,payload,false);
+            matchProcessor.doLog(deviceMessageUpEvent.getDeviceId(), BusinessType.DEVICE2PLATFORM, BusinessStep.PLATFORM_RESOLVING_DATA,payload,false);
         }
     }
 
