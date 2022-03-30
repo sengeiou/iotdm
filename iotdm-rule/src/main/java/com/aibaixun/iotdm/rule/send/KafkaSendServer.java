@@ -1,8 +1,6 @@
 package com.aibaixun.iotdm.rule.send;
 
 import com.aibaixun.iotdm.enums.ResourceType;
-import com.aibaixun.iotdm.rule.pool.PoolResource;
-import com.aibaixun.iotdm.rule.pool.ResourceLruCache;
 import com.aibaixun.iotdm.support.BaseResourceConfig;
 import com.aibaixun.iotdm.support.BaseTargetConfig;
 import com.aibaixun.iotdm.support.KafkaResourceConfig;
@@ -33,7 +31,7 @@ public class KafkaSendServer implements SendServer {
     @Value("${bx.rule.kafka.max-idle-connections}")
     private Integer maxIdleConnections;
 
-    private ResourceLruCache<String, KafkaConnectionResource> kafkaConnections;
+
 
     /**
      * 发送方法 需要子类实现
@@ -45,7 +43,6 @@ public class KafkaSendServer implements SendServer {
     @Override
     public <T> void doSendMessage(T message, BaseResourceConfig resourceConfig, BaseTargetConfig targetConfig) {
         KafkaResourceConfig kafkaResourceConfig = (KafkaResourceConfig) resourceConfig;
-        String host = kafkaResourceConfig.getHost();
         try {
 
             KafkaProducer<String,String> kafkaProducer = generateClient(kafkaResourceConfig);
@@ -60,7 +57,6 @@ public class KafkaSendServer implements SendServer {
             });
         } catch (Exception e) {
             e.printStackTrace();
-            kafkaConnections.remove(host);
             log.error("KafkaSendService.doSendMessage >> is error ,error msg is :{}", e.getMessage());
         }
     }
@@ -72,57 +68,37 @@ public class KafkaSendServer implements SendServer {
     @PostConstruct
     public void init() {
         registerService(ResourceType.KAFKA,this);
-        kafkaConnections = new ResourceLruCache<>(maxIdleConnections);
     }
 
-    static class KafkaConnectionResource implements PoolResource {
-        private final KafkaProducer<String,String>  kafkaProducer;
-
-        @Override
-        public void releaseResource() {
-            if (kafkaProducer != null){
-                kafkaProducer.close();
-            }
-        }
-        public KafkaConnectionResource(KafkaProducer<String, String> kafkaProducer) {
-            this.kafkaProducer = kafkaProducer;
-        }
-    }
 
 
     public  KafkaProducer<String,String> generateClient(KafkaResourceConfig config) {
 
         String host = config.getHost();
-        KafkaConnectionResource kafkaConnectionResource = kafkaConnections.get(host);
-        if (Objects.isNull(kafkaConnectionResource)){
-            Properties properties = new Properties();
-            properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, config.getHost());
-            properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-            properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-            Integer connectTime = Objects.nonNull(config.getConnectTimeout())?config.getConnectTimeout()*1000:60000;
-            properties.put(ProducerConfig.TRANSACTION_TIMEOUT_CONFIG, connectTime);
-            String compressionType = Objects.nonNull(config.getCompressionType())?config.getCompressionType():"gzip";
-            properties.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, compressionType);
-            Integer reqTimeout  = Objects.nonNull(config.getReqTimeout())?config.getReqTimeout()*1000:60000;
-            properties.put(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, reqTimeout);
-            Integer metaUpdateTime  = Objects.nonNull(config.getMetadataUpdateTime())?config.getMetadataUpdateTime()*1000:60000;
-            properties.put(ProducerConfig.MAX_BLOCK_MS_CONFIG, metaUpdateTime);
-            if (Objects.nonNull(config.getBufferSize())){
-                properties.put(ProducerConfig.BUFFER_MEMORY_CONFIG, config.getBufferSize());
-            }
-            if (Objects.nonNull(config.getBatchSize())){
-                properties.put(ProducerConfig.BATCH_SIZE_CONFIG, config.getBatchSize());
-            }
-            if (Objects.nonNull(config.getUsername())){
-                properties.put("username", config.getUsername());
-            }
-            if (Objects.nonNull(config.getPassword())){
-                properties.put("password", config.getPassword());
-            }
-            KafkaProducer<String, String> producer = new KafkaProducer<>(properties);
-            kafkaConnectionResource = new KafkaConnectionResource(producer);
-            kafkaConnections.put(host,kafkaConnectionResource);
+        Properties properties = new Properties();
+        properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, config.getHost());
+        properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        Integer connectTime = Objects.nonNull(config.getConnectTimeout())?config.getConnectTimeout()*1000:60000;
+        properties.put(ProducerConfig.TRANSACTION_TIMEOUT_CONFIG, connectTime);
+        String compressionType = Objects.nonNull(config.getCompressionType())?config.getCompressionType():"gzip";
+        properties.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, compressionType);
+        Integer reqTimeout  = Objects.nonNull(config.getReqTimeout())?config.getReqTimeout()*1000:60000;
+        properties.put(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, reqTimeout);
+        Integer metaUpdateTime  = Objects.nonNull(config.getMetadataUpdateTime())?config.getMetadataUpdateTime()*1000:60000;
+        properties.put(ProducerConfig.MAX_BLOCK_MS_CONFIG, metaUpdateTime);
+        if (Objects.nonNull(config.getBufferSize())){
+            properties.put(ProducerConfig.BUFFER_MEMORY_CONFIG, config.getBufferSize());
         }
-        return kafkaConnectionResource.kafkaProducer;
+        if (Objects.nonNull(config.getBatchSize())){
+            properties.put(ProducerConfig.BATCH_SIZE_CONFIG, config.getBatchSize());
+        }
+        if (Objects.nonNull(config.getUsername())){
+            properties.put("username", config.getUsername());
+        }
+        if (Objects.nonNull(config.getPassword())){
+            properties.put("password", config.getPassword());
+        }
+        return new KafkaProducer<>(properties);
     }
 }
