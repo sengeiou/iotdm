@@ -1,5 +1,7 @@
 package com.aibaixun.iotdm.rule.send;
 
+import com.aibaixun.common.util.JsonUtil;
+import com.aibaixun.iotdm.business.PostPropertyBusinessMsg;
 import com.aibaixun.iotdm.enums.ResourceType;
 import com.aibaixun.iotdm.rule.pool.PoolResource;
 import com.aibaixun.iotdm.rule.pool.ResourceLruCache;
@@ -85,6 +87,8 @@ public class RabbitSendServer implements SendServer {
             }
         }
     }
+
+
 
     @Override
     @PostConstruct

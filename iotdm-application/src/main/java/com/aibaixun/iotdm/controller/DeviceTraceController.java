@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -82,9 +83,14 @@ public class DeviceTraceController extends BaseController{
         if (Objects.isNull(debugDevice)){
             debugDevice = false;
         }
-        List<MessageTraceEntity> messageTraceEntities = messageTraceService.queryMessageTrace(deviceId, businessType,messageStatus,debugDevice);
         Long diffTtl = ((Long) redisRepository.getHashValues(DataConstants.IOT_DEVICE_DEBUG_CACHE_KEY , deviceId));
-        if (Objects.isNull(diffTtl) || diffTtl < Instant.now().toEpochMilli()){
+        if(Objects.isNull(diffTtl)){
+            return JsonResult.success(Collections.emptyList());
+        }
+
+        List<MessageTraceEntity> messageTraceEntities = messageTraceService.queryMessageTrace(deviceId, businessType,messageStatus,debugDevice);
+
+        if ( diffTtl < Instant.now().toEpochMilli()){
             long value = Instant.now().toEpochMilli() + 10000;
             redisRepository.putHashValue(DataConstants.IOT_DEVICE_DEBUG_CACHE_KEY,deviceId,value);
         }
