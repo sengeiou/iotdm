@@ -1,11 +1,13 @@
 package com.aibaixun.iotdm.rule.send;
 
+import com.aibaixun.common.util.JsonUtil;
 import com.aibaixun.iotdm.enums.ResourceType;
 import com.aibaixun.iotdm.rule.pool.ResourceLruCache;
 import com.aibaixun.iotdm.support.BaseResourceConfig;
 import com.aibaixun.iotdm.support.BaseTargetConfig;
 import com.aibaixun.iotdm.support.KafkaResourceConfig;
 import com.aibaixun.iotdm.support.KafkaTargetConfig;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -83,9 +85,9 @@ public class KafkaSendServer implements SendServer {
         properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         if (Objects.nonNull(config.getConnectTimeout()) && config.getConnectTimeout()!=0){
             properties.put(ProducerConfig.TRANSACTION_TIMEOUT_CONFIG, config.getConnectTimeout()*1000);
-        };
+        }
 
-        String compressionType = Objects.nonNull(config.getCompressionType())?config.getCompressionType():"gzip";
+        String compressionType = StringUtils.isNotEmpty(config.getCompressionType())?config.getCompressionType():"gzip";
         properties.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, compressionType);
         if (Objects.nonNull(config.getReqTimeout()) && config.getReqTimeout() !=0){
             properties.put(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, config.getReqTimeout()*1000);
@@ -109,4 +111,6 @@ public class KafkaSendServer implements SendServer {
         resourceLruCache.put(host,kafkaProducer);
         return kafkaProducer;
     }
+
+
 }
