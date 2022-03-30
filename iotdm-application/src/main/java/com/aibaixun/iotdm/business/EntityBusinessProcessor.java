@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
+ * 实体类处理类
  * @author Wang Xiao
  * @date 2022/3/30
  */

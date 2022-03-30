@@ -19,6 +19,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
+ * 物模型匹配处理类
  * @author Wang Xiao
  * @date 2022/3/30
  */
