@@ -23,9 +23,9 @@ import java.util.Objects;
  * @date 2022/3/14
  */
 @Component
-public class RabbitSendService implements SendService{
+public class RabbitSendServer implements SendServer {
 
-    private final Logger log = LoggerFactory.getLogger(RabbitSendService.class);
+    private final Logger log = LoggerFactory.getLogger(RabbitSendServer.class);
 
     private ResourceLruCache<String, RabbitConnectionResource> connectionPool;
 
@@ -103,9 +103,8 @@ public class RabbitSendService implements SendService{
                 }
             } catch (IOException e) {
                 e.printStackTrace();
-            };
+            }
         }
-
         public RabbitConnectionResource(Connection connection) throws IOException {
             this.connection = connection;
             this.channel = connection.createChannel();

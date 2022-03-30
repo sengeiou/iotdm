@@ -25,8 +25,8 @@ import java.util.Properties;
  * kafka客户端服务
  */
 @Component
-public class KafkaSendService implements SendService {
-    private final Logger log = LoggerFactory.getLogger(HttpSendService.class);
+public class KafkaSendServer implements SendServer {
+    private final Logger log = LoggerFactory.getLogger(HttpSendServer.class);
 
 
 

@@ -3,7 +3,6 @@ package com.aibaixun.iotdm.rule;
 import com.aibaixun.common.util.JsonUtil;
 import com.aibaixun.iotdm.rule.pool.PoolResource;
 import com.aibaixun.iotdm.rule.pool.ResourceLruCache;
-import com.aibaixun.iotdm.rule.send.RabbitSendService;
 import com.aibaixun.iotdm.support.RabbitResourceConfig;
 import com.aibaixun.iotdm.support.RabbitTargetConfig;
 import com.rabbitmq.client.*;
@@ -12,7 +11,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
-import static com.aibaixun.iotdm.rule.send.SendService.OBJECT_MAPPER;
+import static com.aibaixun.iotdm.rule.send.SendServer.OBJECT_MAPPER;
 
 /**
  * @author wangxiao@aibaixun.com

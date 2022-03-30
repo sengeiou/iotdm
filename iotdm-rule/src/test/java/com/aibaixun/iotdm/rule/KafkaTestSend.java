@@ -12,7 +12,7 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import java.util.Objects;
 import java.util.Properties;
 
-import static com.aibaixun.iotdm.rule.send.SendService.OBJECT_MAPPER;
+import static com.aibaixun.iotdm.rule.send.SendServer.OBJECT_MAPPER;
 
 
 /**

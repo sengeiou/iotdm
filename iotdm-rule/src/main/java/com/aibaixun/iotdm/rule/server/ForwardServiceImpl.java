@@ -4,7 +4,7 @@ import com.aibaixun.iotdm.enums.ResourceType;
 import com.aibaixun.iotdm.msg.ForwardRuleInfo;
 import com.aibaixun.iotdm.msg.TargetResourceInfo;
 import com.aibaixun.iotdm.rule.QueueReceiveServiceImpl;
-import com.aibaixun.iotdm.rule.send.SendService;
+import com.aibaixun.iotdm.rule.send.SendServer;
 import com.aibaixun.iotdm.scheduler.RuleExecutorService;
 import com.aibaixun.iotdm.support.BaseResourceConfig;
 import com.aibaixun.iotdm.support.BaseTargetConfig;
@@ -61,7 +61,7 @@ public class ForwardServiceImpl implements ForwardService{
      * @param <T> 消息类型
      */
     private   <T> void  doSendMessage(T message, ResourceType resourceType, BaseResourceConfig resourceConfig, BaseTargetConfig targetConfig){
-        SendService sendService = SendService.SEND_SERVICE_MAP.get(resourceType);
+        SendServer sendService = SendServer.SEND_SERVICE_MAP.get(resourceType);
         if (Objects.nonNull(sendService)){
             ruleExecutorService.executeAsync(() -> {
                 sendService.doSendMessage(message, resourceConfig, targetConfig);

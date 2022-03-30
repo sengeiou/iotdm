@@ -14,10 +14,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author wangxiao@aibaixun.com
  * @date 2022/3/14
  */
-public interface SendService {
+public interface SendServer {
 
 
-     Map<ResourceType, SendService> SEND_SERVICE_MAP = new ConcurrentHashMap<>(8);
+     Map<ResourceType, SendServer> SEND_SERVICE_MAP = new ConcurrentHashMap<>(8);
 
 
      ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -44,7 +44,7 @@ public interface SendService {
      * @param resourceType 资源类型
      * @param sendService 服务
      */
-    default void registerService(ResourceType resourceType,SendService sendService){
+    default void registerService(ResourceType resourceType, SendServer sendService){
         SEND_SERVICE_MAP.put(resourceType,sendService);
     }
 

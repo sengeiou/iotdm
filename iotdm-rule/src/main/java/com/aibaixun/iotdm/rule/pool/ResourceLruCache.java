@@ -1,6 +1,5 @@
 package com.aibaixun.iotdm.rule.pool;
 
-import com.aibaixun.iotdm.rule.send.HttpSendService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

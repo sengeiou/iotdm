@@ -23,9 +23,9 @@ import java.util.Map;
  * @date 2022/3/14
  */
 @Component
-public class HttpSendService implements SendService{
+public class HttpSendServer implements SendServer {
 
-    private final Logger log = LoggerFactory.getLogger(HttpSendService.class);
+    private final Logger log = LoggerFactory.getLogger(HttpSendServer.class);
 
     private OkHttpClient okHttpClient;
 
@@ -82,7 +82,7 @@ public class HttpSendService implements SendService{
 
             @Override
             public void onResponse(Call call, Response response) {
-                log.info("HttpSendService.doExecuteHttp is response,url is:{},response codeis:{}",url,response.code());
+                log.info("HttpSendService.doExecuteHttp is response,url is:{},response code is:{}",url,response.code());
             }
         });
     }
