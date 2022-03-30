@@ -101,6 +101,8 @@ public class KafkaSendServer implements SendServer {
         if (Objects.nonNull(config.getBatchSize())){
             properties.put(ProducerConfig.BATCH_SIZE_CONFIG, config.getBatchSize());
         }
+        properties.put(ProducerConfig.BUFFER_MEMORY_CONFIG, 1024*1024*10);
+
         if (Objects.nonNull(config.getUsername())){
             properties.put("username", config.getUsername());
         }
