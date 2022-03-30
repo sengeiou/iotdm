@@ -26,9 +26,9 @@ public class KafkaResourceConfig implements BaseResourceConfig{
 
     private String compressionType;
 
-    private Long bufferSize;
+    private Integer bufferSize;
 
-    private Long batchSize;
+    private Integer batchSize;
 
     @Override
     public ResourceType getResourceType() {
@@ -93,19 +93,19 @@ public class KafkaResourceConfig implements BaseResourceConfig{
     }
 
 
-    public Long getBufferSize() {
+    public Integer getBufferSize() {
         return bufferSize;
     }
 
-    public void setBufferSize(Long bufferSize) {
+    public void setBufferSize(Integer bufferSize) {
         this.bufferSize = bufferSize;
     }
 
-    public Long getBatchSize() {
+    public Integer getBatchSize() {
         return batchSize;
     }
 
-    public void setBatchSize(Long batchSize) {
+    public void setBatchSize(Integer batchSize) {
         this.batchSize = batchSize;
     }
 }
