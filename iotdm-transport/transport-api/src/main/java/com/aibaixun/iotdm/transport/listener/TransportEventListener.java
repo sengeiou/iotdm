@@ -1,6 +1,6 @@
 package com.aibaixun.iotdm.transport.listener;
 
-import com.aibaixun.iotdm.event.ToDeviceCloseConnectEvent;
+import com.aibaixun.iotdm.event.ToDeviceDisConnectEvent;
 import com.aibaixun.iotdm.event.ToDeviceConfigEvent;
 import com.aibaixun.iotdm.event.ToDeviceControlEvent;
 import com.aibaixun.iotdm.event.ToDeviceOtaEvent;
@@ -74,7 +74,7 @@ public class TransportEventListener {
 
     @EventListener
     @Async("taskExecutor")
-    public void process2DeviceCloseConnect(ToDeviceCloseConnectEvent toDeviceCloseConnectEvent){
+    public void process2DeviceCloseConnect(ToDeviceDisConnectEvent toDeviceCloseConnectEvent){
         SessionId sessionId = toDeviceCloseConnectEvent.getSessionId();
         TransportSessionMetaData sessionMeta = listenerContainer.getSessionMeta(sessionId);
         if (Objects.isNull(sessionMeta)){

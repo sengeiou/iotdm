@@ -25,5 +25,5 @@ public enum SendStatus {
     /**
      * 成功
      */
-    SUCCESS;
+    SUCCESS
 }

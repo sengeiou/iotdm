@@ -3,7 +3,6 @@ package com.aibaixun.iotdm.msg;
 import com.aibaixun.iotdm.transport.SessionId;
 
 import java.time.Instant;
-import java.util.UUID;
 
 /**
  * 传输session 信息创建者
@@ -17,7 +16,6 @@ public class TransportSessionInfoHolder {
     /**
      * 创建session 信息
      * @param deviceInfo 设备信息
-     * @param sessionId  sessionId
      * @return session
      */
     public static TransportSessionInfo create (DeviceInfo deviceInfo){

@@ -96,7 +96,7 @@ public class BusinessEventListener {
 
     @EventListener
     @Async("taskExecutor")
-    public void onConfigRespEvent(ConfigRespEvent configRespEvent){
+    public void onConfigRespEvent(DeviceConfigRespEvent configRespEvent){
         log.info("DefaultIotDmEventListener.onConfigRespEvent >>  ,message is:{}",configRespEvent);
         entityProcessor.doProcessConfigRespEvent(configRespEvent);
     }

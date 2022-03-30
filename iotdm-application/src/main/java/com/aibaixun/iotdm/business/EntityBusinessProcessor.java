@@ -1,7 +1,7 @@
 package com.aibaixun.iotdm.business;
 
 import com.aibaixun.iotdm.enums.SendStatus;
-import com.aibaixun.iotdm.event.ConfigRespEvent;
+import com.aibaixun.iotdm.event.DeviceConfigRespEvent;
 import com.aibaixun.iotdm.event.EntityChangeEvent;
 import com.aibaixun.iotdm.queue.QueueSendServer;
 import com.aibaixun.iotdm.service.IDeviceCommandSendService;
@@ -36,7 +36,7 @@ public class EntityBusinessProcessor {
      * 处理 配置更改反馈
      * @param configRespEvent 配置更改反馈
      */
-    public void  doProcessConfigRespEvent (ConfigRespEvent configRespEvent){
+    public void  doProcessConfigRespEvent (DeviceConfigRespEvent configRespEvent){
         deviceConfigSendService.updateDeviceConfigSend(configRespEvent.getDeviceId(), SendStatus.SUCCESS);
     }
 

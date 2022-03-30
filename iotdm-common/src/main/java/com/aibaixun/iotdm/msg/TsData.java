@@ -3,6 +3,7 @@ package com.aibaixun.iotdm.msg;
 import java.io.Serializable;
 
 /**
+ * 时序数据 实体类
  * @author wangxiao@aibaixun.com
  * @date 2022/3/11
  */

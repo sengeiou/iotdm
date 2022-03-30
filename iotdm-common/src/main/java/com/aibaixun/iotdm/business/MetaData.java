@@ -3,6 +3,8 @@ package com.aibaixun.iotdm.business;
 import java.io.Serializable;
 
 /**
+ * 业务元数据
+ * 包含设备id 产品ID 租户id
  * @author wangxiao@aibaixun.com
  * @date 2022/3/10
  */

@@ -7,7 +7,7 @@ import com.aibaixun.iotdm.enums.DataFormat;
  * @author wangxiao@aibaixun.com
  * @date 2022/3/10
  */
-public class DevicePropertyUpEvent extends BaseDataEvent{
+public class DevicePropertyUpEvent extends BaseToPlatformEvent {
 
     private DataFormat dataFormat;
 

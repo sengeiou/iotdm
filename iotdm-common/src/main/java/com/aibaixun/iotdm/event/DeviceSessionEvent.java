@@ -7,7 +7,7 @@ import com.aibaixun.iotdm.msg.SessionEventType;
  * @author wangxiao@aibaixun.com
  * @date 2022/3/10
  */
-public class DeviceSessionEvent extends BaseDataEvent{
+public class DeviceSessionEvent extends BaseToPlatformEvent {
 
     public DeviceSessionEvent(String deviceId, String productId, SessionEventType sessionEventType) {
         super(deviceId, productId);

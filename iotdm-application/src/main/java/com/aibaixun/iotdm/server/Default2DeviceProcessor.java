@@ -11,7 +11,7 @@ import com.aibaixun.iotdm.entity.*;
 import com.aibaixun.iotdm.enums.BusinessStep;
 import com.aibaixun.iotdm.enums.SendStatus;
 import com.aibaixun.iotdm.enums.DataFormat;
-import com.aibaixun.iotdm.event.ToDeviceCloseConnectEvent;
+import com.aibaixun.iotdm.event.ToDeviceDisConnectEvent;
 import com.aibaixun.iotdm.event.ToDeviceConfigEvent;
 import com.aibaixun.iotdm.event.ToDeviceControlEvent;
 import com.aibaixun.iotdm.event.ToDeviceOtaEvent;
@@ -147,7 +147,7 @@ public class Default2DeviceProcessor implements ToDeviceProcessor{
 
     @Override
     public void processCloseConnectDevice(String deviceId, String productId) {
-        eventPublisher.publishDeviceCloseConnectEvent(new ToDeviceCloseConnectEvent(new SessionId(deviceId,productId)));
+        eventPublisher.publishDeviceCloseConnectEvent(new ToDeviceDisConnectEvent(new SessionId(deviceId,productId)));
     }
 
     private void doCommandLog(String deviceId, String businessDetails, Boolean messageStatus){

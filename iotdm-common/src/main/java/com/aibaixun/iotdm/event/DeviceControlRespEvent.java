@@ -9,31 +9,12 @@ import java.io.Serializable;
  * @author wangxiao@aibaixun.com
  * @date 2022/3/23
  */
-public class DeviceControlRespEvent implements Serializable {
+public class DeviceControlRespEvent extends BaseToPlatformEvent {
 
-    private String deviceId;
-
-    private String productId;
 
     private DataFormat dataFormat;
 
     private String payload;
-
-    public String getDeviceId() {
-        return deviceId;
-    }
-
-    public void setDeviceId(String deviceId) {
-        this.deviceId = deviceId;
-    }
-
-    public String getProductId() {
-        return productId;
-    }
-
-    public void setProductId(String productId) {
-        this.productId = productId;
-    }
 
     public DataFormat getDataFormat() {
         return dataFormat;
@@ -52,8 +33,7 @@ public class DeviceControlRespEvent implements Serializable {
     }
 
     public DeviceControlRespEvent(String deviceId, String productId, DataFormat dataFormat, String payload) {
-        this.deviceId = deviceId;
-        this.productId = productId;
+        super(deviceId, productId);
         this.dataFormat = dataFormat;
         this.payload = payload;
     }

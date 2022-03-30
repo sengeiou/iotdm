@@ -16,5 +16,9 @@ public enum ToDeviceType {
     /**
      * ota
      */
-    OTA
+    OTA,
+    /**
+     * session
+     */
+    SESSION
 }

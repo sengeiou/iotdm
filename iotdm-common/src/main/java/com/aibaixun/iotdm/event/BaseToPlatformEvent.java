@@ -1,24 +1,25 @@
 package com.aibaixun.iotdm.event;
 
+
 import java.io.Serializable;
 
 /**
- * 设备更新配置反馈
  * @author wangxiao@aibaixun.com
- * @date 2022/3/23
+ * @date 2022/3/10
  */
-public class ConfigRespEvent implements Serializable {
+public abstract class BaseToPlatformEvent implements Serializable {
 
     private String deviceId;
 
     private String productId;
 
-    public ConfigRespEvent() {
-    }
 
-    public ConfigRespEvent(String deviceId, String productId) {
+    public BaseToPlatformEvent(String deviceId, String productId) {
         this.deviceId = deviceId;
         this.productId = productId;
+    }
+
+    public BaseToPlatformEvent() {
     }
 
     public String getDeviceId() {
@@ -35,5 +36,14 @@ public class ConfigRespEvent implements Serializable {
 
     public void setProductId(String productId) {
         this.productId = productId;
+    }
+
+
+    @Override
+    public String toString() {
+        return "BaseDataEvent{" +
+                "deviceId='" + deviceId + '\'' +
+                ", productId='" + productId + '\'' +
+                '}';
     }
 }

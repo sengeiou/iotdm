@@ -20,11 +20,6 @@ public class DataConstants {
      */
     public static String NULL_STR = "NULL";
 
-    /**
-     * mqtt 服务名称
-     */
-    public static final String MQTT_TRANSPORT_NAME = "MQTT";
-
 
     /**
      * iotdm 会话缓存session
@@ -56,7 +51,9 @@ public class DataConstants {
     public static final String EXPIRED_CHANNEL = "__keyevent@0__:expired";
 
 
-
+    /**
+     * 默认设备调试时间 是一分钟
+     */
     public static final long DEFAULT_DEVICE_DEBUG_TTL = 1000*60;
 
 

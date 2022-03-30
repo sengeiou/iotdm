@@ -47,7 +47,7 @@ public class DefaultIotDmEventPublisher implements IotDmEventPublisher {
 
     @Override
     public void publishConfigRespUpEvent(String productId, String deviceId) {
-        applicationEventPublisher.publishEvent(new ConfigRespEvent(deviceId,productId));
+        applicationEventPublisher.publishEvent(new DeviceConfigRespEvent(deviceId,productId));
     }
 
 
@@ -85,7 +85,7 @@ public class DefaultIotDmEventPublisher implements IotDmEventPublisher {
     }
 
     @Override
-    public void publishDeviceCloseConnectEvent(ToDeviceCloseConnectEvent deviceCloseConnectEvent) {
+    public void publishDeviceCloseConnectEvent(ToDeviceDisConnectEvent deviceCloseConnectEvent) {
         applicationEventPublisher.publishEvent(deviceCloseConnectEvent);
     }
 

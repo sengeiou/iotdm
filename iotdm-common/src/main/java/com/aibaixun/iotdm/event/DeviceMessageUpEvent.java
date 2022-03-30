@@ -7,7 +7,7 @@ import com.aibaixun.iotdm.enums.DataFormat;
  * @author wangxiao@aibaixun.com
  * @date 2022/3/10
  */
-public class DeviceMessageUpEvent extends BaseDataEvent{
+public class DeviceMessageUpEvent extends BaseToPlatformEvent {
 
     private String payload;
 

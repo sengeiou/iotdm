@@ -3,7 +3,6 @@ package com.aibaixun.iotdm.service;
 import com.aibaixun.iotdm.enums.DataFormat;
 import com.aibaixun.iotdm.event.*;
 import com.aibaixun.iotdm.msg.SessionEventType;
-import com.aibaixun.iotdm.transport.SessionId;
 
 /**
  * 事件发布者
@@ -109,5 +108,5 @@ public interface IotDmEventPublisher {
      * 发布设备关闭
      * @param deviceCloseConnectEvent 设备关闭
      */
-    void publishDeviceCloseConnectEvent(ToDeviceCloseConnectEvent deviceCloseConnectEvent);
+    void publishDeviceCloseConnectEvent(ToDeviceDisConnectEvent deviceCloseConnectEvent);
 }
