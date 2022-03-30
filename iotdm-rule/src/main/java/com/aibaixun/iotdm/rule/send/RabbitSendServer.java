@@ -45,6 +45,7 @@ public class RabbitSendServer implements SendServer {
                     routingKey,
                     MessageProperties.BASIC,
                     data.getBytes(StandardCharsets.UTF_8));
+            log.info("RabbitSendService.doSendMessage >> is success");
         }catch (Exception e){
             e.printStackTrace();
             log.error("RabbitSendService.doSendMessage >> create connection is error, msg is:{}",e.getMessage());
