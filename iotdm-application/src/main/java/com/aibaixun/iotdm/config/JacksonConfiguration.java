@@ -26,13 +26,13 @@ public class JacksonConfiguration {
         return builder -> builder.featuresToEnable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING);
     }
 
-//    @Bean
-//    public MappingJackson2HttpMessageConverter mappingJacksonHttpMessageConverter() {
-//        final MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
-//        ObjectMapper mapper = converter.getObjectMapper();
-//        mapper.setSerializerFactory(mapper.getSerializerFactory().withSerializerModifier(new NullSerializerModifier()));
-//        return converter;
-//    }
+    @Bean
+    public MappingJackson2HttpMessageConverter mappingJacksonHttpMessageConverter() {
+        final MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+        ObjectMapper mapper = converter.getObjectMapper();
+        mapper.setSerializerFactory(mapper.getSerializerFactory().withSerializerModifier(new NullSerializerModifier()));
+        return converter;
+    }
 
     private static class NullSerializerModifier extends BeanSerializerModifier {
 
