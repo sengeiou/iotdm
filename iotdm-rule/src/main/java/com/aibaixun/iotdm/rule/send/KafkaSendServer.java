@@ -59,6 +59,7 @@ public class KafkaSendServer implements SendServer {
                 }
             });
         } catch (Exception e) {
+            e.printStackTrace();
             kafkaConnections.remove(host);
             log.error("KafkaSendService.doSendMessage >> is error ,error msg is :{}", e.getMessage());
         }
