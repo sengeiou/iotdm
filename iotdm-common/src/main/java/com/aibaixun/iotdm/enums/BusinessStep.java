@@ -29,5 +29,9 @@ public enum BusinessStep {
     /**
      * 平台发送命令
      */
-    PLATFORM_SEND_COMMAND;
+    PLATFORM_SEND_COMMAND,
+    /**
+     * 平台发送数据
+     */
+    PLATFORM_SEND_DATA;
 }

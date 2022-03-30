@@ -3,21 +3,19 @@ package com.aibaixun.iotdm.business;
 import com.aibaixun.iotdm.enums.SendStatus;
 import com.aibaixun.iotdm.event.DeviceConfigRespEvent;
 import com.aibaixun.iotdm.event.EntityChangeEvent;
-import com.aibaixun.iotdm.queue.QueueSendServer;
 import com.aibaixun.iotdm.service.IDeviceCommandSendService;
 import com.aibaixun.iotdm.service.IDeviceConfigSendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * 实体更改处理类
- * @author wangxiao@aibaixun.com
- * @date 2022/3/14
+ * @author Wang Xiao
+ * @date 2022/3/30
  */
 @Component
-public class EntityBusinessProcessor {
+public class EntityBusinessProcessor extends AbstractBusinessProcessor{
 
-    private QueueSendServer queueSendService;
+    private QueueBusinessProcessor queueBusinessProcessor;
 
     private IDeviceConfigSendService deviceConfigSendService;
 
@@ -28,7 +26,7 @@ public class EntityBusinessProcessor {
      * @param entityChangeEvent 实体更改
      */
     public void  doProcessEntityChangeEvent (EntityChangeEvent entityChangeEvent){
-        queueSendService.sendEntityChangeData(entityChangeEvent);
+        queueBusinessProcessor.processEntityChangeData(entityChangeEvent);
     }
 
 
@@ -50,11 +48,11 @@ public class EntityBusinessProcessor {
         deviceCommandSendService.updateDeviceCommand(deviceId,reqId,SendStatus.SUCCESS);
     }
 
-    @Autowired
-    public void setQueueSendService(QueueSendServer queueSendService) {
-        this.queueSendService = queueSendService;
-    }
 
+    @Autowired
+    public void setQueueBusinessProcessor(QueueBusinessProcessor queueBusinessProcessor) {
+        this.queueBusinessProcessor = queueBusinessProcessor;
+    }
 
     @Autowired
     public void setDeviceConfigSendService(IDeviceConfigSendService deviceConfigSendService) {

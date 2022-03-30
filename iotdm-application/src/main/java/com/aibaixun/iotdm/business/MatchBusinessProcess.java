@@ -6,8 +6,9 @@ import com.aibaixun.iotdm.data.ProductModelEntityInfo;
 import com.aibaixun.iotdm.entity.DevicePropertyReportEntity;
 import com.aibaixun.iotdm.entity.ModelPropertyEntity;
 import com.aibaixun.iotdm.enums.BusinessStep;
-import com.aibaixun.iotdm.enums.BusinessType;
 import com.aibaixun.iotdm.msg.TsData;
+import com.aibaixun.iotdm.service.IDevicePropertyReportService;
+import com.aibaixun.iotdm.service.IProductService;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,37 +19,34 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * 物模型匹配处理器
- * @author wangxiao@aibaixun.com
- * @date 2022/3/11
+ * @author Wang Xiao
+ * @date 2022/3/30
  */
 @Component
-public class MatchBusinessProcessor extends AbstractReportProcessor<PrePropertyBusinessMsg,MessageBusinessMsg> {
-
+public class MatchBusinessProcess extends AbstractBusinessProcessor{
 
     private final String modelLabelKey = "modelId";
 
-    private BusinessReportProcessor<PostPropertyBusinessMsg,MessageBusinessMsg> queueProcessor;
+    private QueueBusinessProcessor queueBusinessProcessor;
 
+    private IDevicePropertyReportService propertyReportService;
 
+    private IProductService productService;
 
-    @Override
-    public void processProperty(PrePropertyBusinessMsg prePropertyBusinessMsg) {
+    public void processProperty(PrePropertyBusinessMsg prePropertyBusinessMsg){
         String productId = prePropertyBusinessMsg.getMetaData().getProductId();
         String deviceId = prePropertyBusinessMsg.getMetaData().getDeviceId();
         ProductEntityInfo productInfo = productService.queryProductInfoById(productId);
         List<ProductModelEntityInfo> models = productInfo.models;
         if (CollectionUtils.isEmpty(models)){
-            doLog(deviceId, BusinessType.DEVICE2PLATFORM, BusinessStep.MATCH_MODEL,"product model is empty",false);
+            logD2P(deviceId,  BusinessStep.MATCH_MODEL,"product model is empty",false);
             return;
         }
-
         JsonNode prePropertyBusinessMsgPropertyJsonNode = prePropertyBusinessMsg.getPropertyJsonNode();
         if (Objects.isNull(prePropertyBusinessMsgPropertyJsonNode)){
-            doLog(deviceId, BusinessType.DEVICE2PLATFORM, BusinessStep.MATCH_MODEL,"resolving data is empty",false);
+            logD2P(deviceId,  BusinessStep.MATCH_MODEL,"resolving data is empty",false);
             return;
         }
-
         List<ModelPropertyEntity> modelPropertyEntities = new ArrayList<>(models.size()*3);
         for (ProductModelEntityInfo model : models) {
             modelPropertyEntities.addAll(model.getProperties());
@@ -65,18 +63,19 @@ public class MatchBusinessProcessor extends AbstractReportProcessor<PrePropertyB
                 reportEntities.addAll(doMatchPropertyAnd2DbEntity(deviceId,prePropertyBusinessMsgPropertyJsonNode,models,modelPropertyEntities));
             }
         }catch (Exception e){
-            doLog(deviceId, BusinessType.DEVICE2PLATFORM, BusinessStep.MATCH_MODEL,"Match Model property is empty"+e.getMessage(),false);
+            logD2P(deviceId, BusinessStep.MATCH_MODEL,"Match Model property is empty"+e.getMessage(),false);
         }
 
         propertyReportService.saveOrUpdateBatchDeviceProperties(deviceId,reportEntities);
-        doLog(deviceId, BusinessType.DEVICE2PLATFORM, BusinessStep.MATCH_MODEL, JsonUtil.toJSONString(reportEntities),true);
-        queueProcessor.doProcessProperty(new PostPropertyBusinessMsg(prePropertyBusinessMsg.getMetaData(),toTsData(reportEntities)));
+        logD2P(deviceId, BusinessStep.MATCH_MODEL, JsonUtil.toJSONString(reportEntities),true);
+        queueBusinessProcessor.processProperty(new PostPropertyBusinessMsg(prePropertyBusinessMsg.getMetaData(),toTsData(reportEntities)));
     }
 
-    @Override
-    public void processMessage(MessageBusinessMsg messageBusinessMsg) {
-        queueProcessor.doProcessMessage(messageBusinessMsg);
+    public void  processMessage(MessageBusinessMsg messageBusinessMsg){
+        queueBusinessProcessor.processMessage(messageBusinessMsg);
     }
+
+
 
 
     private List<DevicePropertyReportEntity> doMatchPropertyAnd2DbEntity(String deviceId,JsonNode jsonNode,List<ProductModelEntityInfo> modelEntityInfos,List<ModelPropertyEntity> modelPropertyEntities){
@@ -101,13 +100,13 @@ public class MatchBusinessProcessor extends AbstractReportProcessor<PrePropertyB
             return null;
         }
         if (StringUtils.isBlank(modelLabel)){
-          return   modelPropertyEntities.stream().filter(e->StringUtils.equals(e.getPropertyLabel(),key)).collect(Collectors.toList());
+            return   modelPropertyEntities.stream().filter(e->StringUtils.equals(e.getPropertyLabel(),key)).collect(Collectors.toList());
         }
         ProductModelEntityInfo first = modelEntityInfos.stream().filter(e -> StringUtils.equals(e.getModelLabel(), modelLabel)).findAny().orElse(null);
         if (Objects.isNull(first)){
             return null;
         }
-        return first.getProperties().stream().filter(e->StringUtils.equals(e.getPropertyLabel(),key)).collect(Collectors.toList());
+        return first.getProperties().stream().filter(e-> StringUtils.equals(e.getPropertyLabel(),key)).collect(Collectors.toList());
     }
 
 
@@ -134,7 +133,18 @@ public class MatchBusinessProcessor extends AbstractReportProcessor<PrePropertyB
 
 
     @Autowired
-    public void setQueueProcessor(BusinessReportProcessor<PostPropertyBusinessMsg, MessageBusinessMsg> queueProcessor) {
-        this.queueProcessor = queueProcessor;
+    public void setQueueBusinessProcessor(QueueBusinessProcessor queueBusinessProcessor) {
+        this.queueBusinessProcessor = queueBusinessProcessor;
+    }
+
+
+    @Autowired
+    public void setPropertyReportService(IDevicePropertyReportService propertyReportService) {
+        this.propertyReportService = propertyReportService;
+    }
+
+    @Autowired
+    public void setProductService(IProductService productService) {
+        this.productService = productService;
     }
 }

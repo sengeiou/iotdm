@@ -34,6 +34,10 @@ public class DeviceLogProcessor {
         doLog(deviceId,BusinessType.PLATFORM2DEVICE, businessStep,businessDetails,messageStatus);
     }
 
+    public  void doPlatform2PlatformLog(String deviceId,  BusinessStep businessStep, String businessDetails, Boolean messageStatus ) {
+        doLog(deviceId,BusinessType.PLATFORM_FORWARD, businessStep,businessDetails,messageStatus);
+    }
+
     private void doLog(String deviceId,BusinessType businessType, BusinessStep businessStep, String businessDetails, Boolean messageStatus){
         Long ttl = ((Long) redisRepository.getHashValues(DataConstants.IOT_DEVICE_DEBUG_CACHE_KEY , deviceId));
         if (Objects.nonNull(ttl) && ttl > Instant.now().getEpochSecond()){

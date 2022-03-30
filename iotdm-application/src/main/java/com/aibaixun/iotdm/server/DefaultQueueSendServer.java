@@ -43,7 +43,7 @@ public class DefaultQueueSendServer implements QueueSendServer {
 
     @Override
     public void sendEntityChangeData(EntityChangeEvent entityChangeEvent) {
-
+        iotDmSource.outputEntityData().send(MessageBuilder.withPayload(JsonUtil.toJSONString(entityChangeEvent)).build());
     }
 
     public DefaultQueueSendServer(IotDmSource iotDmSource) {
