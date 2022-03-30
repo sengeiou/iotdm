@@ -41,10 +41,11 @@ public class ResourceLruCache<K,V extends PoolResource> {
     }
 
     public boolean remove(K key) {
+        log.warn("remove key:{}",key);
         return this.cache.remove(key) != null;
     }
 
     public long size() {
-        return (long)this.cache.size();
+        return this.cache.size();
     }
 }
