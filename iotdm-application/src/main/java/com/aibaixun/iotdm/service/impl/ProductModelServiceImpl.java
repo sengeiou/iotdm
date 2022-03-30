@@ -53,15 +53,14 @@ public class ProductModelServiceImpl extends ServiceImpl<ProductModelMapper, Pro
         }
         LambdaUpdateWrapper<ProductModelEntity> updateWrapper = Wrappers.lambdaUpdate();
         updateWrapper.eq(ProductModelEntity::getId, productModelEntity.getId());
+        updateWrapper.set(ProductModelEntity::getDescription, productModelEntity.getDescription());
         if (StringUtils.isNotBlank(productModelEntity.getModelLabel())){
             updateWrapper.set(ProductModelEntity::getModelLabel, productModelEntity.getModelLabel());
         }
         if (StringUtils.isNotBlank(productModelEntity.getProductId())){
             updateWrapper.set(ProductModelEntity::getProductId, productModelEntity.getProductId());
         }
-        if (StringUtils.isNotBlank(productModelEntity.getDescription())){
-            updateWrapper.set(ProductModelEntity::getDescription, productModelEntity.getDescription());
-        }
+
         if(StringUtils.isNotBlank(productModelEntity.getModelType())){
             updateWrapper.set(ProductModelEntity::getModelType, productModelEntity.getModelType());
         }
