@@ -17,6 +17,7 @@ import static com.aibaixun.iotdm.constants.DataConstants.IOT_PRODUCT_TENANT_KEY;
 import static com.aibaixun.iotdm.constants.DataConstants.IOT_TENANT_FORWARD_KEY;
 
 /**
+ *  规则处理类
  * @author wangxiao@aibaixun.com
  * @date 2022/3/12
  */

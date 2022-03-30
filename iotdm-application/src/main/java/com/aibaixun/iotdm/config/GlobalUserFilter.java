@@ -15,6 +15,7 @@ import java.io.IOException;
 
 /**
  * 用户拦截过滤器
+ * <p>来自用户中心</p>
  * @author wangxiao@aibaixun.com
  * @date 2022/3/14
  */
@@ -24,7 +25,7 @@ import java.io.IOException;
         filterName = "globalUserFilter"
 )
 public class GlobalUserFilter implements Filter, Ordered {
-    @Autowired
+
     private RedisRepository redisRepository;
 
     public GlobalUserFilter() {
@@ -47,6 +48,11 @@ public class GlobalUserFilter implements Filter, Ordered {
     @Override
     public int getOrder() {
         return 1;
+    }
+
+    @Autowired
+    public void setRedisRepository(RedisRepository redisRepository) {
+        this.redisRepository = redisRepository;
     }
 
     private String getTokenRedisKey(String token) {

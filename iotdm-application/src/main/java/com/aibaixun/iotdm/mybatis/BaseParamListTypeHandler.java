@@ -3,6 +3,7 @@ package com.aibaixun.iotdm.mybatis;
 import com.aibaixun.iotdm.data.BaseParam;
 
 /**
+ * List<BaseParam> 集合 TypeHandler
  * @author wangxiao@aibaixun.com
  * @date 2022/3/23
  */

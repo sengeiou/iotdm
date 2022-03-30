@@ -14,6 +14,7 @@ import java.util.List;
 
 /**
  * jackson 配置
+ * <p>序列化枚举类与null 字符串为'' null 集合为 []</p>
  * @author wangxiao@aibaixun.com
  * @date 2022/3/3
  */

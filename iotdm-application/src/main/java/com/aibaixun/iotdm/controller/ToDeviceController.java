@@ -22,6 +22,7 @@ import javax.validation.Valid;
 import java.util.Objects;
 
 /**
+ * 设备反向空 web api
  * @author wangxiao@aibaixun.com
  * @date 2022/3/16
  */

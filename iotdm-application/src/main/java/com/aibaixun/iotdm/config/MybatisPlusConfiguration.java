@@ -14,6 +14,7 @@ import java.time.Instant;
 
 /**
  * mybatis-plus 配置
+ * <p>自动填充 创建时间与用户信息  分页插件配置</p>
  * @author wangxiao@aibaixun.com
  * @date 2022/3/3
  */
@@ -24,7 +25,7 @@ public class MybatisPlusConfiguration {
 
 
     @Bean
-    public MetaObjectHandler iotdmMetaObjectHandler (){
+    public MetaObjectHandler iotDmMetaObjectHandler(){
         return new MetaObjectHandler() {
             @Override
             public void insertFill(MetaObject metaObject) {
@@ -43,7 +44,7 @@ public class MybatisPlusConfiguration {
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
-        interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.H2));
+        interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));
         return interceptor;
     }
 

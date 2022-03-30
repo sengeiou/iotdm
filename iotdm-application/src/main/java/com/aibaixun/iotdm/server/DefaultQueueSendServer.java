@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 
 /**
+ * 队列消息发送者
  * @author wangxiao@aibaixun.com
  * @date 2022/3/11
  */

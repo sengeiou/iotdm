@@ -14,17 +14,13 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * rest ful aop config
+ * <p> aop 切面配置日志记录与时间消耗记录</p>
  * @author wangxiao@aibaixun.com
  * @date 2022/3/22
  */
 @Aspect
 @Component
 public class RestAopConfig {
-
-    /**
-     * 控制是否开启日志
-     */
-    public static Boolean onOff = false;
 
     private final Logger logger = LoggerFactory.getLogger(RestAopConfig.class);
 

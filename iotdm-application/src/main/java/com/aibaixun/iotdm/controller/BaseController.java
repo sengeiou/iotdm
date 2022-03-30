@@ -12,6 +12,8 @@ import java.util.Objects;
 import static com.aibaixun.iotdm.constants.DataConstants.QUERY_PAGE_MAX;
 
 /**
+ * 基础controller
+ * <p>参数校验与异常处理</p>
  * @author wangxiao@aibaixun.com
  * @date 2022/3/3
  */

@@ -8,6 +8,7 @@ import com.aibaixun.iotdm.entity.ProductEntity;
 import java.util.Map;
 
 /**
+ * 发送到设备消息处理器
  * @author wangxiao@aibaixun.com
  * @date 2022/3/16
  */
