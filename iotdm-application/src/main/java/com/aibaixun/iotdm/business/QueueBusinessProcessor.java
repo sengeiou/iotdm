@@ -29,7 +29,6 @@ public class QueueBusinessProcessor extends AbstractBusinessProcessor {
     }
 
     public void processSessionData(DeviceSessionEvent deviceSessionEvent) {
-
         queueSendService.sendSessionData(deviceSessionEvent);
         String deviceId = deviceSessionEvent.getDeviceId();
         logP2P(deviceId, deviceSessionEvent);

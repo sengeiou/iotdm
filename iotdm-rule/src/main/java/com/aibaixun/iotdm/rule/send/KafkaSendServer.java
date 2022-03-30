@@ -44,8 +44,10 @@ public class KafkaSendServer implements SendServer {
      */
     @Override
     public <T> void doSendMessage(T message, BaseResourceConfig resourceConfig, BaseTargetConfig targetConfig) {
+        KafkaResourceConfig kafkaResourceConfig = (KafkaResourceConfig) resourceConfig;
+        String host = kafkaResourceConfig.getHost();
         try {
-            KafkaResourceConfig kafkaResourceConfig = (KafkaResourceConfig) resourceConfig;
+
             KafkaProducer<String,String> kafkaProducer = generateClient(kafkaResourceConfig);
             KafkaTargetConfig kafkaTargetConfig = (KafkaTargetConfig) targetConfig;
 
@@ -57,6 +59,7 @@ public class KafkaSendServer implements SendServer {
                 }
             });
         } catch (Exception e) {
+            kafkaConnections.remove(host);
             log.error("KafkaSendService.doSendMessage >> is error ,error msg is :{}", e.getMessage());
         }
     }

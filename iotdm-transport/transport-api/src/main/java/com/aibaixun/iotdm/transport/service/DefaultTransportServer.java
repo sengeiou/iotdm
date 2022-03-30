@@ -86,7 +86,6 @@ public class DefaultTransportServer implements TransportService {
         var  lastActivity = Objects.nonNull(sessionFromCache)?sessionFromCache.getLastActivityTime():null;
         Futures.transform(deviceInfoService.setDeviceStatus2OffOnLine(sessionId.getDeviceId(),lastConnect,lastActivity,hostName),
                 status -> null, MoreExecutors.directExecutor());
-
         Futures.submit(()->iotDmEventPublisher.publishDeviceSessionEvent(sessionId.getProductId(),sessionId.getDeviceId(), SessionEventType.DISCONNECT),MoreExecutors.directExecutor());
     }
 

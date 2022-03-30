@@ -79,6 +79,7 @@ public class RabbitSendServer implements SendServer {
                         MessageProperties.BASIC,
                         data.getBytes(StandardCharsets.UTF_8));
             }catch (Exception e){
+                connectionPool.remove(host+port);
                 log.error("RabbitSendService.doSendMessage >> create connection is error, msg is:{}",e.getMessage());
             }
         }
