@@ -81,12 +81,16 @@ public class KafkaSendServer implements SendServer {
         properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, config.getHost());
         properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        Integer connectTime = Objects.nonNull(config.getConnectTimeout())?config.getConnectTimeout()*1000:60000;
-        properties.put(ProducerConfig.TRANSACTION_TIMEOUT_CONFIG, connectTime);
+        if (Objects.nonNull(config.getConnectTimeout()) && config.getConnectTimeout()!=0){
+            properties.put(ProducerConfig.TRANSACTION_TIMEOUT_CONFIG, config.getConnectTimeout()*1000);
+        };
+
         String compressionType = Objects.nonNull(config.getCompressionType())?config.getCompressionType():"gzip";
         properties.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, compressionType);
-        Integer reqTimeout  = Objects.nonNull(config.getReqTimeout())?config.getReqTimeout()*1000:60000;
-        properties.put(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, reqTimeout);
+        if (Objects.nonNull(config.getReqTimeout()) && config.getReqTimeout() !=0){
+            properties.put(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, config.getReqTimeout()*1000);
+        }
+
         Integer metaUpdateTime  = Objects.nonNull(config.getMetadataUpdateTime())?config.getMetadataUpdateTime()*1000:60000;
         properties.put(ProducerConfig.MAX_BLOCK_MS_CONFIG, metaUpdateTime);
         if (Objects.nonNull(config.getBufferSize())){
