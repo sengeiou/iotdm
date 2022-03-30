@@ -1,7 +1,6 @@
 package com.aibaixun.iotdm.rule;
 
 import com.aibaixun.common.util.JsonUtil;
-import com.aibaixun.iotdm.rule.pool.PoolResource;
 import com.aibaixun.iotdm.rule.pool.ResourceLruCache;
 import com.aibaixun.iotdm.support.RabbitResourceConfig;
 import com.aibaixun.iotdm.support.RabbitTargetConfig;

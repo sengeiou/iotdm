@@ -1,6 +1,7 @@
 package com.aibaixun.iotdm.rule.send;
 
 import com.aibaixun.iotdm.enums.ResourceType;
+import com.aibaixun.iotdm.rule.pool.ResourceLruCache;
 import com.aibaixun.iotdm.support.BaseResourceConfig;
 import com.aibaixun.iotdm.support.BaseTargetConfig;
 import com.aibaixun.iotdm.support.KafkaResourceConfig;
@@ -31,7 +32,7 @@ public class KafkaSendServer implements SendServer {
     @Value("${bx.rule.kafka.max-idle-connections}")
     private Integer maxIdleConnections;
 
-
+    private ResourceLruCache<KafkaProducer<String,String>> resourceLruCache;
 
     /**
      * 发送方法 需要子类实现
@@ -44,10 +45,8 @@ public class KafkaSendServer implements SendServer {
     public <T> void doSendMessage(T message, BaseResourceConfig resourceConfig, BaseTargetConfig targetConfig) {
         KafkaResourceConfig kafkaResourceConfig = (KafkaResourceConfig) resourceConfig;
         try {
-
             KafkaProducer<String,String> kafkaProducer = generateClient(kafkaResourceConfig);
             KafkaTargetConfig kafkaTargetConfig = (KafkaTargetConfig) targetConfig;
-
             kafkaProducer.send(new ProducerRecord<>(kafkaTargetConfig.getTopic(), OBJECT_MAPPER.writeValueAsString(message)), (recordMetadata, e) -> {
                 if (e != null) {
                     log.error("KafkaSendService.doSendMessage >> send result is error ,error msg is :{}", e.getMessage());
@@ -68,13 +67,16 @@ public class KafkaSendServer implements SendServer {
     @PostConstruct
     public void init() {
         registerService(ResourceType.KAFKA,this);
+        resourceLruCache = new ResourceLruCache<>(maxIdleConnections);
     }
 
 
-
     public  KafkaProducer<String,String> generateClient(KafkaResourceConfig config) {
-
         String host = config.getHost();
+        KafkaProducer<String, String> kafkaProducer = resourceLruCache.get(host);
+        if (Objects.nonNull(kafkaProducer)){
+            return kafkaProducer;
+        }
         Properties properties = new Properties();
         properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, config.getHost());
         properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -99,6 +101,8 @@ public class KafkaSendServer implements SendServer {
         if (Objects.nonNull(config.getPassword())){
             properties.put("password", config.getPassword());
         }
-        return new KafkaProducer<>(properties);
+        kafkaProducer= new KafkaProducer<>(properties);
+        resourceLruCache.put(host,kafkaProducer);
+        return kafkaProducer;
     }
 }

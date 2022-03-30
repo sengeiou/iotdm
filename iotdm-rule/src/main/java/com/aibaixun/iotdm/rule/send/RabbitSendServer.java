@@ -1,6 +1,7 @@
 package com.aibaixun.iotdm.rule.send;
 
 import com.aibaixun.iotdm.enums.ResourceType;
+import com.aibaixun.iotdm.rule.pool.ResourceLruCache;
 import com.aibaixun.iotdm.support.BaseResourceConfig;
 import com.aibaixun.iotdm.support.BaseTargetConfig;
 import com.aibaixun.iotdm.support.RabbitResourceConfig;
@@ -23,7 +24,7 @@ public class RabbitSendServer implements SendServer {
 
     private final Logger log = LoggerFactory.getLogger(RabbitSendServer.class);
 
-
+    private ResourceLruCache<Connection> resourceLruCache;
 
 
     @Override
@@ -31,29 +32,8 @@ public class RabbitSendServer implements SendServer {
 
         RabbitResourceConfig rabbitResourceConfig = (RabbitResourceConfig) resourceConfig;
         RabbitTargetConfig rabbitTargetConfig = (RabbitTargetConfig) targetConfig;
-        String host = rabbitResourceConfig.getHost();
-        int port = rabbitResourceConfig.getPort();
-        String virtualHost = rabbitResourceConfig.getVirtualHost();
-        String username = rabbitResourceConfig.getUsername();
-        String password = rabbitResourceConfig.getPassword();
-        Integer connectTimeout = rabbitResourceConfig.getConnectTimeout();
-        Integer keepLive = rabbitResourceConfig.getKeepLive();
-
-        ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost(host);
-        factory.setPort(port);
-        factory.setVirtualHost(virtualHost);
-        factory.setUsername(username);
-        factory.setPassword(password);
-        factory.setAutomaticRecoveryEnabled(true);
-        if (Objects.nonNull(connectTimeout) && connectTimeout != 0){
-            factory.setConnectionTimeout(connectTimeout*1000);
-        }
-        if (Objects.nonNull(keepLive) && keepLive != 0){
-            factory.setHandshakeTimeout(keepLive*1000);
-        }
         try {
-            Connection connection = factory.newConnection();
+            Connection connection = getConnection(rabbitResourceConfig);
             String exchangeName = rabbitTargetConfig.getExchange();
             String routingKey = rabbitTargetConfig.getRoutingKey();
             BuiltinExchangeType exchangeType = rabbitTargetConfig.getExchangeType();
@@ -77,6 +57,42 @@ public class RabbitSendServer implements SendServer {
     @PostConstruct
     public void init() {
         registerService(ResourceType.RABBIT,this);
+        resourceLruCache = new ResourceLruCache<>(2000);
+    }
+
+
+    private Connection getConnection(RabbitResourceConfig resourceConfig)  {
+        String host = resourceConfig.getHost();
+        int port = resourceConfig.getPort();
+        Connection connection = resourceLruCache.get(host + port);
+        if (Objects.isNull(connection)){
+            String virtualHost = resourceConfig.getVirtualHost();
+            String username = resourceConfig.getUsername();
+            String password = resourceConfig.getPassword();
+            Integer connectTimeout = resourceConfig.getConnectTimeout();
+            Integer keepLive = resourceConfig.getKeepLive();
+            ConnectionFactory factory = new ConnectionFactory();
+            factory.setHost(host);
+            factory.setPort(port);
+            factory.setVirtualHost(virtualHost);
+            factory.setUsername(username);
+            factory.setPassword(password);
+            factory.setAutomaticRecoveryEnabled(true);
+            if (Objects.nonNull(connectTimeout) && connectTimeout!= 0){
+                factory.setConnectionTimeout(connectTimeout*1000);
+            }
+            if (Objects.nonNull(keepLive) && keepLive != 0){
+                factory.setHandshakeTimeout(keepLive*1000);
+            }
+
+            try {
+                connection= factory.newConnection();
+                resourceLruCache.put(host + port,connection);
+            }catch (Exception e){
+                log.warn("RabbitSendService.getConnection is error,error msg is:{}",e.getMessage());
+            }
+        }
+        return connection;
     }
 
 

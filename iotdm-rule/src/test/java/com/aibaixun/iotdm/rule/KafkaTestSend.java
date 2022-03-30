@@ -1,7 +1,6 @@
 package com.aibaixun.iotdm.rule;
 
 import com.aibaixun.common.util.JsonUtil;
-import com.aibaixun.iotdm.rule.pool.PoolResource;
 import com.aibaixun.iotdm.support.KafkaResourceConfig;
 import com.aibaixun.iotdm.support.KafkaTargetConfig;
 import com.fasterxml.jackson.core.JsonProcessingException;
