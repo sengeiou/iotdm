@@ -54,16 +54,17 @@ public class RabbitSendServer implements SendServer {
             factory.setUsername(username);
             factory.setPassword(password);
             factory.setAutomaticRecoveryEnabled(true);
-            if (Objects.nonNull(connectTimeout)){
+            if (Objects.nonNull(connectTimeout) && connectTimeout != 0){
                 factory.setConnectionTimeout(connectTimeout*1000);
             }
-            if (Objects.nonNull(keepLive)){
+            if (Objects.nonNull(keepLive) && keepLive != 0){
                 factory.setHandshakeTimeout(keepLive*1000);
             }
 
             try {
                 Connection connection = factory.newConnection();
                 rabbitConnection = new RabbitConnectionResource(connection);
+                connectionPool.put(host+port,rabbitConnection);
                 String exchangeName = rabbitTargetConfig.getExchange();
                 String routingKey = rabbitTargetConfig.getRoutingKey();
                 BuiltinExchangeType exchangeType = rabbitTargetConfig.getExchangeType();

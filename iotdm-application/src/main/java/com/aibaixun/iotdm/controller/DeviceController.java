@@ -151,7 +151,12 @@ public class DeviceController extends BaseController{
         if (deviceParam.getAuthType().equals(DeviceAuthType.SECRET)&& secretEmpty ){
             deviceSecret = RandomStringUtils.randomAlphanumeric(20);
         }
+
+
         String deviceCode = deviceParam.getDeviceCode();
+        if (StringUtils.isEmpty(deviceParam.getDeviceLabel())){
+            deviceParam.setDeviceLabel(deviceCode);
+        }
         String productId = deviceParam.getProductId();
         checkProductId(productId);
         checkDeviceCode(deviceCode,productId);

@@ -49,4 +49,13 @@ public class TsData implements Serializable {
     public void setTsValue(String tsValue) {
         this.tsValue = tsValue;
     }
+
+    @Override
+    public String toString() {
+        return "TsData{" +
+                "ts=" + ts +
+                ", tsLabel='" + tsLabel + '\'' +
+                ", tsValue='" + tsValue + '\'' +
+                '}';
+    }
 }
