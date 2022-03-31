@@ -29,7 +29,7 @@ import java.util.Objects;
  * @date 2022/3/8
  */
 @Service
-public class DefaultTransportServer implements TransportService {
+public class DefaultTransportServer implements TransportServer {
 
     private DeviceInfoServer deviceInfoService;
 

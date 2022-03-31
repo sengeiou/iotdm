@@ -11,14 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public abstract class TransportContext {
 
-    protected TransportService transportService;
+    protected TransportServer transportService;
 
     protected TransportLimitServer transportRateLimitService;
 
 
 
     @Autowired
-    public void setTransportService(TransportService transportService) {
+    public void setTransportService(TransportServer transportService) {
         this.transportService = transportService;
     }
 
@@ -28,7 +28,7 @@ public abstract class TransportContext {
     }
 
 
-    public TransportService getTransportService() {
+    public TransportServer getTransportService() {
         return transportService;
     }
 

@@ -11,7 +11,7 @@ import com.aibaixun.iotdm.msg.TransportSessionInfo;
  * @author wangxiao@aibaixun.com
  * @date 2022/3/7
  */
-public interface TransportService {
+public interface TransportServer {
 
     /**
      * 设备密钥认证

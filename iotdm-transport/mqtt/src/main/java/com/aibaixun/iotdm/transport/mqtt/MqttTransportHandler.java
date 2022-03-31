@@ -59,7 +59,7 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
     /**
      * transport service
      */
-    private final TransportService transportService;
+    private final TransportServer transportService;
 
     /**
      * 设备session
