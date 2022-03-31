@@ -113,9 +113,16 @@
         <repository>
             <id>alimaven</id>
             <name>aliyun maven</name>
-            <url>https://maven.aliyun.com/nexus/content/repositories/central/</url>
+            <url>http://maven.aibaixun.com/repository/maven-public/</url>
         </repository>
     </repositories>
+    <distributionManagement>
+        <repository>
+            <id>maven_aibaixun</id>
+            <name>maven_aibaixun</name>
+            <url>http://maven.aibaixun.com/repository/maven-releases</url>
+        </repository>
+    </distributionManagement>
 
     <developers>
         <developer>
