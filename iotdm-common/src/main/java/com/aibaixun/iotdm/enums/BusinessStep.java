@@ -31,7 +31,7 @@ public enum BusinessStep {
      */
     PLATFORM_SEND_COMMAND,
     /**
-     * 平台发送数据
+     * 平台发送数据到消息队列
      */
-    PLATFORM_SEND_DATA;
+    PLATFORM_SEND_DATA2MQ
 }

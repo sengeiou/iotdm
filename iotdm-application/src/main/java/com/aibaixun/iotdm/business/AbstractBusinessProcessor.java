@@ -31,6 +31,6 @@ public abstract class AbstractBusinessProcessor {
     }
 
     protected void logP2P(String deviceId, Object message){
-        deviceLogProcessor.doPlatform2PlatformLog(deviceId, BusinessStep.PLATFORM_SEND_DATA, String.valueOf(message), true);
+        deviceLogProcessor.doPlatform2PlatformLog(deviceId, BusinessStep.PLATFORM_SEND_DATA2MQ, String.valueOf(message), true);
     }
 }

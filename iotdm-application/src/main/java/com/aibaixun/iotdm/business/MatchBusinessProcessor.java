@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
  * @date 2022/3/30
  */
 @Component
-public class MatchBusinessProcess extends AbstractBusinessProcessor{
+public class MatchBusinessProcessor extends AbstractBusinessProcessor{
 
     private final String modelLabelKey = "modelId";
 

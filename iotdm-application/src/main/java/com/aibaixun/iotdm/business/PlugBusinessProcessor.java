@@ -23,7 +23,7 @@ public class PlugBusinessProcessor extends AbstractBusinessProcessor{
 
     private JsInvokeService jsInvokeService;
 
-    private MatchBusinessProcess matchBusinessProcess;
+    private MatchBusinessProcessor matchBusinessProcessor;
 
 
     public void processReport(DataFormat dataFormat,String payload,String deviceId,String productId,boolean property){
@@ -43,10 +43,10 @@ public class PlugBusinessProcessor extends AbstractBusinessProcessor{
         MetaData metaData = new MetaData(deviceId, productId);
         if (property){
             PrePropertyBusinessMsg propertyBusinessMsg = new PrePropertyBusinessMsg(metaData, jsonNode);
-            matchBusinessProcess.processProperty(propertyBusinessMsg);
+            matchBusinessProcessor.processProperty(propertyBusinessMsg);
         }else {
             MessageBusinessMsg messageBusinessMsg = new MessageBusinessMsg(metaData, !jsonNodeEmpty ? jsonNode : payload);
-            matchBusinessProcess.processMessage(messageBusinessMsg);
+            matchBusinessProcessor.processMessage(messageBusinessMsg);
         }
     }
 
@@ -59,7 +59,7 @@ public class PlugBusinessProcessor extends AbstractBusinessProcessor{
      * @param topic 主题
      */
     public JsonNode doInvokePluginMethod (DataFormat dataFormat,String payload,String productId,String topic) {
-        JsonNode jsonNode = null;
+        JsonNode jsonNode;
         try {
             jsonNode = invokePluginMethod(dataFormat,payload, productId, topic);
             return jsonNode;
@@ -98,7 +98,7 @@ public class PlugBusinessProcessor extends AbstractBusinessProcessor{
 
 
     @Autowired
-    public void setMatchBusinessProcess(MatchBusinessProcess matchBusinessProcess) {
-        this.matchBusinessProcess = matchBusinessProcess;
+    public void setMatchBusinessProcess(MatchBusinessProcessor matchBusinessProcessor) {
+        this.matchBusinessProcessor = matchBusinessProcessor;
     }
 }
