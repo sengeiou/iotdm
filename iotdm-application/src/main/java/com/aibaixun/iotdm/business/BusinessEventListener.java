@@ -112,9 +112,6 @@ public class BusinessEventListener {
 
 
 
-
-
-
     @Autowired
     public void setPlugBusinessProcessor(PlugBusinessProcessor plugBusinessProcessor) {
         this.plugBusinessProcessor = plugBusinessProcessor;

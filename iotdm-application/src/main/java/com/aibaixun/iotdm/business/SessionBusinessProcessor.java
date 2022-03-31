@@ -16,7 +16,7 @@ public class SessionBusinessProcessor extends AbstractBusinessProcessor {
     private QueueBusinessProcessor queueBusinessProcessor;
 
     public void doProcessDeviceSessionEvent(DeviceSessionEvent deviceSessionEvent){
-        queueBusinessProcessor.processSessionData(deviceSessionEvent);
+        queueBusinessProcessor.processSessionData2Mq(deviceSessionEvent);
     }
 
     @Autowired

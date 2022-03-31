@@ -69,11 +69,11 @@ public class MatchBusinessProcessor extends AbstractBusinessProcessor{
 
         propertyReportService.saveOrUpdateBatchDeviceProperties(deviceId,reportEntities);
         logD2P(deviceId, BusinessStep.MATCH_MODEL, JsonUtil.toJSONString(reportEntities),true);
-        queueBusinessProcessor.processProperty(new PostPropertyBusinessMsg(prePropertyBusinessMsg.getMetaData(),toTsData(reportEntities)));
+        queueBusinessProcessor.processProperty2Mq(new PostPropertyBusinessMsg(prePropertyBusinessMsg.getMetaData(),toTsData(reportEntities)));
     }
 
     public void  processMessage(MessageBusinessMsg messageBusinessMsg){
-        queueBusinessProcessor.processMessage(messageBusinessMsg);
+        queueBusinessProcessor.processMessage2Mq(messageBusinessMsg);
     }
 
 

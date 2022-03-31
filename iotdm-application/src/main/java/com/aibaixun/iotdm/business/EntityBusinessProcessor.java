@@ -27,7 +27,7 @@ public class EntityBusinessProcessor extends AbstractBusinessProcessor{
      * @param entityChangeEvent 实体更改
      */
     public void  doProcessEntityChangeEvent (EntityChangeEvent entityChangeEvent){
-        queueBusinessProcessor.processEntityChangeData(entityChangeEvent);
+        queueBusinessProcessor.processEntityChangeData2Mq(entityChangeEvent);
     }
 
 

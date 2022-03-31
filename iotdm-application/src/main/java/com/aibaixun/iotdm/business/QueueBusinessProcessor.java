@@ -14,33 +14,33 @@ import org.springframework.stereotype.Component;
 @Component
 public class QueueBusinessProcessor extends AbstractBusinessProcessor {
 
-    private QueueSendServer queueSendService;
+    private QueueSendServer queueSendServer;
 
-    public void processProperty(PostPropertyBusinessMsg propertyBusinessMsg) {
-        queueSendService.sendPropertyTsData(propertyBusinessMsg);
+    public void processProperty2Mq(PostPropertyBusinessMsg propertyBusinessMsg) {
+        queueSendServer.sendPropertyTsData(propertyBusinessMsg);
         String deviceId = propertyBusinessMsg.getMetaData().getDeviceId();
         logP2P(deviceId, propertyBusinessMsg.getTsData());
     }
 
-    public void processMessage(MessageBusinessMsg messageBusinessMsg) {
-        queueSendService.sendMessageTsData(messageBusinessMsg);
+    public void processMessage2Mq(MessageBusinessMsg messageBusinessMsg) {
+        queueSendServer.sendMessageTsData(messageBusinessMsg);
         String deviceId = messageBusinessMsg.getMetaData().getDeviceId();
         logP2P(deviceId, messageBusinessMsg.getMessage());
     }
 
-    public void processSessionData(DeviceSessionEvent deviceSessionEvent) {
-        queueSendService.sendSessionData(deviceSessionEvent);
+    public void processSessionData2Mq(DeviceSessionEvent deviceSessionEvent) {
+        queueSendServer.sendSessionData(deviceSessionEvent);
         String deviceId = deviceSessionEvent.getDeviceId();
         logP2P(deviceId, deviceSessionEvent);
     }
 
-    public void processEntityChangeData(EntityChangeEvent entityChangeEvent) {
-        queueSendService.sendEntityChangeData(entityChangeEvent);
+    public void processEntityChangeData2Mq(EntityChangeEvent entityChangeEvent) {
+        queueSendServer.sendEntityChangeData(entityChangeEvent);
     }
 
 
     @Autowired
-    public void setQueueSendService(QueueSendServer queueSendService) {
-        this.queueSendService = queueSendService;
+    public void setQueueSendServer(QueueSendServer queueSendServer) {
+        this.queueSendServer = queueSendServer;
     }
 }
