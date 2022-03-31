@@ -3,7 +3,7 @@ package com.aibaixun.iotdm.rule.server;
 import com.aibaixun.iotdm.enums.ResourceType;
 import com.aibaixun.iotdm.msg.ForwardRuleInfo;
 import com.aibaixun.iotdm.msg.TargetResourceInfo;
-import com.aibaixun.iotdm.rule.QueueReceiveServiceImpl;
+import com.aibaixun.iotdm.rule.DefaultQueueReceiveServer;
 import com.aibaixun.iotdm.rule.send.SendServer;
 import com.aibaixun.iotdm.scheduler.RuleExecutorService;
 import com.aibaixun.iotdm.support.BaseResourceConfig;
@@ -30,7 +30,7 @@ import java.util.Objects;
 public class ForwardServiceImpl implements ForwardService{
 
 
-    private final Logger log = LoggerFactory.getLogger(QueueReceiveServiceImpl.class);
+    private final Logger log = LoggerFactory.getLogger(DefaultQueueReceiveServer.class);
 
     /**
      * 转发执行器

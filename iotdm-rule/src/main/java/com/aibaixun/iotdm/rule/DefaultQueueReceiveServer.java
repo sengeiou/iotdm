@@ -9,7 +9,7 @@ import com.aibaixun.iotdm.event.DeviceSessionEvent;
 import com.aibaixun.iotdm.event.EntityChangeEvent;
 import com.aibaixun.iotdm.msg.ForwardRuleInfo;
 import com.aibaixun.iotdm.queue.IotDmSink;
-import com.aibaixun.iotdm.queue.QueueReceiveService;
+import com.aibaixun.iotdm.queue.QueueReceiveServer;
 import com.aibaixun.iotdm.rule.server.ForwardService;
 import com.aibaixun.iotdm.rule.server.RuleServer;
 import org.slf4j.Logger;
@@ -31,9 +31,9 @@ import java.util.stream.Collectors;
  */
 @Service
 @EnableBinding(value = { IotDmSink.class })
-public class QueueReceiveServiceImpl implements QueueReceiveService {
+public class DefaultQueueReceiveServer implements QueueReceiveServer {
 
-    private final Logger log = LoggerFactory.getLogger(QueueReceiveServiceImpl.class);
+    private final Logger log = LoggerFactory.getLogger(DefaultQueueReceiveServer.class);
 
 
     private RuleServer ruleService;

@@ -6,7 +6,7 @@ import org.springframework.messaging.support.GenericMessage;
  * @author wangxiao@aibaixun.com
  * @date 2022/3/11
  */
-public interface QueueReceiveService {
+public interface QueueReceiveServer {
 
     /**
      * 接受 消息队列的时序数据
