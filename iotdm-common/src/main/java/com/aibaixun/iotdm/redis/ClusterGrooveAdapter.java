@@ -1,45 +1,45 @@
 package com.aibaixun.iotdm.redis;
 
-import com.aibaixun.iotdm.service.DeviceInfoServer;
-import io.lettuce.core.cluster.models.partitions.RedisClusterNode;
-import io.lettuce.core.cluster.pubsub.RedisClusterPubSubAdapter;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import io.lettuce.core.cluster.RedisClusterClient;
+import io.lettuce.core.cluster.pubsub.StatefulRedisClusterPubSubConnection;
+import io.lettuce.core.cluster.pubsub.api.async.NodeSelectionPubSubAsyncCommands;
+import io.lettuce.core.cluster.pubsub.api.async.PubSubAsyncNodeSelection;
+import io.lettuce.core.pubsub.RedisPubSubAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+
 import static com.aibaixun.iotdm.constants.DataConstants.EXPIRED_CHANNEL;
-import static com.aibaixun.iotdm.constants.DataConstants.IOT_SESSION_CACHE_KEY_PREFIX;
 
 /**
- * redis 消息处理类
+ * redis 订阅
  * @author wangxiao@aibaixun.com
  * @date 2022/3/9
  */
 @Component
-public class ClusterGrooveAdapter extends RedisClusterPubSubAdapter {
+public class ClusterGrooveAdapter extends RedisPubSubAdapter {
  
-    private final Logger logger = LoggerFactory.getLogger(ClusterGrooveAdapter.class);
+
+ 
+    @Resource
+    RedisClusterClient clusterClient;
 
     @Autowired
-    private DeviceInfoServer deviceInfoServer;
+    private RedisClusterListener clusterGrooveAdapter;
+
  
-    @Override
-    public void message(RedisClusterNode node, Object channel, Object message) {
-
-        String channelKey = String.valueOf(channel);
-        String redisKey = String.valueOf(message);
-        logger.info("RedisClusterListener.message >> receive redis key expire message ,node:{},channel:{},message:{}", node, channelKey, redisKey);
-        if (checkChannelAndKey(channelKey, redisKey)) {
-            deviceInfoServer.onRedisExpirationMessage(redisKey);
-        }
+    /**
+     * 启动监听
+     */
+    @PostConstruct
+    public void startListener() {
+        StatefulRedisClusterPubSubConnection<String, String> pubSubConnection = clusterClient.connectPubSub();
+        pubSubConnection.setNodeMessagePropagation(true);
+        pubSubConnection.addListener(clusterGrooveAdapter);
+        PubSubAsyncNodeSelection<String, String> masters = pubSubConnection.async().masters();
+        NodeSelectionPubSubAsyncCommands<String, String> commands = masters.commands();
+        commands.subscribe(EXPIRED_CHANNEL);
     }
-
-
-    private  boolean checkChannelAndKey (String channel,String key){
-        return StringUtils.equals(channel,EXPIRED_CHANNEL) && StringUtils.startsWith(key,IOT_SESSION_CACHE_KEY_PREFIX);
-    }
-
-
 }

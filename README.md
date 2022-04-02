@@ -42,6 +42,10 @@ iotdm
 # 原来是""空
 notify-keyspace-events "Ex"
 ```
+**如果是运行中redis 使用如下命令更改**
+```
+config set notify-keyspace-events Ex
+```
 2. decode 需要js 插件解析
 ```js
 var jsonObj = {};

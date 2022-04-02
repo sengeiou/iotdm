@@ -30,7 +30,7 @@ spring:
       max-redirects: 3
     database: 0
     sub:
-      cluster: redis://172.16.9.2:6379
+      cluster: redis://172.16.9.4:6379
 
 
   cloud:
