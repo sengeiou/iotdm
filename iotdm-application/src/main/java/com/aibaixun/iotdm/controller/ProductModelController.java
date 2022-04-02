@@ -3,6 +3,7 @@ package com.aibaixun.iotdm.controller;
 import com.aibaixun.basic.exception.BaseException;
 import com.aibaixun.basic.result.BaseResultCode;
 import com.aibaixun.basic.result.JsonResult;
+import com.aibaixun.iotdm.data.BaseParam;
 import com.aibaixun.iotdm.data.ProductModelEntityInfo;
 import com.aibaixun.iotdm.entity.ModelCommandEntity;
 import com.aibaixun.iotdm.entity.ModelPropertyEntity;
@@ -13,11 +14,14 @@ import com.aibaixun.iotdm.service.IProductService;
 import com.aibaixun.iotdm.util.UserInfoUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 产品模型 Web Api
@@ -131,6 +135,9 @@ public class ProductModelController extends BaseController{
     @PostMapping("/command")
     public JsonResult<Boolean> createModelCommand(@RequestBody @Valid ModelCommandEntity modelCommandEntity) throws BaseException {
         String productModelId = modelCommandEntity.getProductModelId();
+        if (!checkModelCommandEntityParam(modelCommandEntity)){
+            throw new BaseException("下发参数或者响应参数填写有误，请检查",BaseResultCode.BAD_PARAMS);
+        }
         ProductModelEntity modelEntity = productModelService.getById(productModelId);
         checkEntity(modelEntity,"产品模型不存在，无法创建");
         String productId = modelEntity.getProductId();
@@ -152,6 +159,9 @@ public class ProductModelController extends BaseController{
     @PutMapping("/command")
     public JsonResult<Boolean> updateModelCommand(@RequestBody @Valid ModelCommandEntity modelCommandEntity) throws BaseException {
         String modelPropertyEntityId = modelCommandEntity.getId();
+        if (!checkModelCommandEntityParam(modelCommandEntity)){
+            throw new BaseException("下发参数或者响应参数填写有误，请检查",BaseResultCode.BAD_PARAMS);
+        }
         checkParameterValue(modelPropertyEntityId,"命令id不允许为空");
         String productModelId = modelCommandEntity.getProductModelId();
         ProductModelEntity modelEntity = productModelService.getById(productModelId);
@@ -160,6 +170,37 @@ public class ProductModelController extends BaseController{
         return JsonResult.success(aBoolean);
     }
 
+
+    /**
+     * 校验 命令 参数
+     * @param modelCommandEntity 抹胸命令
+     * @return 校验结果
+     */
+    private boolean checkModelCommandEntityParam (ModelCommandEntity modelCommandEntity){
+        List<BaseParam> params = modelCommandEntity.getParams();
+        List<BaseParam> responses = modelCommandEntity.getResponses();
+        if (CollectionUtils.isEmpty(params) && CollectionUtils.isEmpty(responses)){
+            return true;
+        }
+        List<BaseParam> baseParams = new ArrayList<>();
+        baseParams.addAll(params);
+        baseParams.addAll(responses);
+        for (BaseParam baseParam : baseParams){
+            if (!checkBaseParam(baseParam)){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 校验基础参数
+     * @param baseParam 基础参数
+     * @return 返回校验结果
+     */
+    private boolean checkBaseParam (BaseParam baseParam){
+        return Objects.nonNull(baseParam) && Objects.nonNull(baseParam.getDataType()) &&Objects.nonNull(baseParam.getParamLabel());
+    }
 
     @Autowired
     public void setProductModelService(IProductModelService productModelService) {
