@@ -125,6 +125,7 @@ public class Default2DeviceProcessor implements ToDeviceProcessor{
                 payload = HexTool.encodeHexStr((byte[]) o);
             }catch (Exception e){
                 doCommandLog(deviceId, e.getMessage(),false);
+                return;
             }
         }else {
             payload = JsonUtil.toJSONString(toDeviceCommandData);
