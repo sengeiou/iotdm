@@ -6,6 +6,8 @@ import com.aibaixun.iotdm.support.BaseResourceConfig;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
+
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 
@@ -24,11 +26,13 @@ public class RuleResourceEntity extends BaseEntity {
     /**
      * 资源名称
      */
+    @NotBlank(message = "资源名称不允许为空")
     private String resourceLabel;
 
     /**
      * 资源类型
      */
+    @NotNull(message = "资源类型不允许为空")
     private ResourceType resourceType;
 
     /**

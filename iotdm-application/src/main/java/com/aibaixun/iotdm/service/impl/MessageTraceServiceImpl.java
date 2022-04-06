@@ -70,6 +70,8 @@ public class MessageTraceServiceImpl extends ServiceImpl<MessageTraceMapper, Mes
         save(messageTraceEntity);
     }
 
-
-
+    @Override
+    public void removeDeviceMessage(String deviceId) {
+        remove(Wrappers.<MessageTraceEntity>lambdaQuery().eq(MessageTraceEntity::getDeviceId, deviceId));
+    }
 }

@@ -250,6 +250,7 @@ public class DeviceController extends BaseController{
         checkProductId(productId);
         checkDeviceCode(deviceCode,productId);
         DeviceEntity saveDeviceEntity = new DeviceEntity();
+        saveDeviceEntity.setProductId(productId);
         saveDeviceEntity.setDeviceCode(deviceCode);
         saveDeviceEntity.setDeviceLabel(deviceLabel);
         saveDeviceEntity.setDeviceSecret(deviceSecret);

@@ -53,4 +53,11 @@ public interface IMessageTraceService extends IService<MessageTraceEntity> {
      */
     void logDeviceMessageTrace (String deviceId, BusinessType businessType, BusinessStep businessStep, String businessDetails,Boolean messageStatus);
 
+
+    /**
+     * 移除日志
+     * @param deviceId 设备id
+     */
+    void  removeDeviceMessage(String deviceId);
+
 }

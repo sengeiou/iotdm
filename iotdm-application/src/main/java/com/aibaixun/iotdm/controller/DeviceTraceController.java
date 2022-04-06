@@ -48,7 +48,7 @@ public class DeviceTraceController extends BaseController{
     }
 
     @PostMapping
-    public JsonResult<Boolean> getTraceDeviceTime(@RequestBody TraceDeviceParam traceDeviceParam) throws BaseException {
+    public JsonResult<Boolean> createTraceDeviceTime(@RequestBody TraceDeviceParam traceDeviceParam) throws BaseException {
 
         Long ttl = traceDeviceParam.getTtl();
         DeviceEntity deviceEntity = deviceService.getById(traceDeviceParam.getDeviceId());
@@ -72,6 +72,11 @@ public class DeviceTraceController extends BaseController{
         return JsonResult.success(true);
     }
 
+    @GetMapping("/clean-log/{deviceId}")
+    public JsonResult<Boolean> cleanTraceDeviceLog (@PathVariable String deviceId){
+        messageTraceService.removeDeviceMessage(deviceId);
+        return JsonResult.success(true);
+    }
 
 
 
