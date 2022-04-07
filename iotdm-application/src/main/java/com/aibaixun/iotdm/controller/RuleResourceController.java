@@ -60,7 +60,6 @@ public class RuleResourceController extends BaseController{
     @PostMapping
     public JsonResult<Boolean> createRuleResourceEntity (@RequestBody @Valid RuleResourceEntity ruleResourceEntity) throws BaseException {
 
-
         checkEntityParam(ruleResourceEntity.getConfiguration(),"资源配置项不允许为空");
         if (Objects.isNull(ruleResourceEntity.getResourceType())){
             ruleResourceEntity.setResourceType(ruleResourceEntity.getConfiguration().getResourceType());
@@ -129,6 +128,7 @@ public class RuleResourceController extends BaseController{
         Long aLong = ruleResourceService.countResource();
         return JsonResult.success(aLong);
     }
+
 
 
     @Autowired

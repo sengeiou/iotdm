@@ -32,4 +32,12 @@ public interface BaseResourceConfig extends Serializable {
      * @return 资源类型
      */
     ResourceType getResourceType();
+
+    /**
+     * 获取地址
+     * @return 地址信息
+     */
+    String getHost();
+
+
 }

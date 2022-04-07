@@ -26,9 +26,11 @@ public class MySqlResourceConfig implements BaseResourceConfig{
         return ResourceType.MYSQL;
     }
 
+    @Override
     public String getHost() {
         return host;
     }
+
 
     public void setHost(String host) {
         this.host = host;
