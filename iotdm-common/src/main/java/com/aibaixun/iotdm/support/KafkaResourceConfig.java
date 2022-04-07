@@ -36,9 +36,11 @@ public class KafkaResourceConfig implements BaseResourceConfig{
     }
 
 
+    @Override
     public String getHost() {
         return host;
     }
+
 
     public void setHost(String host) {
         this.host = host;

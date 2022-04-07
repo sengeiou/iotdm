@@ -42,9 +42,11 @@ public class HttpResourceConfig implements BaseResourceConfig{
         this.headers = headers;
     }
 
+    @Override
     public String getHost() {
         return host;
     }
+
 
     public void setHost(String host) {
         this.host = host;
