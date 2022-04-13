@@ -31,8 +31,7 @@ import static com.aibaixun.iotdm.constants.TopicConstants.*;
 import static io.netty.handler.codec.mqtt.MqttConnectReturnCode.CONNECTION_ACCEPTED;
 import static io.netty.handler.codec.mqtt.MqttConnectReturnCode.CONNECTION_REFUSED_NOT_AUTHORIZED;
 import static io.netty.handler.codec.mqtt.MqttMessageType.*;
-import static io.netty.handler.codec.mqtt.MqttQoS.AT_MOST_ONCE;
-import static io.netty.handler.codec.mqtt.MqttQoS.FAILURE;
+import static io.netty.handler.codec.mqtt.MqttQoS.*;
 
 
 /**
@@ -702,7 +701,7 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
 
     protected MqttPublishMessage createMqttPublishMsg( DeviceSessionCtx ctx, String topic, byte [] payloadByte) {
         MqttFixedHeader mqttFixedHeader =
-                new MqttFixedHeader(MqttMessageType.PUBLISH, false, AT_MOST_ONCE, false, 0);
+                new MqttFixedHeader(MqttMessageType.PUBLISH, false, AT_LEAST_ONCE, false, 0);
         MqttPublishVariableHeader header = new MqttPublishVariableHeader(topic, ctx.nextMsgId());
         ByteBuf payload = ALLOCATOR.buffer();
         payload.writeBytes(payloadByte);
