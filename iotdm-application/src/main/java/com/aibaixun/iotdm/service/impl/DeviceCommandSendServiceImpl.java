@@ -75,8 +75,7 @@ public class DeviceCommandSendServiceImpl extends ServiceImpl<DeviceCommandSendM
     public Boolean updateDeviceCommand(String deviceId, Integer reqId, SendStatus targetStatus) {
         LambdaUpdateWrapper<DeviceCommandSendEntity> updateWrapper = Wrappers.<DeviceCommandSendEntity>lambdaUpdate()
                 .eq(DeviceCommandSendEntity::getDeviceId,deviceId)
-                .eq(DeviceCommandSendEntity::getReqId,reqId)
-                .eq(DeviceCommandSendEntity::getSendStatus, SendStatus.SEND_ARRIVE);
+                .eq(DeviceCommandSendEntity::getReqId,reqId);
         updateWrapper.set(DeviceCommandSendEntity::getSendStatus, targetStatus);
         return update(updateWrapper);
     }
