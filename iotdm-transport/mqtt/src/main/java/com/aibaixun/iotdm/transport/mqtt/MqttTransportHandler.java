@@ -443,6 +443,7 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
      * @param channelHandlerContext ctx
      */
     private void processPingMsg(ChannelHandlerContext channelHandlerContext){
+        log.info("MqttTransportHandler.processPingMsg");
         if (checkConnected()) {
             channelHandlerContext.writeAndFlush(new MqttMessage(new MqttFixedHeader(PINGRESP, false, AT_MOST_ONCE, false, 0)));
             transportService.reportActivity(deviceSessionCtx.getSessionId());
