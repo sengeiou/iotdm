@@ -128,6 +128,7 @@ public class Default2DeviceProcessor implements ToDeviceProcessor{
                 return;
             }
         }else {
+
             payload = JsonUtil.toJSONString(toDeviceCommandData);
         }
         doCommandLog(deviceId, payload,true);

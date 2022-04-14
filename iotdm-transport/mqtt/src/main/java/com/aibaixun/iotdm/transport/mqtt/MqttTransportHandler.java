@@ -624,13 +624,13 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
         return new TransportServiceCallback<>() {
             @Override
             public void onSuccess(T dummy) {
-                log.trace("MqttTransportHandler.publish >> [{}][{}] message ack success,msgId:{}", handlerId,address,msgId );
+                log.trace("MqttTransportHandler.pubAckCallback >> [{}][{}] message ack success,msgId:{}", handlerId,address,msgId );
                 ack(ctx, msgId);
             }
 
             @Override
             public void onError(Throwable e) {
-                log.trace("MqttTransportHandler.publish >> [{}][{}] message ack failure,msgId:{}", handlerId,address,msgId );
+                log.trace("MqttTransportHandler.pubAckCallback >> [{}][{}] message ack failure,msgId:{}", handlerId,address,msgId );
                 ctx.close();
             }
         };
@@ -657,8 +657,13 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
         if (StringUtils.isBlank(payload)){
             return;
         }
-        MqttPublishMessage publishMessage = getMqttPublishMessage(payload, CONFIG_REQ);
-        deviceSessionCtx.getChannel().writeAndFlush(publishMessage);
+        try {
+            MqttPublishMessage publishMessage = getMqttPublishMessage(payload, CONFIG_REQ);
+            deviceSessionCtx.getChannel().writeAndFlush(publishMessage);
+        }catch (Exception e){
+            log.info("MqttTransportHandler.on2DeviceConfigReq,is error:{},payload:{}",e.getMessage(),payload);
+        }
+
     }
 
     @Override
@@ -666,8 +671,13 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
         if (StringUtils.isBlank(payload)){
             return;
         }
-        MqttPublishMessage publishMessage = getMqttPublishMessage(payload, OTA_REQ);
-        deviceSessionCtx.getChannel().writeAndFlush(publishMessage);
+        try {
+            MqttPublishMessage publishMessage = getMqttPublishMessage(payload, OTA_REQ);
+            deviceSessionCtx.getChannel().writeAndFlush(publishMessage);
+        }catch (Exception e){
+            log.info("MqttTransportHandler.on2DeviceOtaReq,is error:{},payload:{}",e.getMessage(),payload);
+        }
+
     }
 
     @Override
@@ -675,10 +685,16 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
         if (StringUtils.isBlank(payload)){
             return;
         }
-        MqttPublishMessage publishMessage = getMqttPublishMessage(payload, CONTROL_REQ);
-        int i = publishMessage.variableHeader().packetId();
-        deviceSessionCtx.getChannel().writeAndFlush(publishMessage);
-        transportService.processControlIsSend(sendId,i);
+        log.info("MqttTransportHandler.on2DeviceControlReq,sendId:{},payload:{}",sendId,payload);
+        try {
+            MqttPublishMessage publishMessage = getMqttPublishMessage(payload, CONTROL_REQ);
+            int i = publishMessage.variableHeader().packetId();
+            deviceSessionCtx.getChannel().writeAndFlush(publishMessage);
+            transportService.processControlIsSend(sendId,i);
+        }catch (Exception e){
+            log.info("MqttTransportHandler.on2DeviceControlReq,is error:{},sendId:{},payload:{}",e.getMessage(),sendId,payload);
+        }
+
     }
 
 

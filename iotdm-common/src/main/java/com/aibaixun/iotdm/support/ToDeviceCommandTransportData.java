@@ -1,5 +1,7 @@
 package com.aibaixun.iotdm.support;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.Map;
 
 /**
@@ -7,6 +9,7 @@ import java.util.Map;
  * @author wangxiao@aibaixun.com
  * @date 2022/3/16
  */
+@JsonIgnoreProperties({"modelId", "toDeviceType"})
 public class ToDeviceCommandTransportData extends ToDeviceBaseData{
 
     private String commandLabel;
