@@ -26,10 +26,6 @@ public class ListenerContainer {
     public void remove(SessionId sessionId){
         sessionListeners.remove(sessionId);
     }
-    public TransportSessionMetaData computeIfAbsent(SessionId key,
-                      Function<? super SessionId, ? extends TransportSessionMetaData> mappingFunction){
-       return sessionListeners.computeIfAbsent(key,mappingFunction);
-    }
 
 
     public TransportSessionMetaData getSessionMeta(SessionId sessionId){

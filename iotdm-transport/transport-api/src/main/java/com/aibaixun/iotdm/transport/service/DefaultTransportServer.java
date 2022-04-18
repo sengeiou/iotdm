@@ -100,7 +100,7 @@ public class DefaultTransportServer implements TransportServer {
         SessionId sessionId = transportSessionInfo.getSessionId();
         sessionCacheService.removeSessionCache(sessionId);
         sessionCacheService.addSessionCache(sessionId,transportSessionInfo,defaultKeepalive);
-        listenerContainer.computeIfAbsent(sessionId,k->new TransportSessionMetaData(transportSessionInfo.getDeviceId(),listener));
+        listenerContainer.addSessionMetaData(sessionId,new TransportSessionMetaData(transportSessionInfo.getDeviceId(),listener));
     }
 
 

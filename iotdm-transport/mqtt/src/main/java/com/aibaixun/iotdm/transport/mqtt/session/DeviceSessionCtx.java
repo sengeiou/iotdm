@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class DeviceSessionCtx extends DeviceAwareSessionContext {
 
-    private ChannelHandlerContext channel;
+    private volatile ChannelHandlerContext channel;
 
     private final MqttTransportContext context;
 
