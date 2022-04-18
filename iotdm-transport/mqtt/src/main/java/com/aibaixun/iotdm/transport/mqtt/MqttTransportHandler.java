@@ -83,6 +83,7 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
     public void channelRegistered(ChannelHandlerContext channelHandlerContext) throws Exception {
         super.channelRegistered(channelHandlerContext);
         context.channelRegistered();
+        deviceSessionCtx.setChannel(channelHandlerContext);
     }
 
     @Override

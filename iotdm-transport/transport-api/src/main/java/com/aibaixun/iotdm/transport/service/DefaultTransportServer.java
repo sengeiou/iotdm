@@ -98,6 +98,7 @@ public class DefaultTransportServer implements TransportServer {
     @Override
     public void registerSession(TransportSessionInfo transportSessionInfo, TransportSessionListener listener) {
         SessionId sessionId = transportSessionInfo.getSessionId();
+        sessionCacheService.removeSessionCache(sessionId);
         sessionCacheService.addSessionCache(sessionId,transportSessionInfo,defaultKeepalive);
         listenerContainer.computeIfAbsent(sessionId,k->new TransportSessionMetaData(transportSessionInfo.getDeviceId(),listener));
     }
