@@ -124,6 +124,7 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
     @Override
     public void exceptionCaught(ChannelHandlerContext channelHandlerContext, Throwable cause) {
         log.error("MqttTransportHandler.exceptionCaught >> [{}] Unexpected Exception", handlerId, cause);
+        deviceSessionCtx.setDisconnected();
         channelHandlerContext.close();
         if (cause instanceof OutOfMemoryError) {
             log.error("MqttTransportHandler.exceptionCaught >> Received critical error： OutOfMemoryError. Going to shutdown the service.");
